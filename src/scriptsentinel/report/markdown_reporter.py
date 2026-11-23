@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from ..models import AuditReport, ScriptAudit
 
 
@@ -196,3 +198,11 @@ def render_markdown(report: AuditReport) -> str:
             lines.append(f"| {_cell(item.standard)} | {_cell(item.requirement)} | {_cell(item.status)} |")
 
     return "\n".join(lines) + "\n"
+
+
+def write_markdown(report: AuditReport, path: str | Path) -> None:
+    """Write the rendered Markdown audit report to ``path``."""
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(render_markdown(report), encoding="utf-8")
+

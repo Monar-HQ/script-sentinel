@@ -7,6 +7,7 @@ misconfigurations, and generate verifiable remediations.
 
 from __future__ import annotations
 
+from .auditor import audit_url
 from .models import (
     AuditReport,
     ComplianceItem,
@@ -21,6 +22,7 @@ from .models import (
     ScriptIntegrityResult,
     ScriptTagReplacement,
 )
+from .remediate import generate_remediation_pack
 
 __version__ = "0.1.0"
 
@@ -38,4 +40,6 @@ __all__ = [
     "ScriptIntegrityResult",
     "ScriptTagReplacement",
     "__version__",
+    "audit_url",
+    "generate_remediation_pack",
 ]

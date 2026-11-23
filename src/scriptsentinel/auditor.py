@@ -1,9 +1,12 @@
-"""
-Core Auditor & Pipeline Orchestrator
+"""Core Auditor & Pipeline Orchestrator.
+
 Fetches targets, inspects HTTP response headers, parses HTML scripts, fetches dependencies,
 computes integrity, and coordinates full security audit.
 """
 
+from __future__ import annotations
+
+from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import urljoin
 
@@ -12,59 +15,49 @@ from bs4 import BeautifulSoup
 
 from .csp_analyzer import analyze_csp
 from .integrity import audit_script_integrity
+from .models import AuditReport, CSPAnalysis
 from .remediate import generate_remediation_pack
 from .scanner import scan_script_content
 
-
-class AuditReport:
-    def __init__(self, target_url: str):
-        self.target_url = target_url
-        self.timestamp = None
-        self.status_code = None
-        self.headers = {}
-        self.csp_report = {}
-        self.scripts = []
-        self.overall_risk = "LOW"
-        self.summary = {}
-        self.remediation = {}
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "target_url": self.target_url,
-            "status_code": self.status_code,
-            "overall_risk": self.overall_risk,
-            "summary": self.summary,
-            "csp": self.csp_report,
-            "scripts": self.scripts,
-            "remediation": self.remediation,
-        }
+__all__ = ["AuditReport", "audit_url"]
 
 
 async def audit_url(
     target_url: str, baseline_hashes: dict[str, str] | None = None, timeout: float = 10.0
 ) -> AuditReport:
-    report = AuditReport(target_url)
+    """Audit a target webpage for third-party script supply-chain vulnerabilities."""
     baseline_hashes = baseline_hashes or {}
+    now_iso = datetime.now(timezone.utc).isoformat()
 
     async with httpx.AsyncClient(timeout=timeout, verify=False, follow_redirects=True) as client:
         try:
             resp = await client.get(target_url)
         except Exception as e:
-            report.overall_risk = "ERROR"
-            report.summary = {"error": f"Failed to fetch {target_url}: {e!s}"}
-            return report
+            err_msg = f"Failed to fetch {target_url}: {e!s}"
+            return AuditReport.create(
+                target_url=target_url,
+                timestamp=now_iso,
+                status_code=None,
+                headers={},
+                csp=CSPAnalysis(score=0, grade="F", directives={}, findings=()),
+                scripts=(),
+                overall_risk="ERROR",
+                summary={"error": err_msg},
+                error=err_msg,
+            )
 
-        report.status_code = resp.status_code
-        report.headers = dict(resp.headers)
+        status_code = resp.status_code
+        headers = dict(resp.headers)
 
         # 1. Analyze CSP header
         csp_header = resp.headers.get("content-security-policy")
-        report.csp_report = analyze_csp(csp_header)
+        csp_report = analyze_csp(csp_header)
 
         # 2. Parse HTML and inventory scripts
         html = resp.text
         soup = BeautifulSoup(html, "html.parser")
         script_elements = soup.find_all("script")
+        scripts: list[dict[str, Any]] = []
 
         for idx, s in enumerate(script_elements):
             src = s.get("src")
@@ -79,7 +72,7 @@ async def audit_url(
                     s_bytes = s_resp.content
                     s_text = s_resp.text
                 except Exception as ex:
-                    report.scripts.append(
+                    scripts.append(
                         {
                             "index": idx,
                             "type": "external",
@@ -97,7 +90,7 @@ async def audit_url(
                 # Run behavioral skimmer scan
                 scan_res = scan_script_content(s_text, full_url)
 
-                report.scripts.append(
+                scripts.append(
                     {
                         "index": idx,
                         "type": "external",
@@ -106,14 +99,14 @@ async def audit_url(
                         "declared_integrity": declared_integrity,
                         "integrity_audit": integ_res,
                         "scanner_audit": scan_res,
-                        "suggested_tag": integ_res["suggested_tag"],
+                        "suggested_tag": integ_res.get("suggested_tag"),
                     }
                 )
             else:
                 # Inline script
                 inline_content = s.string or s.text or ""
                 scan_res = scan_script_content(inline_content, f"inline_script_{idx}")
-                report.scripts.append(
+                scripts.append(
                     {
                         "index": idx,
                         "type": "inline",
@@ -127,10 +120,10 @@ async def audit_url(
         has_critical = False
         has_high = False
 
-        if report.csp_report.get("grade") in ("D", "F"):
+        if csp_report.get("grade") in ("D", "F"):
             has_high = True
 
-        for s in report.scripts:
+        for s in scripts:
             # Check integrity issues
             integ = s.get("integrity_audit", {})
             for issue in integ.get("issues", []):
@@ -148,25 +141,34 @@ async def audit_url(
                     has_high = True
 
         if has_critical:
-            report.overall_risk = "CRITICAL"
+            overall_risk = "CRITICAL"
         elif has_high:
-            report.overall_risk = "HIGH"
+            overall_risk = "HIGH"
         else:
-            report.overall_risk = "LOW"
+            overall_risk = "LOW"
 
         # 4. Generate Remediation Pack
-        report.remediation = generate_remediation_pack(
-            target_url, report.csp_report, report.scripts
-        )
+        remediation = generate_remediation_pack(target_url, csp_report, scripts)
 
-        # 5. Populate summary
-        report.summary = {
-            "total_scripts": len(report.scripts),
-            "external_scripts": len([s for s in report.scripts if s.get("type") == "external"]),
-            "inline_scripts": len([s for s in report.scripts if s.get("type") == "inline"]),
-            "csp_grade": report.csp_report.get("grade"),
-            "csp_score": report.csp_report.get("score"),
-            "overall_risk": report.overall_risk,
+        # 5. Build summary
+        summary = {
+            "total_scripts": len(scripts),
+            "external_scripts": len([s for s in scripts if s.get("type") == "external"]),
+            "inline_scripts": len([s for s in scripts if s.get("type") == "inline"]),
+            "csp_grade": csp_report.get("grade"),
+            "csp_score": csp_report.get("score"),
+            "overall_risk": overall_risk,
         }
 
-        return report
+        return AuditReport.create(
+            target_url=target_url,
+            timestamp=now_iso,
+            status_code=status_code,
+            headers=headers,
+            csp=csp_report,
+            scripts=scripts,
+            overall_risk=overall_risk,
+            summary=summary,
+            remediation=remediation,
+        )
+

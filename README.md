@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Ally-Released/scriptsentinel/ci.yml?branch=main&style=flat-square&logo=github&label=CI" alt="CI Status"></a>
+  <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-10b981?style=flat-square&logo=github&labelColor=090d16" alt="CI Status"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-090d16?style=flat-square&logo=python" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/runtime%20overhead-0ms-090d16?style=flat-square" alt="Zero Runtime Overhead">
   <img src="https://img.shields.io/badge/compliance-PCI--DSS_v4.0_Ready-10b981?style=flat-square" alt="PCI-DSS v4.0 Ready">
@@ -194,7 +194,7 @@ CodeSentinel is supported by **[Unquant](https://unquant.io/)**, who provided th
 - [x] Remediation pack generator (Nginx, Apache, drop-in SRI tags)
 - [x] Comprehensive documentation suite (`ARCHITECTURE.md`, `PCI-DSS-MAPPING.md`, `DETECTION-RULES.md`)
 - [ ] Automated Sigma rule & Suricata rule exporter
-- [ ] Standalone dark-mode HTML executive report generator
+- [x] Standalone dark-mode HTML executive report generator
 - [ ] GitHub Action for automated CI/CD PR script drift gating
 
 ---

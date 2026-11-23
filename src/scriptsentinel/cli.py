@@ -137,7 +137,9 @@ def main():
     )
     audit_parser.add_argument("url", help="Target URL (e.g. http://localhost:8100/strict/checkout)")
     audit_parser.add_argument("--baseline", help="Path to baseline hashes JSON file", default=None)
-    audit_parser.add_argument("--output", help="Save full report to JSON file", default=None)
+    audit_parser.add_argument("--output", help="Save full report to JSON, Markdown, or HTML file", default=None)
+    audit_parser.add_argument("--markdown", help="Save formatted Markdown report to file", default=None)
+    audit_parser.add_argument("--html", help="Save standalone dark-themed HTML report to file", default=None)
 
     # remediate command
     rem_parser = subparsers.add_parser(
@@ -165,16 +167,46 @@ def main():
         print_audit_summary(report)
 
         if args.output:
-            with open(args.output, "w", encoding="utf-8") as f:
-                json.dump(report.to_dict(), f, indent=2)
-            console.print(f"\n[bold green]Full JSON report stashed at:[/bold green] {args.output}")
+            if args.output.endswith(".md"):
+                from .report.markdown_reporter import write_markdown
+
+                write_markdown(report, args.output)
+                console.print(f"\n[bold green]Full Markdown report stashed at:[/bold green] {args.output}")
+            elif args.output.endswith(".html") or args.output.endswith(".htm"):
+                from .report.html_reporter import write_html
+
+                write_html(report, args.output)
+                console.print(f"\n[bold green]Full HTML report stashed at:[/bold green] {args.output}")
+            else:
+                from .report.json_reporter import write_json
+
+                write_json(report, args.output)
+                console.print(f"\n[bold green]Full JSON report stashed at:[/bold green] {args.output}")
+
+        if getattr(args, "markdown", None):
+            from .report.markdown_reporter import write_markdown
+
+            write_markdown(report, args.markdown)
+            console.print(f"\n[bold green]Full Markdown report stashed at:[/bold green] {args.markdown}")
+
+        if getattr(args, "html", None):
+            from .report.html_reporter import write_html
+
+            write_html(report, args.html)
+            console.print(f"\n[bold green]Full HTML report stashed at:[/bold green] {args.html}")
 
     elif args.command == "remediate":
-        report = asyncio.run(audit_url(args.url, baseline_map))
+        with console.status(f"[cyan]Generating remediation for {args.url}...[/cyan]"):
+            report = asyncio.run(audit_url(args.url, baseline_map))
         rem = report.remediation
-        console.print(Panel(rem.get("hardened_csp", ""), title="Hardened CSP Header"))
-        for tag in rem.get("sri_replacement_tags", []):
-            console.print(tag["tag"])
+        if rem:
+            csp_val = rem.get("hardened_csp") or getattr(rem, "hardened_csp", "")
+            console.print(Panel(csp_val, title="Hardened CSP Header"))
+            tags = rem.get("sri_replacement_tags") or getattr(rem, "sri_replacement_tags", [])
+            for tag in tags:
+                tag_str = tag["tag"] if isinstance(tag, dict) else getattr(tag, "tag", str(tag))
+                console.print(tag_str)
+
 
 
 if __name__ == "__main__":
