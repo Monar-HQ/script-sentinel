@@ -1,5 +1,5 @@
-import pytest
 from scriptsentinel.scanner import scan_script_content
+
 
 def test_scan_benign_script():
     code = """
@@ -10,6 +10,7 @@ def test_scan_benign_script():
     res = scan_script_content(code, script_name="checkout_helper.js")
     assert res["is_suspicious"] is False
     assert res["findings_count"] == 0
+
 
 def test_scan_credit_card_harvesting():
     code = """
@@ -24,6 +25,7 @@ def test_scan_credit_card_harvesting():
     assert "SKIM-INPUT-HARVEST" in rule_ids
     assert "SKIM-DOM-LISTENER" in rule_ids
 
+
 def test_scan_dynamic_eval():
     code = """
     var unpacked = eval(payload_string);
@@ -33,6 +35,7 @@ def test_scan_dynamic_eval():
     rule_ids = [f["rule_id"] for f in res["findings"]]
     assert "SKIM-EVAL-EXEC" in rule_ids
 
+
 def test_scan_beacon_exfil():
     code = """
     navigator.sendBeacon("https://analytics.internal/event", data);
@@ -40,6 +43,7 @@ def test_scan_beacon_exfil():
     res = scan_script_content(code)
     rule_ids = [f["rule_id"] for f in res["findings"]]
     assert "SKIM-EXFIL-BEACON" in rule_ids
+
 
 def test_scan_ioc_domain_match():
     code = """

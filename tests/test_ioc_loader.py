@@ -134,7 +134,10 @@ def test_domain_with_scheme_is_rejected(tmp_path: Path) -> None:
 
 
 def test_missing_metadata_is_rejected(tmp_path: Path) -> None:
-    path = _write(tmp_path, {"records": [{"kind": "domain", "value": "x.cc", "source": "s", "first_seen": "d"}]})
+    path = _write(
+        tmp_path,
+        {"records": [{"kind": "domain", "value": "x.cc", "source": "s", "first_seen": "d"}]},
+    )
     with pytest.raises(IOCError, match="feed_id"):
         load_feed(path)
 

@@ -1,7 +1,8 @@
-import pytest
 import base64
 import hashlib
-from scriptsentinel.integrity import compute_hashes, audit_script_integrity
+
+from scriptsentinel.integrity import audit_script_integrity, compute_hashes
+
 
 def test_compute_hashes():
     data = b"console.log('hello secure world');"
@@ -14,17 +15,19 @@ def test_compute_hashes():
     assert hashes["sri_sha256"] == expected_sri
     assert hashes["byte_count"] == len(data)
 
+
 def test_audit_missing_sri():
     data = b"console.log('vendor script');"
     res = audit_script_integrity(
-        script_url="https://cdn.vendor.com/sdk.js",
-        content=data,
-        declared_integrity=None
+        script_url="https://cdn.vendor.com/sdk.js", content=data, declared_integrity=None
     )
     assert res["status"] == "MISSING_SRI"
     assert len(res["issues"]) == 1
     assert res["issues"][0]["type"] == "MISSING_SRI"
-    assert res["suggested_tag"].startswith('<script src="https://cdn.vendor.com/sdk.js" integrity="sha256-')
+    assert res["suggested_tag"].startswith(
+        '<script src="https://cdn.vendor.com/sdk.js" integrity="sha256-'
+    )
+
 
 def test_audit_integrity_verified():
     data = b"console.log('clean script');"
@@ -32,28 +35,28 @@ def test_audit_integrity_verified():
     res = audit_script_integrity(
         script_url="https://cdn.vendor.com/sdk.js",
         content=data,
-        declared_integrity=hashes["sri_sha256"]
+        declared_integrity=hashes["sri_sha256"],
     )
     assert res["status"] == "VERIFIED"
     assert len(res["issues"]) == 0
+
 
 def test_audit_integrity_mismatch():
     data = b"console.log('tampered script');"
     res = audit_script_integrity(
         script_url="https://cdn.vendor.com/sdk.js",
         content=data,
-        declared_integrity="sha256-AAAAfakehash123="
+        declared_integrity="sha256-AAAAfakehash123=",
     )
     assert res["status"] == "INTEGRITY_MISMATCH"
     assert any(i["type"] == "INTEGRITY_MISMATCH" for i in res["issues"])
+
 
 def test_audit_script_drift():
     data = b"console.log('modified vendor code');"
     baseline = "0000000000000000000000000000000000000000000000000000000000000000"
     res = audit_script_integrity(
-        script_url="https://cdn.vendor.com/sdk.js",
-        content=data,
-        baseline_sha256=baseline
+        script_url="https://cdn.vendor.com/sdk.js", content=data, baseline_sha256=baseline
     )
     assert res["drift_detected"] is True
     assert res["status"] == "SCRIPT_DRIFT"

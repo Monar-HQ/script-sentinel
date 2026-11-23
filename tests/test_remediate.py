@@ -1,17 +1,17 @@
-import pytest
 from scriptsentinel.remediate import generate_remediation_pack
+
 
 def test_generate_remediation_pack():
     site_url = "https://example.com/checkout"
     csp_analysis = {
         "score": 0,
         "grade": "F",
-        "findings": [{"rule_id": "CSP-MISSING", "severity": "CRITICAL"}]
+        "findings": [{"rule_id": "CSP-MISSING", "severity": "CRITICAL"}],
     }
     scripts_audit = [
         {
             "url": "https://cdn.optimizely-edge.com/geo.js",
-            "suggested_tag": '<script src="https://cdn.optimizely-edge.com/geo.js" integrity="sha256-AbCdEf=" crossorigin="anonymous"></script>'
+            "suggested_tag": '<script src="https://cdn.optimizely-edge.com/geo.js" integrity="sha256-AbCdEf=" crossorigin="anonymous"></script>',
         }
     ]
 

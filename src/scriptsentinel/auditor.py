@@ -4,17 +4,17 @@ Fetches targets, inspects HTTP response headers, parses HTML scripts, fetches de
 computes integrity, and coordinates full security audit.
 """
 
-import sys
-import re
-from typing import Dict, List, Any, Optional
-from urllib.parse import urljoin, urlparse
+from typing import Any
+from urllib.parse import urljoin
+
 import httpx
 from bs4 import BeautifulSoup
 
 from .csp_analyzer import analyze_csp
 from .integrity import audit_script_integrity
-from .scanner import scan_script_content
 from .remediate import generate_remediation_pack
+from .scanner import scan_script_content
+
 
 class AuditReport:
     def __init__(self, target_url: str):
@@ -28,7 +28,7 @@ class AuditReport:
         self.summary = {}
         self.remediation = {}
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "target_url": self.target_url,
             "status_code": self.status_code,
@@ -36,13 +36,12 @@ class AuditReport:
             "summary": self.summary,
             "csp": self.csp_report,
             "scripts": self.scripts,
-            "remediation": self.remediation
+            "remediation": self.remediation,
         }
 
+
 async def audit_url(
-    target_url: str,
-    baseline_hashes: Optional[Dict[str, str]] = None,
-    timeout: float = 10.0
+    target_url: str, baseline_hashes: dict[str, str] | None = None, timeout: float = 10.0
 ) -> AuditReport:
     report = AuditReport(target_url)
     baseline_hashes = baseline_hashes or {}
@@ -52,7 +51,7 @@ async def audit_url(
             resp = await client.get(target_url)
         except Exception as e:
             report.overall_risk = "ERROR"
-            report.summary = {"error": f"Failed to fetch {target_url}: {str(e)}"}
+            report.summary = {"error": f"Failed to fetch {target_url}: {e!s}"}
             return report
 
         report.status_code = resp.status_code
@@ -80,13 +79,15 @@ async def audit_url(
                     s_bytes = s_resp.content
                     s_text = s_resp.text
                 except Exception as ex:
-                    report.scripts.append({
-                        "index": idx,
-                        "type": "external",
-                        "url": full_url,
-                        "error": f"Failed to retrieve script: {str(ex)}",
-                        "status": "FETCH_FAILED"
-                    })
+                    report.scripts.append(
+                        {
+                            "index": idx,
+                            "type": "external",
+                            "url": full_url,
+                            "error": f"Failed to retrieve script: {ex!s}",
+                            "status": "FETCH_FAILED",
+                        }
+                    )
                     continue
 
                 # Run integrity & drift check
@@ -96,27 +97,31 @@ async def audit_url(
                 # Run behavioral skimmer scan
                 scan_res = scan_script_content(s_text, full_url)
 
-                report.scripts.append({
-                    "index": idx,
-                    "type": "external",
-                    "url": full_url,
-                    "nonce": nonce,
-                    "declared_integrity": declared_integrity,
-                    "integrity_audit": integ_res,
-                    "scanner_audit": scan_res,
-                    "suggested_tag": integ_res["suggested_tag"]
-                })
+                report.scripts.append(
+                    {
+                        "index": idx,
+                        "type": "external",
+                        "url": full_url,
+                        "nonce": nonce,
+                        "declared_integrity": declared_integrity,
+                        "integrity_audit": integ_res,
+                        "scanner_audit": scan_res,
+                        "suggested_tag": integ_res["suggested_tag"],
+                    }
+                )
             else:
                 # Inline script
                 inline_content = s.string or s.text or ""
                 scan_res = scan_script_content(inline_content, f"inline_script_{idx}")
-                report.scripts.append({
-                    "index": idx,
-                    "type": "inline",
-                    "length": len(inline_content),
-                    "nonce": nonce,
-                    "scanner_audit": scan_res
-                })
+                report.scripts.append(
+                    {
+                        "index": idx,
+                        "type": "inline",
+                        "length": len(inline_content),
+                        "nonce": nonce,
+                        "scanner_audit": scan_res,
+                    }
+                )
 
         # 3. Synthesize overall risk
         has_critical = False
@@ -150,7 +155,9 @@ async def audit_url(
             report.overall_risk = "LOW"
 
         # 4. Generate Remediation Pack
-        report.remediation = generate_remediation_pack(target_url, report.csp_report, report.scripts)
+        report.remediation = generate_remediation_pack(
+            target_url, report.csp_report, report.scripts
+        )
 
         # 5. Populate summary
         report.summary = {
@@ -159,7 +166,7 @@ async def audit_url(
             "inline_scripts": len([s for s in report.scripts if s.get("type") == "inline"]),
             "csp_grade": report.csp_report.get("grade"),
             "csp_score": report.csp_report.get("score"),
-            "overall_risk": report.overall_risk
+            "overall_risk": report.overall_risk,
         }
 
         return report

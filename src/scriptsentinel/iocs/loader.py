@@ -10,10 +10,11 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 VALID_KINDS = frozenset({"domain", "sha256"})
@@ -126,7 +127,12 @@ def validate_record(raw: dict[str, Any], where: str) -> IOCRecord:
         value = value.lower()
 
     severity = raw.get("severity", "high")
-    if not isinstance(severity, str) or severity.strip() not in {"critical", "high", "medium", "low"}:
+    if not isinstance(severity, str) or severity.strip() not in {
+        "critical",
+        "high",
+        "medium",
+        "low",
+    }:
         raise IOCError(f"{where}: severity must be critical/high/medium/low")
 
     note = raw.get("note", "")
@@ -168,7 +174,9 @@ def load_feed(path: str | Path) -> IOCFeed:
     for i, item in enumerate(records_raw):
         records.append(validate_record(item, f"{p}:records[{i}]"))
 
-    return IOCFeed(feed_id=feed_id, version=version, as_of=as_of, records=tuple(records), path=str(p))
+    return IOCFeed(
+        feed_id=feed_id, version=version, as_of=as_of, records=tuple(records), path=str(p)
+    )
 
 
 def load_default_feed() -> IOCFeed:
