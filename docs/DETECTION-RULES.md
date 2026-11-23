@@ -1,115 +1,96 @@
-# ScriptSentinel Detection Rule Reference
+# Detection Rules
 
-This document provides the definitive specification of all security detection rules, behavioral heuristics, integrity checks, and CSP evaluation criteria enforced by **ScriptSentinel** (`scriptsentinel`).
+ScriptSentinel exposes deterministic rule IDs for CSP posture, Subresource Integrity, behavioral skimming, and IOC exposure. The engine emits typed findings; reporters render them without rewriting rule logic.
 
----
+## CSP Rules
 
-## 1. Content-Security-Policy (CSP) Rules
+| Rule ID | Severity | Penalty | Trigger | Evidence |
+| --- | --- | --- | --- | --- |
+| `CSP-MISSING` | CRITICAL | 35 | No `Content-Security-Policy` header. | Header absent. |
+| `CSP-UNSAFE-EVAL` | CRITICAL | 35 | `'unsafe-eval'` appears in `script-src` or fallback `default-src`. | `'unsafe-eval'`. |
+| `CSP-UNSAFE-INLINE` | CRITICAL | 35 | `'unsafe-inline'` appears without a nonce or hash source. | `'unsafe-inline'`. |
+| `CSP-STRICT-DYNAMIC-RISK` | HIGH | 20 | `'strict-dynamic'` appears with a missing or wildcard `connect-src`. | `'strict-dynamic'`. |
+| `CSP-CONNECT-WILDCARD` | CRITICAL | 35 | `connect-src` is missing, contains `*`, or contains bare `http:` / `https:`. | `*` or `connect-src absent`. |
+| `CSP-REPORTING-ABSENT` | MEDIUM | 10 | Neither `report-uri` nor `report-to` is present. | `no report-uri/report-to`. |
 
-Evaluated by `scriptsentinel.csp_analyzer` against the target endpoint's response headers.
+Score is `max(0, 100 - sum(penalties))`. Grades: A ≥ 90, B ≥ 75, C ≥ 50, D ≥ 30, F < 30.
 
-### `CSP-MISSING`
-- **Severity**: `CRITICAL` (Penalty: 35 points)
-- **Title**: Content-Security-Policy Header Missing
-- **Description**: The endpoint returned no `Content-Security-Policy` header. Any injected or modified script executes with complete origin authority, allowing unconstrained DOM read/write, cookie access, and outbound exfiltration.
-- **Remediation**: Deploy a strict CSP header enforcing `default-src 'self'`, `script-src` with per-request cryptographic nonces, and locked-down `connect-src`.
+## SRI Statuses
 
-### `CSP-UNSAFE-EVAL`
-- **Severity**: `CRITICAL` (Penalty: 35 points)
-- **Title**: `'unsafe-eval'` Keyword Permitted in `script-src`
-- **Description**: The policy allows dynamic string evaluation via `eval()`, `new Function()`, and `setTimeout(string)`. Digital skimmers (including OPTIJACK Variant C) rely on `eval()` to unpack encrypted, obfuscated second-stage payloads in memory.
-- **Remediation**: Remove `'unsafe-eval'` from `script-src` and `default-src`. Refactor dynamic evaluation logic to use static functions and typed JSON deserialization.
+| Status | Severity | Meaning |
+| --- | --- | --- |
+| `VERIFIED` | None | Declared integrity matches the calculated `sha256-...` or `sha384-...` SRI digest. |
+| `MISSING_SRI` | HIGH | External script has no `integrity` attribute. |
+| `INTEGRITY_MISMATCH` | CRITICAL | Declared integrity does not match the calculated digest; the browser blocks the resource. |
+| `SCRIPT_DRIFT` | CRITICAL | Current SHA-256 differs from the pinned baseline; upstream content changed. |
 
-### `CSP-UNSAFE-INLINE`
-- **Severity**: `CRITICAL` (Penalty: 35 points)
-- **Title**: `'unsafe-inline'` Allowed Without Cryptographic Nonces or Hashes
-- **Description**: Permits arbitrary inline `<script>` tags and inline event handlers (`onload`, `onerror`, `onclick`). Enables stored and reflected XSS payloads to execute freely.
-- **Remediation**: Remove `'unsafe-inline'`. Replace with unique, cryptographically random per-response nonces (`'nonce-<random>'`) or SHA-256 hashes for static inline blocks.
+`SCRIPT_DRIFT` overrides `VERIFIED` or `MISSING_SRI` when a baseline hash is supplied and differs.
 
-### `CSP-CONNECT-WILDCARD`
-- **Severity**: `CRITICAL` (Penalty: 35 points)
-- **Title**: Wildcard or Unrestricted `connect-src` Exfiltration Vector
-- **Description**: `connect-src` contains wildcard `*` or open schemes (`http:`, `https:`). Governs `fetch()`, `XMLHttpRequest`, `navigator.sendBeacon()`, and `WebSocket`. An open `connect-src` allows compromised scripts to exfiltrate harvested cardholder data to arbitrary adversary C2 servers.
-- **Remediation**: Restrict `connect-src` strictly to `'self'` and explicitly named, authenticated backend API origins.
+## Behavioral Rules
 
-### `CSP-STRICT-DYNAMIC-EXFIL-RISK`
-- **Severity**: `HIGH` (Penalty: 20 points)
-- **Title**: `'strict-dynamic'` Enabled Without Restricted `connect-src`
-- **Description**: While `'strict-dynamic'` eases nonce deployment by trusting scripts dynamically injected by a nonced root script, any compromised vendor script carrying a valid nonce can dynamically inject child skimmers. Without a locked `connect-src`, data exfiltration cannot be stopped.
-- **Remediation**: Maintain strict `connect-src 'self'` whenever `'strict-dynamic'` is deployed.
+| Rule ID | Severity | Logic | Description |
+| --- | --- | --- | --- |
+| `SKIM-INPUT-HARVEST` | CRITICAL | Matches payment/credential field names (`card`, `card_number`, `cvv`, `cvc`, `expiry`, `password`, `passwd`, `ssn`) followed by value access (`:`, `=`, `.value`, `.getAttribute`). | Script inspects or extracts payment card, CVV, or credential values. |
+| `SKIM-DOM-LISTENER` | HIGH | Matches `addEventListener('input'|'change'|'keydown'|'keyup'|'keypress'|'submit')`. | Attaches global listeners to harvest keystrokes or submissions. |
+| `SKIM-CLIPBOARD-TAMPER` | HIGH | Matches `navigator.clipboard.readText`, `writeText`, or `navigator.clipboard`. | Reads or writes clipboard data. |
+| `SKIM-EVAL-EXEC` | CRITICAL | Matches `eval(`, `new Function(`, or `setTimeout("...")`. | Executes dynamic strings, often unpacking obfuscated payloads. |
+| `SKIM-BASE64-UNPACK` | MEDIUM | Matches `atob(` or `btoa(`. | Decodes or encodes base64 at runtime. |
+| `SKIM-EXFIL-BEACON` | HIGH | Matches `navigator.sendBeacon(`. | Uses asynchronous beacon exfiltration. |
 
-### `CSP-REPORTING-ABSENT`
-- **Severity**: `MEDIUM` (Penalty: 10 points)
-- **Title**: CSP Violation Reporting Not Configured
-- **Description**: The policy lacks `report-uri` or `report-to` directives. Browser-side policy violations, injection attempts, and blocked exfiltrations are silenced and never reach the security operations team.
-- **Remediation**: Configure `report-uri /api/csp-report` or the Reporting API `report-to` directive to stream real-time violation logs into your SIEM.
+## IOC Rules
 
----
+| Rule ID | Severity | Logic |
+| --- | --- | --- |
+| `IOC-MATCH-C2-DOMAIN` | CRITICAL | Exact hostname boundary match against the packaged OPTIJACK domains and legacy C2 domains. |
+| `IOC-MATCH-C2-HASH` | CRITICAL | Exact 64-hex SHA-256 boundary match against packaged IOC hashes or the script's computed SHA-256. |
 
-## 2. Subresource Integrity (SRI) & Drift Rules
+IOC matching is case-insensitive and rejects substring matches.
 
-Evaluated by `scriptsentinel.integrity` against external script bytes and baseline ledgers.
+## Packaged IOC Set
 
-### `SCRIPT_DRIFT`
-- **Severity**: `CRITICAL`
-- **Description**: The SHA-256 digest of the downloaded script does not match the pinned hash recorded in `--baseline <file>`. Indicates that an upstream third-party vendor, CDN, or AWS S3 bucket was modified or compromised.
-- **Action**: Alert security operations immediately. Block script loading or freeze deployment until the vendor code diff has been verified.
+The default feed `optimjack_2026-11-23.json` contains eight domains and two SHA-256 indicators. Legacy `malicious_c2.json` adds two domains:
 
-### `INTEGRITY_MISMATCH`
-- **Severity**: `CRITICAL`
-- **Description**: The script tag declared an `integrity` attribute (e.g., `integrity="sha256-..."`), but the actual downloaded bytes compute to a different digest.
-- **Behavior**: The browser will actively block script execution with an integrity error. Verify whether the vendor updated their asset without coordinating SRI updates.
+| Indicator | Value |
+| --- | --- |
+| Domain | `1688360.cc` |
+| Domain | `webshell.lol` |
+| Domain | `linkforge.cc` |
+| Domain | `pay-cloud.online` |
+| Domain | `pay.pay-cloud.online` |
+| Domain | `pay-relay.wordpressadmin001.workers.dev` |
+| Domain | `5vobauua3ojpklx.icu` |
+| Domain | `eil786npto9u5bq.icu` |
+| SHA-256 | `f7b84b9a94f749f8ced3f0112d0a66894e8bbc3b4aa5592021d1b8976a9bad40` |
+| SHA-256 | `814a963c0da480e2449d9b6664480156e1cd6d731014117401bf635badec3a0f` |
 
-### `MISSING_SRI`
-- **Severity**: `HIGH`
-- **Description**: An external JavaScript resource is loaded via `<script src="...">` without an `integrity` attribute. The browser will execute whatever content the remote server serves without cryptographic verification.
-- **Action**: Add `integrity="sha256-<hash>"` and `crossorigin="anonymous"` to the script element using ScriptSentinel's remediation generator.
+## OPTIJACK Validation
 
-### `VERIFIED`
-- **Severity**: `INFO`
-- **Description**: The external script possesses a valid SRI attribute that matches calculated cryptographic digests, and matches any pinned baseline.
+The rules were validated against the local OPTIJACK telemetry slices. Counts are true positives in the attack-only slice; false positives were zero in the clean slice.
 
----
+| Rule | TP | FP |
+| --- | --- | --- |
+| IOC-1 | 108 | 0 |
+| IOC-2 | 0 | 0 |
+| IOC-3 | 111 | 0 |
+| BEH-1 | 24 | 0 |
+| BEH-2 | 9 | 0 |
+| BEH-3 | 18 | 0 |
+| BEH-4 | 54 | 0 |
+| BEH-5 | 12 | 0 |
+| BEH-6 | 54 | 0 |
 
-## 3. Behavioral AST & Threat Scanner Rules
+IOC-2 is the `track.js` hash indicator. `track.js` was not served in the lab, so TP is zero and the rule remains retained as a real-world indicator.
 
-Evaluated by `scriptsentinel.scanner` inspecting raw and reconstructed JavaScript source code.
+Scale note: the lab covers 144 visits across four CSP profiles and three replicas. It demonstrates the detection mechanism; it does not generalize to the 178 organizations in the source incident.
 
-| Rule ID | Severity | Threat Pattern | Description |
-| :--- | :---: | :--- | :--- |
-| `SKIM-INPUT-HARVEST` | `CRITICAL` | `(?:card(?:number|_no)?\|cvv\|cvc\|expir(?:y\|ation)\|password\|passwd\|ssn)\b` | Script inspects, accesses, or scrapes values from sensitive payment card, CVV, password, or SSN DOM form fields. |
-| `SKIM-DOM-LISTENER` | `HIGH` | `addEventListener\s*\(\s*['"](?:input\|change\|keydown\|keyup\|keypress\|submit)` | Script attaches global event listeners to intercept keystrokes or watch form submissions in real time. |
-| `SKIM-CLIPBOARD-TAMPER`| `HIGH` | `navigator\.(?:clipboard\.(?:readText\|writeText)\|clipboard)\b` | Script interacts directly with the clipboard API (crypto clippers, credential scrapers). |
-| `SKIM-EVAL-EXEC` | `CRITICAL` | `\b(?:eval\s*\( \| new\s+Function\s*\( \| setTimeout\s*\(\s*['"][^,])` | Script compiles dynamic strings into executable code to bypass static scanner signatures. |
-| `SKIM-BASE64-UNPACK` | `MEDIUM` | `\b(?:window\.)?(?:atob\|btoa)\s*\(` | Dynamic runtime decoding of base64 payloads, frequently used in multi-stage skimmer loaders. |
-| `SKIM-EXFIL-BEACON` | `HIGH` | `navigator\.sendBeacon\s*\(` | Asynchronous exfiltration dispatching harvested data during page transitions or unload events. |
-| `IOC-MATCH-C2-DOMAIN` | `CRITICAL` | Hardcoded C2 domain matching threat intelligence feed | Script references known adversary C2 infrastructure (e.g., OPTIJACK, Magecart, or rogue drop domains). |
+## Rule Export
 
----
+- Sigma: 8 domain indicators, one rule per host, tags include `attack.c2`, `attack.exfiltration`, and `attack.javascript`.
+- Suricata: 16 alerts, 8 HTTP host rules and 8 DNS query rules.
 
-## 4. CSP Health Grading Matrix
+Exports are generated from the packaged feed and an optional live audit:
 
-The CSP Health Score starts at **100** points. Penalties are deducted based on findings:
-- **CRITICAL**: −35 points
-- **HIGH**: −20 points
-- **MEDIUM**: −10 points
-- **LOW**: −5 points
-
-The final score determines the grade:
-
-| Score Range | Grade | Security Posture |
-| :---: | :---: | :--- |
-| **90 – 100** | **A** | Excellent. Nonced scripts, locked `connect-src 'self'`, reporting enabled, no `unsafe-inline`/`eval`. |
-| **75 – 89** | **B** | Strong. Minor omissions (e.g. reporting absent or minor non-critical directive gaps). |
-| **50 – 74** | **C** | Moderate. One high-severity finding present (e.g. unconstrained `connect-src`). |
-| **30 – 49** | **D** | Poor. Multiple severe weaknesses (e.g. `unsafe-eval` and open exfiltration channels). |
-| **0 – 29** | **F** | Failing. CSP missing entirely, or multiple critical vulnerabilities present. |
-
----
-
-## 5. Contributing New Rules
-
-To contribute new skimmer patterns or adversary C2 domains:
-1. Behavioral patterns: Add rule dictionaries to `SUSPICIOUS_PATTERNS` in `src/scriptsentinel/scanner.py`.
-2. IOC domains: Submit additions to `src/scriptsentinel/iocs/feeds/malicious_c2.json` or create a new feed under `src/scriptsentinel/iocs/feeds/`.
-3. Verify test coverage: Run `pytest` and ensure `ruff check .` passes without warnings.
+```bash
+scriptsentinel export-rules --format sigma --output rules/sigma.yml
+scriptsentinel export-rules --format suricata --output rules/suricata.rules
+```

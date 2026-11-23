@@ -21,10 +21,15 @@ body:
     id: details
     attributes:
       label: Technical Details & Provenance
-      description: Provide the indicator, campaign name (e.g. Magecart Group X, OPTIJACK), and public reference or research link.
+      description: Provide the indicator, campaign name (e.g. OPTIJACK / Magecart), public reference, and telemetry evidence.
       placeholder: |
         Campaign: OPTIJACK / Magecart
-        Indicators / Regex / AST signature:
-        Public reference / Report:
+        IOC kind: domain | sha256
+        Indicator / regex / pattern:
+        Source:
+        First seen:
+        Severity:
+        TP count / FP count:
+        Public reference / report:
     validations:
       required: true

@@ -9,20 +9,20 @@
       ],
       "script-src": [
         "'self'",
-        "'nonce-1408dcb78f213351a36459c9296e2bb6'",
+        "'nonce-98435d30ba299fd7cfab33c71b5bba85'",
         "http://localhost:8001"
       ]
     },
     "findings": [],
     "grade": "A",
-    "raw": "default-src 'self'; script-src 'self' 'nonce-1408dcb78f213351a36459c9296e2bb6' http://localhost:8001; report-uri http://localhost:8200/report",
+    "raw": "default-src 'self'; script-src 'self' 'nonce-98435d30ba299fd7cfab33c71b5bba85' http://localhost:8001; report-uri http://localhost:8200/report",
     "score": 100
   },
   "headers": {
     "content-length": "3043",
-    "content-security-policy": "default-src 'self'; script-src 'self' 'nonce-1408dcb78f213351a36459c9296e2bb6' http://localhost:8001; report-uri http://localhost:8200/report",
+    "content-security-policy": "default-src 'self'; script-src 'self' 'nonce-98435d30ba299fd7cfab33c71b5bba85' http://localhost:8001; report-uri http://localhost:8200/report",
     "content-type": "text/html; charset=utf-8",
-    "date": "Mon, 23 Nov 2026 14:36:05 GMT",
+    "date": "Mon, 23 Nov 2026 23:18:30 GMT",
     "server": "uvicorn",
     "x-victim-pod": "victim-pod-default",
     "x-victim-profile": "strict"
@@ -76,7 +76,8 @@
         "suggested_tag": "<script src=\"http://localhost:8001/js/acme.js\" integrity=\"sha256-HdwbMvseS8acAXHY00VRiX4AG9aivqn38TbzRUKFiwE=\" crossorigin=\"anonymous\"></script>",
         "url": "http://localhost:8001/js/acme.js"
       },
-      "nonce": "1408dcb78f213351a36459c9296e2bb6",
+      "length": 1708,
+      "nonce": "98435d30ba299fd7cfab33c71b5bba85",
       "scanner_audit": {
         "findings": [],
         "findings_count": 0,
@@ -102,5 +103,5 @@
     "total_scripts": 1
   },
   "target_url": "http://localhost:8100/strict/checkout",
-  "timestamp": "2026-11-23T14:36:06+00:00"
+  "timestamp": "2026-11-23T23:18:30+00:00"
 }

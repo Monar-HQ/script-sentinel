@@ -1,0 +1,16 @@
+include README.md
+include LICENSE
+include NOTICE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include SECURITY.md
+include CODE_OF_CONDUCT.md
+include action.yml
+include pyproject.toml
+recursive-include docs *.md
+recursive-include assets *.svg *.png
+recursive-include examples *.json
+recursive-include .github *.yml *.md
+recursive-include tests *.py
+recursive-include report *.json *.md *.html *.yml *.rules
+recursive-include src *.py *.json *.typed

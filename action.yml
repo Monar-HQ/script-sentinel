@@ -1,0 +1,76 @@
+name: ScriptSentinel Audit Gate
+description: Audit third-party JavaScript integrity, CSP posture, and IOC exposure; fail the job at the requested risk threshold or on script drift.
+author: MONAR
+branding:
+  icon: shield
+  color: red
+
+inputs:
+  url:
+    description: Target page URL to audit.
+    required: true
+  baseline:
+    description: Path to a baseline SHA-256 JSON file. Leave empty to skip drift comparison.
+    required: false
+    default: ""
+  fail-on:
+    description: "Exit threshold: none, low, medium, high, critical, or drift."
+    required: false
+    default: "high"
+  report-path:
+    description: Path for the JSON audit report.
+    required: false
+    default: "scriptsentinel-report.json"
+  python-version:
+    description: Python version used to install and run ScriptSentinel.
+    required: false
+    default: "3.12"
+
+outputs:
+  report-path:
+    description: Written JSON report path.
+    value: ${{ inputs.report-path }}
+  risk:
+    description: Overall risk rating from the report.
+    value: ${{ steps.audit.outputs.risk }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install ScriptSentinel
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install "${{ github.action_path }}"
+
+    - name: Run ScriptSentinel audit
+      id: audit
+      shell: bash
+      env:
+        REPORT_PATH: ${{ inputs.report-path }}
+      run: |
+        set +e
+        args=(audit "${{ inputs.url }}" --format json --output "$REPORT_PATH" --fail-on "${{ inputs.fail-on }}")
+        if [ -n "${{ inputs.baseline }}" ]; then
+          args+=(--baseline "${{ inputs.baseline }}")
+        fi
+        scriptsentinel "${args[@]}"
+        status=$?
+        python - <<'PY'
+        import json
+        import os
+        from pathlib import Path
+
+        report_path = Path(os.environ["REPORT_PATH"])
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        risk = str(report["overall_risk"])
+        with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as handle:
+            handle.write(f"risk={risk}\n")
+        print(f"ScriptSentinel risk: {risk}")
+        PY
+        exit "$status"

@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    name: Lint & Code Style
+    name: Lint, Type Check, and Style
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,10 +16,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install Ruff
-        run: pip install ruff
-      - name: Run Ruff Linter
+      - name: Install package and development dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Ruff
         run: ruff check .
+      - name: Mypy strict
+        run: mypy --strict src/scriptsentinel
 
   test:
     name: Test Suite (${{ matrix.python-version }} on ${{ matrix.os }})
@@ -36,9 +40,31 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Dependencies
+      - name: Install package and development dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          python -m pip install -e ".[dev]"
       - name: Run Pytest
         run: pytest -v
+
+  package:
+    name: Build and Install Wheel
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install build tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build
+      - name: Build wheel and sdist
+        run: python -m build
+      - name: Install wheel and verify console script
+        run: |
+          python -m pip install dist/*.whl
+          scriptsentinel --version
+          python -m scriptsentinel.cli --help

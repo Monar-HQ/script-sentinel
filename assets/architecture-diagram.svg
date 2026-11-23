@@ -1,78 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 220" width="846" height="220" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 220" width="846" height="220" role="img" aria-label="ScriptSentinel inspection planes: HTTP harvest, cryptographic and CSP analysis, behavioral scanning, and actionable evidence.">
+  <title>ScriptSentinel inspection planes: HTTP harvest, cryptographic and CSP analysis, behavioral scanning, and actionable evidence.</title>
   <style>
-    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
-    .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+    .sans { font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; }
   </style>
 
-  <!-- Base Canvas -->
-  <rect width="846" height="220" fill="#04050a" stroke="#232730" stroke-width="1"/>
-  <rect x="0" y="0" width="846" height="1" fill="#d9000b"/>
+  <rect width="846" height="220" fill="#04050a"/>
+  <rect width="846" height="2" fill="#d9000b"/>
 
-  <!-- Stage 1: Client DOM & Script Ingestion -->
-  <g transform="translate(24, 30)">
-    <rect width="210" height="160" fill="#080a11" stroke="#1d222e" stroke-width="1"/>
-    <rect x="0" y="0" width="210" height="26" fill="#0d111a"/>
-    <text x="12" y="17" class="mono" font-size="9.5" font-weight="700" fill="#8892b0" letter-spacing="1">1. INGESTION PLANE</text>
-    
-    <text x="12" y="52" class="mono" font-size="11" font-weight="600" fill="#f8fafc">DOM &amp; Scripts</text>
-    <text x="12" y="70" class="sans" font-size="11" fill="#64748b">• External &lt;script&gt; tags</text>
-    <text x="12" y="88" class="sans" font-size="11" fill="#64748b">• Inline script blocks</text>
-    <text x="12" y="106" class="sans" font-size="11" fill="#64748b">• Dynamic document.write</text>
-    <text x="12" y="124" class="sans" font-size="11" fill="#64748b">• HTTP Response CSP</text>
-    <text x="12" y="142" class="sans" font-size="11" fill="#64748b">• Pinned baseline hashes</text>
+  <rect x="24" y="24" width="5" height="5" fill="#d9000b"/>
+  <text x="36" y="29" class="mono" font-size="9" font-weight="700" fill="#8892b0" letter-spacing="1.2">INSPECTION PLANES</text>
+
+  <!-- Plane 1 -->
+  <g transform="translate(24 44)">
+    <rect width="216" height="142" fill="#080a11" stroke="#1d222e" stroke-width="1"/>
+    <rect width="216" height="26" fill="#0d111a"/>
+    <text x="12" y="17" class="mono" font-size="9" font-weight="700" fill="#d9000b" letter-spacing="1.1">1 / HARVEST</text>
+    <text x="12" y="55" class="sans" font-size="11" font-weight="600" fill="#fbfaf7">HTTP fetch + HTML parse</text>
+    <text x="12" y="76" class="sans" font-size="10.5" fill="#94a3b8">external &lt;script src&gt;</text>
+    <text x="12" y="94" class="sans" font-size="10.5" fill="#94a3b8">inline script blocks</text>
+    <text x="12" y="112" class="sans" font-size="10.5" fill="#94a3b8">CSP response header</text>
+    <text x="12" y="130" class="sans" font-size="10.5" fill="#94a3b8">declared integrity</text>
   </g>
 
-  <!-- Connector 1 -->
-  <g transform="translate(234, 110)">
-    <line x1="0" y1="0" x2="36" y2="0" stroke="#d9000b" stroke-width="1.5"/>
-    <polygon points="36,-3 42,0 36,3" fill="#d9000b"/>
+  <g transform="translate(240 115)">
+    <line x1="0" y1="0" x2="28" y2="0" stroke="#d9000b" stroke-width="1.5"/>
+    <path d="M28 -3 L34 0 L28 3 Z" fill="#d9000b"/>
   </g>
 
-  <!-- Stage 2: ScriptSentinel Multi-Vector Inspection -->
-  <g transform="translate(276, 30)">
-    <rect width="294" height="160" fill="#080a11" stroke="#2a3242" stroke-width="1"/>
-    <rect x="0" y="0" width="294" height="26" fill="#0f1422"/>
-    <text x="12" y="17" class="mono" font-size="9.5" font-weight="700" fill="#d9000b" letter-spacing="1">2. CODESENTINEL CORE ENGINE</text>
+  <!-- Plane 2 -->
+  <g transform="translate(274 44)">
+    <rect width="300" height="142" fill="#080a11" stroke="#2a3242" stroke-width="1"/>
+    <rect width="300" height="26" fill="#0f1422"/>
+    <text x="12" y="17" class="mono" font-size="9" font-weight="700" fill="#d9000b" letter-spacing="1.1">2 / ANALYSIS CORE</text>
 
-    <!-- Sub-Block A: SRI -->
-    <g transform="translate(12, 38)">
-      <rect width="270" height="32" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="20" class="mono" font-size="10" font-weight="600" fill="#38bdf8">SRI &amp; Cryptographic Drift</text>
-      <text x="260" y="20" text-anchor="end" class="mono" font-size="9" fill="#64748b">SHA-256 / 384</text>
+    <g transform="translate(12 38)">
+      <rect width="276" height="30" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <rect x="8" y="10" width="4" height="10" fill="#d9000b"/>
+      <text x="20" y="19" class="mono" font-size="9.5" font-weight="600" fill="#fbfaf7">SRI · SHA-256 / SHA-384</text>
+      <text x="268" y="19" text-anchor="end" class="mono" font-size="8.5" fill="#d9000b">DRIFT</text>
     </g>
 
-    <!-- Sub-Block B: CSP -->
-    <g transform="translate(12, 76)">
-      <rect width="270" height="32" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="20" class="mono" font-size="10" font-weight="600" fill="#818cf8">CSP Directive Analyzer</text>
-      <text x="260" y="20" text-anchor="end" class="mono" font-size="9" fill="#64748b">Grade A–F</text>
+    <g transform="translate(12 76)">
+      <rect width="276" height="30" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <rect x="8" y="10" width="4" height="10" fill="#d9000b"/>
+      <text x="20" y="19" class="mono" font-size="9.5" font-weight="600" fill="#fbfaf7">CSP · directives + grade</text>
+      <text x="268" y="19" text-anchor="end" class="mono" font-size="8.5" fill="#d9000b">A–F</text>
     </g>
 
-    <!-- Sub-Block C: AST -->
-    <g transform="translate(12, 114)">
-      <rect width="270" height="32" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="20" class="mono" font-size="10" font-weight="600" fill="#f43f5e">Behavioral AST &amp; IOC Feed</text>
-      <text x="260" y="20" text-anchor="end" class="mono" font-size="9" fill="#64748b">Magecart / C2</text>
+    <g transform="translate(12 114)">
+      <rect width="276" height="30" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <rect x="8" y="10" width="4" height="10" fill="#d9000b"/>
+      <text x="20" y="19" class="mono" font-size="9.5" font-weight="600" fill="#fbfaf7">AST + IOC · behavior</text>
+      <text x="268" y="19" text-anchor="end" class="mono" font-size="8.5" fill="#d9000b">FEED</text>
     </g>
   </g>
 
-  <!-- Connector 2 -->
-  <g transform="translate(570, 110)">
-    <line x1="0" y1="0" x2="36" y2="0" stroke="#d9000b" stroke-width="1.5"/>
-    <polygon points="36,-3 42,0 36,3" fill="#d9000b"/>
+  <g transform="translate(574 115)">
+    <line x1="0" y1="0" x2="28" y2="0" stroke="#d9000b" stroke-width="1.5"/>
+    <path d="M28 -3 L34 0 L28 3 Z" fill="#d9000b"/>
   </g>
 
-  <!-- Stage 3: Defense & Compliance Output -->
-  <g transform="translate(612, 30)">
-    <rect width="210" height="160" fill="#080a11" stroke="#1d222e" stroke-width="1"/>
-    <rect x="0" y="0" width="210" height="26" fill="#0d111a"/>
-    <text x="12" y="17" class="mono" font-size="9.5" font-weight="700" fill="#8892b0" letter-spacing="1">3. ACTIONABLE REMEDIATION</text>
-
-    <text x="12" y="52" class="mono" font-size="11" font-weight="600" fill="#f8fafc">Artifacts &amp; Gates</text>
-    <text x="12" y="70" class="sans" font-size="11" fill="#64748b">• Hardened CSP Header</text>
-    <text x="12" y="88" class="sans" font-size="11" fill="#64748b">• Drop-in SRI &lt;script&gt; tags</text>
-    <text x="12" y="106" class="sans" font-size="11" fill="#64748b">• Nginx / Apache configs</text>
-    <text x="12" y="124" class="sans" font-size="11" fill="#64748b">• PCI-DSS 6.4.3 / 11.6.1</text>
-    <text x="12" y="142" class="sans" font-size="11" fill="#10b981">• CI/CD Gate Enforcement</text>
+  <!-- Plane 3 -->
+  <g transform="translate(608 44)">
+    <rect width="214" height="142" fill="#080a11" stroke="#1d222e" stroke-width="1"/>
+    <rect width="214" height="26" fill="#0d111a"/>
+    <text x="12" y="17" class="mono" font-size="9" font-weight="700" fill="#d9000b" letter-spacing="1.1">3 / EVIDENCE</text>
+    <text x="12" y="55" class="sans" font-size="11" font-weight="600" fill="#fbfaf7">Deterministic artifacts</text>
+    <text x="12" y="76" class="sans" font-size="10.5" fill="#94a3b8">JSON · Markdown · HTML</text>
+    <text x="12" y="94" class="sans" font-size="10.5" fill="#94a3b8">Sigma · Suricata rules</text>
+    <text x="12" y="112" class="sans" font-size="10.5" fill="#94a3b8">Nginx · Apache blocks</text>
+    <text x="12" y="130" class="sans" font-size="10.5" fill="#94a3b8">PCI-DSS 6.4.3 / 11.6.1</text>
   </g>
+
+  <rect x="24" y="196" width="798" height="18" fill="#090c14" stroke="#1e2433" stroke-width="1"/>
+  <text x="36" y="209" class="mono" font-size="8" fill="#8892b0">OUTPUT · deterministic audit ledger · no browser dependency · no telemetry</text>
+  <rect x="0" y="218" width="846" height="2" fill="#d9000b"/>
 </svg>

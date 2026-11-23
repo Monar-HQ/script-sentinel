@@ -24,10 +24,6 @@ htmlcov/
 scriptsentinel.db
 baselines.db
 reports/
-preview.html
-_github_preview.html
-_build_preview.py
-preview_full.png
 *.png
 !assets/*.png
 *.gif

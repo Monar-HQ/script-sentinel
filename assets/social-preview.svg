@@ -1,207 +1,111 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="ScriptSentinel by MONAR. Client-side JavaScript integrity, CSP grading, behavioral skimmer detection, and PCI-DSS v4.0 evidence.">
+  <title>ScriptSentinel by MONAR. Client-side JavaScript integrity, CSP grading, behavioral skimmer detection, and PCI-DSS v4.0 evidence.</title>
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="sp-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#04060a"/>
-      <stop offset="50%" stop-color="#090e17"/>
-      <stop offset="100%" stop-color="#020407"/>
-    </linearGradient>
-
-    <!-- Glowing Accents -->
-    <linearGradient id="sp-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#2563eb"/>
-    </linearGradient>
-
-    <linearGradient id="sp-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0"/>
-    </linearGradient>
-
-    <!-- Terminal Gradients -->
-    <linearGradient id="term-bg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#0d1524"/>
-      <stop offset="100%" stop-color="#070c14"/>
-    </linearGradient>
-
-    <pattern id="sp-grid" width="48" height="48" patternUnits="userSpaceOnUse">
-      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#172337" stroke-width="0.8"/>
-      <circle cx="48" cy="0" r="1.5" fill="#38bdf8" fill-opacity="0.25"/>
+    <pattern id="social-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#141822" stroke-width="0.6"/>
     </pattern>
-
-    <filter id="sp-blur" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="16" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
+    <style>
+      .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+      .sans { font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    </style>
   </defs>
 
-  <style>
-    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
-    .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-  </style>
+  <rect width="1280" height="640" fill="#04050a"/>
+  <rect width="1280" height="640" fill="url(#social-grid)"/>
+  <rect width="1280" height="4" fill="#d9000b"/>
 
-  <!-- Canvas -->
-  <rect width="1280" height="640" fill="url(#sp-bg)"/>
-  <rect width="1280" height="640" fill="url(#sp-grid)"/>
-
-  <!-- Radial Ambient Lighting -->
-  <circle cx="200" cy="220" r="260" fill="url(#sp-glow)"/>
-  <circle cx="980" cy="380" r="300" fill="url(#sp-glow)"/>
-
-  <!-- Left Column: Branding, Pitch, Metrics -->
-  <g transform="translate(80, 80)">
-    <!-- Monar Badge -->
-    <g transform="translate(0, 0)">
-      <rect width="180" height="28" rx="6" fill="#0f1f33" stroke="#0369a1" stroke-width="1"/>
-      <circle cx="12" cy="14" r="4" fill="#10b981"/>
-      <text x="24" y="18" class="mono" font-size="11" font-weight="700" fill="#7dd3fc" letter-spacing="1.5">
-        MONAR · OPEN DEFENSE
-      </text>
-    </g>
-
-    <!-- Main Title -->
-    <g transform="translate(0, 80)">
-      <!-- Sentinel Shield Icon -->
-      <g transform="translate(0, -18)">
-        <path d="M40 8 L72 24 L72 64 C72 80 58 92 40 98 C22 92 8 80 8 64 L8 24 Z"
-              fill="#0b1728" stroke="url(#sp-cyan)" stroke-width="2.5" filter="url(#sp-blur)"/>
-        <path d="M40 8 L72 24 L72 64 C72 80 58 92 40 98 C22 92 8 80 8 64 L8 24 Z"
-              fill="#08101d" stroke="url(#sp-cyan)" stroke-width="2"/>
-        <circle cx="40" cy="54" r="12" fill="#0c1e34" stroke="#38bdf8" stroke-width="1.8"/>
-        <circle cx="40" cy="54" r="4.5" fill="#38bdf8"/>
-      </g>
-
-      <text x="96" y="52" class="sans" font-size="58" font-weight="800" fill="#f8fafc" letter-spacing="-1.5">
-        Code<tspan fill="#38bdf8">Sentinel</tspan>
-      </text>
-    </g>
-
-    <!-- Tagline & Value Prop -->
-    <text x="0" y="210" class="sans" font-size="22" font-weight="500" fill="#cbd5e1" width="500">
-      Client-Side Supply-Chain Defense &amp; SRI Drift Engine
-    </text>
-    <text x="0" y="244" class="sans" font-size="16" font-weight="400" fill="#64748b">
-      Audits third-party JavaScript, flags Magecart / OPTIJACK skimmers,
-    </text>
-    <text x="0" y="270" class="sans" font-size="16" font-weight="400" fill="#64748b">
-      and automates PCI-DSS v4.0 Requirement 6.4.3 &amp; 11.6.1 compliance.
-    </text>
-
-    <!-- Partner & Architecture Pills -->
-    <g transform="translate(0, 320)">
-      <!-- Partner Pill: Unquant -->
-      <g>
-        <rect width="250" height="38" rx="8" fill="#0e1726" stroke="#2563eb" stroke-width="1.2"/>
-        <path d="M16 19 L22 13 L28 19 L22 25 Z" fill="#60a5fa"/>
-        <text x="36" y="24" class="mono" font-size="12" font-weight="600" fill="#e2e8f0">AI &amp; Compute: <tspan fill="#60a5fa">Unquant.io</tspan></text>
-      </g>
-
-      <!-- Compliance Pill -->
-      <g transform="translate(262, 0)">
-        <rect width="230" height="38" rx="8" fill="#092014" stroke="#059669" stroke-width="1.2"/>
-        <circle cx="16" cy="19" r="4.5" fill="#34d399"/>
-        <text x="30" y="24" class="mono" font-size="12" font-weight="600" fill="#a7f3d0">PCI-DSS v4.0 Certified</text>
-      </g>
-    </g>
-
-    <g transform="translate(0, 372)">
-      <!-- License & Open Source -->
-      <g>
-        <rect width="180" height="34" rx="8" fill="#141a24" stroke="#334155" stroke-width="1"/>
-        <text x="16" y="22" class="mono" font-size="12" font-weight="500" fill="#94a3b8">MIT Open Source</text>
-      </g>
-      <g transform="translate(192, 0)">
-        <rect width="170" height="34" rx="8" fill="#141a24" stroke="#334155" stroke-width="1"/>
-        <text x="16" y="22" class="mono" font-size="12" font-weight="500" fill="#94a3b8">Python 3.10+</text>
-      </g>
-      <g transform="translate(374, 0)">
-        <rect width="150" height="34" rx="8" fill="#141a24" stroke="#334155" stroke-width="1"/>
-        <text x="16" y="22" class="mono" font-size="12" font-weight="500" fill="#94a3b8">0ms Overhead</text>
-      </g>
-    </g>
+  <!-- Integrity seal -->
+  <g transform="translate(64 64)">
+    <path d="M0 12 L12 0 H52 L64 12 V52 L52 64 H12 L0 52 Z" fill="#080a11" stroke="#252b38" stroke-width="1"/>
+    <path d="M6 18 L18 6 H46 L58 18 V46 L46 58 H18 L6 46 Z" fill="#0d1017" stroke="#3b4252" stroke-width="1"/>
+    <path d="M32 20 L44 32 L32 44 L20 32 Z" fill="#d9000b"/>
+    <path d="M0 12 L12 0 H18" fill="none" stroke="#d9000b" stroke-width="1.5"/>
+    <path d="M64 52 L52 64 H46" fill="none" stroke="#d9000b" stroke-width="1.5"/>
   </g>
 
-  <!-- Right Column: Interactive Styled Terminal Showcase -->
-  <g transform="translate(640, 80)">
-    <!-- Terminal Window Container -->
-    <rect width="560" height="480" rx="14" fill="url(#term-bg)" stroke="#1e2d42" stroke-width="1.5" filter="url(#sp-blur)"/>
-    <rect width="560" height="480" rx="14" fill="url(#term-bg)" stroke="#1e2d42" stroke-width="1.5"/>
+  <rect x="152" y="65" width="5" height="5" fill="#d9000b"/>
+  <text x="164" y="70" class="mono" font-size="11" font-weight="700" fill="#8892b0" letter-spacing="1.5">MONAR / CLIENT-SIDE DEFENSE</text>
 
-    <!-- Terminal Header Bar -->
-    <rect width="560" height="40" rx="14" fill="#0f192b"/>
-    <rect y="26" width="560" height="14" fill="#0f192b"/>
-    <line x1="0" y1="40" x2="560" y2="40" stroke="#1e2d42" stroke-width="1"/>
+  <text x="152" y="136" class="sans" font-size="56" font-weight="800" fill="#fbfaf7" letter-spacing="-1.2">ScriptSentinel</text>
 
-    <!-- Window Dots -->
-    <circle cx="24" cy="20" r="6" fill="#ef4444"/>
-    <circle cx="44" cy="20" r="6" fill="#f59e0b"/>
-    <circle cx="64" cy="20" r="6" fill="#10b981"/>
+  <text x="152" y="178" class="sans" font-size="20" font-weight="400" fill="#94a3b8">Audit the JavaScript your checkout runs.</text>
 
-    <text x="280" y="24" text-anchor="middle" class="mono" font-size="12" font-weight="500" fill="#64748b">
-      scriptsentinel audit --baseline baselines.json
-    </text>
+  <text x="152" y="206" class="sans" font-size="14" font-weight="400" fill="#64748b">SRI drift · CSP grading · behavioral skimmers · PCI-DSS v4.0 evidence.</text>
 
-    <!-- Terminal Content -->
-    <g transform="translate(24, 70)">
-      <!-- Invoc command -->
-      <text y="0" class="mono" font-size="13" fill="#94a3b8">
-        <tspan fill="#38bdf8">❯</tspan> scriptsentinel audit https://payments.checkout.io
-      </text>
-
-      <!-- Target Banner Card -->
-      <g transform="translate(0, 18)">
-        <rect width="512" height="64" rx="6" fill="#070c14" stroke="#1e2d42" stroke-width="1"/>
-        <text x="16" y="24" class="mono" font-size="12" fill="#94a3b8">Target URL: <tspan fill="#f8fafc">https://payments.checkout.io</tspan></text>
-        <text x="16" y="46" class="mono" font-size="12" fill="#94a3b8">Risk Rating: <tspan fill="#f43f5e" font-weight="700">CRITICAL</tspan>  │  CSP Grade: <tspan fill="#f43f5e" font-weight="700">F (0/100)</tspan></text>
-      </g>
-
-      <!-- Table Header -->
-      <g transform="translate(0, 102)">
-        <rect width="512" height="28" rx="4" fill="#132033"/>
-        <text x="12" y="19" class="mono" font-size="11" font-weight="700" fill="#94a3b8">ORIGIN / SCRIPT</text>
-        <text x="210" y="19" class="mono" font-size="11" font-weight="700" fill="#94a3b8">SRI STATUS</text>
-        <text x="340" y="19" class="mono" font-size="11" font-weight="700" fill="#94a3b8">FINDINGS</text>
-      </g>
-
-      <!-- Row 1 -->
-      <g transform="translate(0, 140)">
-        <text x="12" y="15" class="mono" font-size="11.5" fill="#f8fafc">cdn.vendor/tag.js</text>
-        <rect x="210" y="2" width="112" height="20" rx="4" fill="#2d0c14" stroke="#e11d48" stroke-width="0.8"/>
-        <text x="218" y="16" class="mono" font-size="10" font-weight="700" fill="#fda4af">SCRIPT_DRIFT</text>
-        <text x="340" y="15" class="mono" font-size="11" fill="#f43f5e">SKIM-INPUT-HARVEST</text>
-      </g>
-
-      <!-- Row 2 -->
-      <g transform="translate(0, 175)">
-        <text x="12" y="15" class="mono" font-size="11.5" fill="#f8fafc">analytics.io/sdk.js</text>
-        <rect x="210" y="2" width="95" height="20" rx="4" fill="#2b1a08" stroke="#d97706" stroke-width="0.8"/>
-        <text x="218" y="16" class="mono" font-size="10" font-weight="700" fill="#fde68a">MISSING_SRI</text>
-        <text x="340" y="15" class="mono" font-size="11" fill="#fbbf24">SKIM-DOM-LISTENER</text>
-      </g>
-
-      <!-- Row 3 -->
-      <g transform="translate(0, 210)">
-        <text x="12" y="15" class="mono" font-size="11.5" fill="#f8fafc">app.bundle.min.js</text>
-        <rect x="210" y="2" width="80" height="20" rx="4" fill="#0b2416" stroke="#059669" stroke-width="0.8"/>
-        <text x="218" y="16" class="mono" font-size="10" font-weight="700" fill="#86efac">VERIFIED</text>
-        <text x="340" y="15" class="mono" font-size="11" fill="#10b981">Clean (No IOCs)</text>
-      </g>
-
-      <!-- Divider -->
-      <line x1="0" y1="250" x2="512" y2="250" stroke="#1e2d42" stroke-width="1"/>
-
-      <!-- Automated Action output -->
-      <g transform="translate(0, 268)">
-        <text y="14" class="mono" font-size="11.5" fill="#38bdf8">✔ Synthesized hardened CSP (with cryptographic nonces)</text>
-        <text y="36" class="mono" font-size="11.5" fill="#10b981">✔ Generated drop-in SRI script tags &amp; Nginx/Apache configs</text>
-        <text y="58" class="mono" font-size="11.5" fill="#a78bfa">✔ Audit export: audit_report.json (PCI-DSS v4.0 Attestation)</text>
-      </g>
-
-      <!-- Blinking Cursor -->
-      <rect x="0" y="348" width="9" height="16" fill="#38bdf8"/>
-    </g>
+  <g transform="translate(152 232)">
+    <path d="M0 0 H154 L160 6 V22 H6 L0 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
+    <text x="12" y="15" class="mono" font-size="9" font-weight="600" fill="#cbd5e1">SRI DRIFT</text>
+    <path d="M170 0 H324 L330 6 V22 H176 L170 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
+    <text x="182" y="15" class="mono" font-size="9" font-weight="600" fill="#cbd5e1">CSP · A–F</text>
+    <path d="M340 0 H494 L500 6 V22 H346 L340 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
+    <text x="352" y="15" class="mono" font-size="9" font-weight="600" fill="#cbd5e1">PCI-DSS 6.4.3 / 11.6.1</text>
   </g>
 
-  <!-- Accent Bottom Border Line -->
-  <rect x="0" y="634" width="1280" height="6" fill="url(#sp-cyan)"/>
+  <!-- Live terminal card -->
+  <g transform="translate(680 64)">
+    <rect width="536" height="512" fill="#080a11" stroke="#232730" stroke-width="1"/>
+    <rect width="536" height="32" fill="#090b12"/>
+    <rect x="16" y="13" width="6" height="6" fill="#3b4252"/>
+    <rect x="32" y="13" width="6" height="6" fill="#3b4252"/>
+    <rect x="48" y="13" width="6" height="6" fill="#3b4252"/>
+    <text x="268" y="21" text-anchor="middle" class="mono" font-size="9" fill="#64748b">scriptsentinel audit</text>
+
+    <text x="16" y="54" class="mono" font-size="9.5" fill="#94a3b8"><tspan fill="#d9000b">ally@monar:~$</tspan> scriptsentinel audit http://localhost:8100/no-csp/checkout</text>
+
+    <g transform="translate(16 66)">
+      <rect width="504" height="54" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="17" class="mono" font-size="8" font-weight="700" fill="#d9000b" letter-spacing="1">AUDIT SUMMARY</text>
+      <text x="10" y="33" class="mono" font-size="8" fill="#64748b">TARGET</text>
+      <text x="56" y="33" class="mono" font-size="9" fill="#fbfaf7">http://localhost:8100/no-csp/checkout</text>
+      <text x="494" y="33" text-anchor="end" class="mono" font-size="8.5" fill="#fbfaf7">HTTP 200</text>
+      <text x="10" y="49" class="mono" font-size="8" fill="#64748b">RISK</text>
+      <text x="48" y="49" class="mono" font-size="9" font-weight="700" fill="#d9000b">CRITICAL</text>
+      <text x="130" y="49" class="mono" font-size="8" fill="#64748b">CSP</text>
+      <text x="162" y="49" class="mono" font-size="9" font-weight="700" fill="#d9000b">F (0/100)</text>
+      <text x="250" y="49" class="mono" font-size="8" fill="#64748b">SCRIPTS</text>
+      <text x="306" y="49" class="mono" font-size="9" fill="#fbfaf7">1 external</text>
+    </g>
+
+    <g transform="translate(16 128)">
+      <rect width="504" height="42" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="17" class="mono" font-size="9" font-weight="700" fill="#fbfaf7">CSP-MISSING</text>
+      <text x="120" y="17" class="mono" font-size="8.5" font-weight="700" fill="#d9000b">CRITICAL</text>
+      <text x="200" y="17" class="mono" font-size="8.5" fill="#94a3b8">No Content-Security-Policy header</text>
+      <text x="10" y="34" class="mono" font-size="8" fill="#64748b">ACTION</text>
+      <text x="62" y="34" class="mono" font-size="8.5" fill="#fbfaf7">Deploy nonced default-src 'self'</text>
+    </g>
+
+    <g transform="translate(16 178)">
+      <rect width="504" height="42" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="17" class="mono" font-size="9" fill="#fbfaf7">http://localhost:8001/js/acme.js</text>
+      <text x="330" y="17" class="mono" font-size="8.5" font-weight="700" fill="#d9000b">MISSING_SRI</text>
+      <text x="10" y="34" class="mono" font-size="8" fill="#64748b">SHA-256</text>
+      <text x="70" y="34" class="mono" font-size="8.5" fill="#8892b0">1ddc1b32fb1e4bc6...</text>
+      <text x="330" y="34" class="mono" font-size="8.5" fill="#fbfaf7">SCAN CLEAN</text>
+    </g>
+
+    <g transform="translate(16 228)">
+      <rect width="504" height="170" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="17" class="mono" font-size="8" font-weight="700" fill="#d9000b" letter-spacing="1">REMEDIATION QUICK-PACK</text>
+      <text x="10" y="36" class="mono" font-size="7.2" fill="#8892b0">default-src 'self'; script-src 'self' 'nonce-{NONCE}' http://localhost:8001;</text>
+      <text x="10" y="50" class="mono" font-size="7.2" fill="#8892b0">script-src-elem 'self' 'nonce-{NONCE}' http://localhost:8001; connect-src 'self'; report-uri /api/csp-report</text>
+      <text x="10" y="70" class="mono" font-size="7" fill="#fbfaf7">&lt;script src="http://localhost:8001/js/acme.js"</text>
+      <text x="10" y="84" class="mono" font-size="7" fill="#fbfaf7">integrity="sha256-HdwbMvseS8acAXHY00VRiX4AG9aivqn38TbzRUKFiwE=" crossorigin="anonymous"&gt;</text>
+      <text x="10" y="98" class="mono" font-size="7" fill="#fbfaf7">&lt;/script&gt;</text>
+      <text x="10" y="118" class="mono" font-size="7.5" fill="#94a3b8">Report written: report/no-csp.json</text>
+      <text x="10" y="136" class="mono" font-size="7.5" fill="#94a3b8">PCI-DSS v4.0 6.4.3 / 11.6.1 evidence included</text>
+    </g>
+
+    <rect x="16" y="410" width="504" height="30" fill="#090c14" stroke="#1e2433" stroke-width="1"/>
+    <text x="26" y="429" class="mono" font-size="8" fill="#8892b0">AUDIT SEAL · SHA-256 1ddc1b32fb1e4bc6...</text>
+    <text x="510" y="429" text-anchor="end" class="mono" font-size="8" fill="#64748b">MONAR / v0.1.0</text>
+
+    <rect x="0" y="510" width="536" height="2" fill="#d9000b"/>
+  </g>
+
+  <line x1="64" y1="576" x2="1216" y2="576" stroke="#1c202c" stroke-width="1"/>
+  <rect x="64" y="592" width="5" height="5" fill="#d9000b"/>
+  <text x="76" y="597" class="mono" font-size="10" font-weight="700" fill="#fbfaf7" letter-spacing="1.5">BY MONAR</text>
+  <text x="190" y="597" class="mono" font-size="9" fill="#8892b0">monarservices.org</text>
+  <text x="1216" y="597" text-anchor="end" class="mono" font-size="9" fill="#64748b">Infrastructure &amp; AI compute: Unquant · Luke</text>
 </svg>

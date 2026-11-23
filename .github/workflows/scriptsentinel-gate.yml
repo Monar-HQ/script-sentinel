@@ -1,0 +1,85 @@
+name: ScriptSentinel Gate
+
+on:
+  workflow_call:
+    inputs:
+      url:
+        description: Target page URL to audit.
+        required: true
+        type: string
+      baseline:
+        description: Path to a baseline SHA-256 JSON file. Leave empty to skip drift comparison.
+        required: false
+        default: ""
+        type: string
+      fail-on:
+        description: Exit threshold.
+        required: false
+        default: high
+        type: string
+      report-path:
+        description: Path for the JSON audit report.
+        required: false
+        default: scriptsentinel-report.json
+        type: string
+    outputs:
+      risk:
+        description: Overall risk rating from the report.
+        value: ${{ jobs.gate.outputs.risk }}
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Target page URL to audit.
+        required: true
+        type: string
+      baseline:
+        description: Path to a baseline SHA-256 JSON file. Leave empty to skip drift comparison.
+        required: false
+        default: ""
+        type: string
+      fail-on:
+        description: Exit threshold.
+        required: true
+        default: high
+        type: choice
+        options:
+          - none
+          - low
+          - medium
+          - high
+          - critical
+          - drift
+      report-path:
+        description: Path for the JSON audit report.
+        required: false
+        default: scriptsentinel-report.json
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      risk: ${{ steps.audit.outputs.risk }}
+    steps:
+      - name: Check out caller repository
+        uses: actions/checkout@v4
+
+      - name: Run ScriptSentinel audit gate
+        id: audit
+        uses: Ally-Released/scriptsentinel@main
+        with:
+          url: ${{ inputs.url }}
+          baseline: ${{ inputs.baseline }}
+          fail-on: ${{ inputs.fail-on }}
+          report-path: ${{ inputs.report-path }}
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scriptsentinel-report
+          path: ${{ inputs.report-path }}
+          if-no-files-found: warn

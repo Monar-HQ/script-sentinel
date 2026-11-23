@@ -18,7 +18,7 @@
   "headers": {
     "content-length": "3002",
     "content-type": "text/html; charset=utf-8",
-    "date": "Mon, 23 Nov 2026 14:36:06 GMT",
+    "date": "Mon, 23 Nov 2026 23:18:29 GMT",
     "server": "uvicorn",
     "x-victim-pod": "victim-pod-default",
     "x-victim-profile": "no-csp"
@@ -72,6 +72,7 @@
         "suggested_tag": "<script src=\"http://localhost:8001/js/acme.js\" integrity=\"sha256-HdwbMvseS8acAXHY00VRiX4AG9aivqn38TbzRUKFiwE=\" crossorigin=\"anonymous\"></script>",
         "url": "http://localhost:8001/js/acme.js"
       },
+      "length": 1708,
       "scanner_audit": {
         "findings": [],
         "findings_count": 0,
@@ -97,5 +98,5 @@
     "total_scripts": 1
   },
   "target_url": "http://localhost:8100/no-csp/checkout",
-  "timestamp": "2026-11-23T14:36:07+00:00"
+  "timestamp": "2026-11-23T23:18:29+00:00"
 }

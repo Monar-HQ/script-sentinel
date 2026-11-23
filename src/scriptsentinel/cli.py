@@ -18,27 +18,32 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
+from . import __version__
 from .auditor import audit_url
 from .csp_analyzer import analyze_csp
 from .models import AuditReport, CSPAnalysis, RemediationPack
 
 console = Console()
 
-BANNER = """
-[bold cyan]  ____          _      ____             _   _            _ [/bold cyan]
-[bold cyan] / ___|___   __| | ___/ ___|  ___ _ __ | |_(_)_ __   ___| |[/bold cyan]
-[bold cyan]| |   / _ \\ / _` |/ _ \\___ \\ / _ \\ '_ \\| __| | '_ \\ / _ \\ |[/bold cyan]
-[bold cyan]| |__| (_) | (_| |  __/___) |  __/ | | | |_| | | | |  __/ |[/bold cyan]
-[bold cyan] \\____\\___/ \\__,_|\\___|____/ \\___|_| |_|\\__|_|_| |_|\\___|_|[/bold cyan]
-[dim] Open-Source Client-Side Supply-Chain Defense & Script Auditor v0.1.0[/dim]
-"""
+BANNER = (
+    "[bold red]SCRIPTSENTINEL[/bold red]\n"
+    "[dim]MONAR / CLIENT-SIDE SUPPLY-CHAIN AUDIT / v0.1.0[/dim]"
+)
 
 _SEVERITY_COLORS: dict[str, str] = {
-    "CRITICAL": "red",
-    "HIGH": "yellow",
-    "MEDIUM": "blue",
-    "LOW": "green",
-    "INFO": "cyan",
+    "CRITICAL": "bold red",
+    "HIGH": "red",
+    "MEDIUM": "bold white",
+    "LOW": "white",
+    "INFO": "dim",
+}
+
+_RISK_ORDER: dict[str, int] = {
+    "LOW": 1,
+    "MEDIUM": 2,
+    "HIGH": 3,
+    "CRITICAL": 4,
+    "ERROR": 5,
 }
 
 
@@ -70,7 +75,7 @@ def print_audit_summary(report: AuditReport) -> None:
     """Render the terminal audit summary for a typed report."""
     console.print(BANNER)
 
-    risk_color = "red" if report.overall_risk in ("CRITICAL", "HIGH") else "green"
+    risk_color = "red" if report.overall_risk in ("CRITICAL", "HIGH", "ERROR") else "white"
     external_count = sum(1 for script in report.scripts if script.kind == "external")
     inline_count = len(report.scripts) - external_count
     overview_text = (
@@ -90,13 +95,11 @@ def print_audit_summary(report: AuditReport) -> None:
     )
 
     if report.csp.findings:
-        table_csp = Table(
-            title="[bold yellow]CSP Misconfigurations & Vulnerability Exposure[/bold yellow]"
-        )
-        table_csp.add_column("Rule ID", style="cyan", no_wrap=True)
+        table_csp = Table(title="[bold red]CSP Misconfigurations[/bold red]")
+        table_csp.add_column("Rule ID", style="bold red", no_wrap=True)
         table_csp.add_column("Severity", style="bold")
         table_csp.add_column("Finding", style="white")
-        table_csp.add_column("Actionable Remediation", style="green")
+        table_csp.add_column("Actionable Remediation", style="dim")
         for finding in report.csp.findings:
             color = _severity_color(finding.severity)
             table_csp.add_row(
@@ -108,7 +111,7 @@ def print_audit_summary(report: AuditReport) -> None:
         console.print(table_csp)
 
     table_scripts = Table(
-        title="[bold cyan]JavaScript Inventory, SRI & Behavioral Scan[/bold cyan]"
+        title="[bold white]JavaScript Inventory / SRI / Behavioral Scan[/bold white]"
     )
     table_scripts.add_column("#", style="dim")
     table_scripts.add_column("Origin / Source", style="white")
@@ -119,7 +122,7 @@ def print_audit_summary(report: AuditReport) -> None:
     for script in report.scripts:
         if script.kind == "external":
             status = script.integrity.status if script.integrity is not None else "UNKNOWN"
-            status_color = "green" if status == "VERIFIED" else "red"
+            status_color = "white" if status == "VERIFIED" else "red"
             sha = (
                 script.integrity.calculated.sha256[:12] + "..."
                 if script.integrity is not None
@@ -129,7 +132,7 @@ def print_audit_summary(report: AuditReport) -> None:
                 scan_text = ", ".join(finding.rule_id for finding in script.scan.findings)
                 scan_label = f"[bold red]{scan_text}[/bold red]"
             else:
-                scan_label = "[green]Clean / No Suspicious Patterns[/green]"
+                scan_label = "[white]CLEAN[/white]"
             table_scripts.add_row(
                 str(script.index),
                 script.url or "",
@@ -143,45 +146,47 @@ def print_audit_summary(report: AuditReport) -> None:
                 "[dim]<inline script>[/dim]",
                 "[dim]N/A[/dim]",
                 f"[dim]len={script.length}[/dim]",
-                "[green]Clean[/green]",
+                "[white]CLEAN[/white]",
             )
     console.print(table_scripts)
 
     remediation = report.remediation
     if remediation is not None:
         rem_panel = (
-            "[bold green]Hardened CSP Recommendation:[/bold green]\n"
+            "[bold red]Hardened CSP Recommendation[/bold red]\n"
             f"[dim]{remediation.hardened_csp}[/dim]\n\n"
-            "[bold cyan]Suggested SRI Replacement Tags:[/bold cyan]\n"
+            "[bold white]Suggested SRI Replacement Tags[/bold white]\n"
         )
         for tag in remediation.sri_replacement_tags:
             rem_panel += f"[dim]{tag.tag}[/dim]\n"
         console.print(
             Panel(
                 rem_panel.strip(),
-                title="[bold green]Actionable Remediation Quick-Pack[/bold green]",
-                border_style="green",
+                title="[bold red]Actionable Remediation Quick-Pack[/bold red]",
+                border_style="red",
             )
         )
 
 
 def _render_csp(csp: CSPAnalysis) -> None:
     """Render CSP analysis as a terminal table."""
+    grade_color = "white" if csp.grade in ("A", "B") else "red"
     console.print(
         Panel(
-            f"Grade: [bold]{csp.grade}[/bold]  Score: [bold]{csp.score}/100[/bold]",
+            f"Grade: [{grade_color} bold]{csp.grade}[/{grade_color} bold]  "
+            f"Score: [bold]{csp.score}/100[/bold]",
             title="CSP Analysis",
-            border_style="cyan",
+            border_style="red",
         )
     )
     if not csp.findings:
-        console.print("[green]No CSP misconfigurations detected.[/green]")
+        console.print("[white]No CSP misconfigurations detected.[/white]")
         return
-    table = Table(title="CSP Findings")
-    table.add_column("Rule", style="cyan")
+    table = Table(title="[bold white]CSP Findings[/bold white]")
+    table.add_column("Rule", style="bold red")
     table.add_column("Severity", style="bold")
     table.add_column("Finding", style="white")
-    table.add_column("Recommendation", style="green")
+    table.add_column("Recommendation", style="dim")
     for finding in csp.findings:
         color = _severity_color(finding.severity)
         table.add_row(
@@ -195,14 +200,14 @@ def _render_csp(csp: CSPAnalysis) -> None:
 
 def _render_remediation(remediation: RemediationPack) -> None:
     """Render a remediation pack for terminal copy/paste."""
-    console.print(Panel(remediation.hardened_csp, title="Hardened CSP Header"))
+    console.print(Panel(remediation.hardened_csp, title="Hardened CSP Header", border_style="red"))
     if remediation.sri_replacement_tags:
-        console.print("[bold cyan]SRI Replacement Tags[/bold cyan]")
+        console.print("[bold white]SRI Replacement Tags[/bold white]")
         for tag in remediation.sri_replacement_tags:
             console.print(f"[dim]{tag.tag}[/dim]")
-    console.print("[bold green]PCI-DSS v4.0 Compliance Mapping[/bold green]")
+    console.print("[bold red]PCI-DSS v4.0 Compliance Mapping[/bold red]")
     for item in remediation.compliance:
-        console.print(f"[cyan]{item.standard}[/cyan] - {item.status}")
+        console.print(f"[red]{item.standard}[/red] - {item.status}")
 
 
 def _write_report(report: AuditReport, output: str, fmt: str) -> None:
@@ -232,9 +237,9 @@ def _write_report(report: AuditReport, output: str, fmt: str) -> None:
 
         write_html(report, destination)
     else:
-        console.print(f"[yellow]Unsupported output format:[/yellow] {selected}")
+        console.print(f"[red]Unsupported output format:[/red] {selected}")
         return
-    console.print(f"[bold green]Report written:[/bold green] {destination}")
+    console.print(f"[bold white]Report written:[/bold white] {destination}")
 
 
 def _check_csp(target: str) -> CSPAnalysis:
@@ -254,7 +259,7 @@ def _monitor(url: str, baseline_path: str, webhook: str | None) -> int:
     """Audit a URL and report script drift against a pinned baseline."""
     baseline = _load_baseline(baseline_path)
     if not baseline:
-        console.print("[yellow]No baseline hashes loaded; drift comparison is empty.[/yellow]")
+        console.print("[red]No baseline hashes loaded; drift comparison is empty.[/red]")
     report = asyncio.run(audit_url(url, baseline))
     drifted: list[dict[str, Any]] = []
     for script in report.scripts:
@@ -284,11 +289,11 @@ def _monitor(url: str, baseline_path: str, webhook: str | None) -> int:
                     json={"target": url, "drift": drifted},
                     timeout=10.0,
                 )
-                console.print(f"[cyan]Webhook status:[/cyan] {response.status_code}")
+                console.print(f"[white]Webhook status:[/white] {response.status_code}")
             except httpx.HTTPError as exc:
                 console.print(f"[red]Webhook delivery failed:[/red] {type(exc).__name__}: {exc}")
-    else:
-        console.print("[green]No script drift detected against the supplied baseline.[/green]")
+        return 1
+    console.print("[white]No script drift detected against the supplied baseline.[/white]")
     return 0
 
 
@@ -310,8 +315,25 @@ def _export_rules(fmt: str, output: str, url: str | None) -> int:
     else:
         console.print(f"[red]Unknown rule format:[/red] {fmt}")
         return 1
-    console.print(f"[bold green]{fmt.title()} rules written:[/bold green] {destination}")
+    console.print(f"[bold white]{fmt.title()} rules written:[/bold white] {destination}")
     return 0
+
+
+def _audit_exit_code(report: AuditReport, fail_on: str, baseline: dict[str, str]) -> int:
+    """Return a CI-friendly exit code for audit thresholds."""
+    if fail_on == "none":
+        return 0
+    if fail_on == "drift":
+        for script in report.scripts:
+            if script.integrity is None:
+                continue
+            if baseline.get(script.url or "") is not None and script.integrity.drift_detected:
+                return 1
+        return 0
+    threshold = _RISK_ORDER.get(fail_on.upper())
+    if threshold is None:
+        return 0
+    return 1 if _RISK_ORDER.get(report.overall_risk, 0) >= threshold else 0
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -319,6 +341,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="ScriptSentinel: Client-Side Supply-Chain Defense & Script Auditor"
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     audit_parser = subparsers.add_parser(
@@ -335,6 +358,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     audit_parser.add_argument("--markdown", default=None, help="Write a Markdown report here")
     audit_parser.add_argument("--html", default=None, help="Write an HTML report here")
+    audit_parser.add_argument(
+        "--fail-on",
+        choices=("none", "low", "medium", "high", "critical", "drift"),
+        default="none",
+        help="Exit non-zero when risk meets this threshold or script drift is detected",
+    )
 
     csp_parser = subparsers.add_parser(
         "check-csp", help="Analyze a raw CSP header or fetch CSP from a URL"
@@ -388,14 +417,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             from .report.markdown_reporter import write_markdown
 
             write_markdown(report, cast(str, markdown_path))
-            console.print(f"[bold green]Markdown report written:[/bold green] {markdown_path}")
+            console.print(f"[bold white]Markdown report written:[/bold white] {markdown_path}")
         html_path = getattr(args, "html", None)
         if html_path:
             from .report.html_reporter import write_html
 
             write_html(report, cast(str, html_path))
-            console.print(f"[bold green]HTML report written:[/bold green] {html_path}")
-        return 0
+            console.print(f"[bold white]HTML report written:[/bold white] {html_path}")
+        fail_on = cast(str, getattr(args, "fail_on", "none"))
+        return _audit_exit_code(report, fail_on, baseline_map)
 
     if command == "check-csp":
         csp = _check_csp(cast(str, args.target))

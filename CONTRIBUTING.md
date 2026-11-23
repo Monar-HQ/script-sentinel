@@ -2,41 +2,55 @@
 
 ## Ground rules
 
-- Defensive only. Contributions must not add code whose purpose is to help an attacker: no payload generators, no exploit primitives, no bypass recipes.
-- No fabricated evidence. Every IOC record needs a `source` and a `first_seen` date. Every rule needs TP/FP counts backed by captured telemetry. If something cannot be confirmed, mark it `unconfirmed` rather than guessing.
-- No telemetry, no phone-home. Any new outbound request must be logged and opt-in.
-- `--ai none` must remain the default, and the AI layer must never sit on the detection path.
+- Defensive only. Contributions must not add payload generators, exploit primitives, or bypass recipes.
+- No fabricated evidence. Every IOC record needs `source` and `first_seen`. Every detection rule needs true-positive and false-positive counts backed by captured telemetry. Mark unconfirmed items as `unconfirmed`.
+- No telemetry and no phone-home. Network access is limited to the target URL and the optional drift webhook.
+- Typed dataclasses on the detection path. Do not add dict-based detection logic.
 
 ## Setup
 
 ```bash
 python -m venv .venv
+# Windows
 .venv/Scripts/python -m pip install -e ".[dev]"
-.venv/Scripts/python -m playwright install chromium
+# Unix
+.venv/bin/python -m pip install -e ".[dev]"
 ```
 
-## Checks before a PR
+No browser or Playwright install is required. The harvester uses `httpx` and BeautifulSoup.
+
+## Checks before a pull request
 
 ```bash
-.venv/Scripts/python -m pytest --cov=scriptsentinel --cov-fail-under=85
-.venv/Scripts/python -m ruff check src tests
-.venv/Scripts/python -m mypy --strict src/scriptsentinel
+python -m pytest -v
+python -m ruff check .
+python -m mypy --strict src/scriptsentinel
+```
+
+Optional coverage gate:
+
+```bash
+python -m pytest --cov=scriptsentinel --cov-report=term-missing
 ```
 
 ## Adding an IOC
 
-1. Append a record to `src/scriptsentinel/iocs/feeds/<feed>.json` with `type`, `value`, `source`, `first_seen`, and `severity`.
-2. Bump the feed `version`.
-3. Add a unit test that the loader rejects the record when `source` or `first_seen` is missing.
+1. Append a record to `src/scriptsentinel/iocs/feeds/<feed>.json` with `kind`, `value`, `source`, `first_seen`, `severity`, and an optional `note`.
+2. `kind` must be `domain` or `sha256`. Domain values are bare hostnames; SHA-256 values are 64 lowercase hex characters.
+3. Bump the feed `version` and `as_of` date.
+4. Add a test that the loader rejects records missing `source` or `first_seen`.
 
-## Adding a rule
+## Adding a detection rule
 
-1. Add a module under `src/scriptsentinel/rules/` with `rule_id`, `family`, `reads`, `window`, `threshold`, `logic`, `severity`.
-2. Register it in `rules.py` with `default_on=False` if the lab evidence does not support TP/FP counts.
-3. Add telemetry slices to `tests/fixtures/` and assert TP on attack slices and 0 FP on clean slices.
+- CSP rules live in `src/scriptsentinel/csp_analyzer.py`; penalties are CRITICAL 35, HIGH 20, MEDIUM 10, LOW 5.
+- Behavioral rules live in `src/scriptsentinel/scanner.py` under `_PATTERNS`; IOC matching lives in the same module.
+- SRI statuses live in `src/scriptsentinel/integrity.py`: `VERIFIED`, `MISSING_SRI`, `INTEGRITY_MISMATCH`, `SCRIPT_DRIFT`.
+- Export mappings live in `src/scriptsentinel/rules/sigma_exporter.py` and `src/scriptsentinel/rules/suricata_exporter.py`.
+- Add tests under `tests/` and assert true positives on attack slices and zero false positives on clean slices.
 
 ## Style
 
-- Python 3.12, type annotations on every public function (mypy strict).
-- Dataclasses for data records; plain dicts for telemetry passthrough.
-- Prefer stdlib (`hashlib`, `sqlite3`, `json`, `urllib`) over new dependencies.
+- Python 3.10+, `from __future__ import annotations`, type annotations on public functions.
+- Dataclasses for records; tuple-based immutable results.
+- Prefer stdlib (`hashlib`, `json`, `re`, `base64`) and the existing runtime dependencies (`httpx`, `beautifulsoup4`, `rich`).
+- Keep CLI output in the MONAR palette: red accent, bone text, slate metadata, no cyan/green/purple status walls.

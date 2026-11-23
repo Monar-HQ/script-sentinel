@@ -2,38 +2,31 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
-| < 0.1   | :x:                |
-
----
+| Version | Supported |
+| --- | --- |
+| 0.1.x | Yes |
+| < 0.1 | No |
 
 ## Reporting a Vulnerability
 
-We take the security of ScriptSentinel (ScriptSentinel) seriously. If you discover a vulnerability or security flaw, please report it responsibly.
+GitHub private vulnerability reporting is the preferred channel:
 
-### How to Report
+1. Open the repository's [Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories) tab.
+2. Select **Report a vulnerability**.
+3. Include the affected component or file, the issue class, a minimal reproduction, and the impact assessment.
 
-1. **GitHub Private Vulnerability Reporting**:
-   - Go to the repository's [Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories) tab.
-   - Click **Report a vulnerability** to open a confidential report.
-2. **Direct Contact**:
-   - If GitHub Private Reporting is unavailable, send an email to `iamnotlol30@gmail.com` with the subject line `[SECURITY] ScriptSentinel Vulnerability Report`.
-   - Please include:
-     - Target component / file / function
-     - Type of issue (e.g. AST bypass, ReDoS in regex scanner, injection in report rendering)
-     - Full step-by-step reproduction instructions and proof of concept
-     - Impact assessment
+If private reporting is unavailable, send an email to `iamnotlol30@gmail.com` with the subject `[SECURITY] ScriptSentinel Vulnerability Report`.
 
-### What NOT to Do
-- **Do not** open a public GitHub issue detailing an unpatched security vulnerability.
-- **Do not** disclose vulnerability details publicly prior to coordinated release.
-
----
+Do not open a public issue for an unpatched vulnerability, and do not disclose details before a coordinated release.
 
 ## Disclosure Timeline
 
-- **Triage**: Within 48 hours of initial receipt.
-- **Status Update**: Within 5 business days with an assessment and remediation plan.
-- **Fix & Advisory**: Coordinated advisory and hotfix release within 14 days of confirmation.
+| Stage | Target |
+| --- | --- |
+| Triage | Within 48 hours of receipt |
+| Assessment and remediation plan | Within 5 business days |
+| Fix and advisory | Within 14 days of confirmation |
+
+## Scope
+
+Security reports should cover the Python package, CLI, reporters, IOC loader, detection rules, and CI action. The OPTIJACK simulation lab is a separate local harness; report lab-specific defects against the harness files listed in `docs/ARCHITECTURE.md`.

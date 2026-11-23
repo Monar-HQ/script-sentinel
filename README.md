@@ -1,216 +1,178 @@
-<div align="center">
-
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-banner-dark.svg">
-    <img alt="ScriptSentinel" src="assets/hero-banner-light.svg" width="100%">
+    <source media="(prefers-color-scheme: light)" srcset="assets/hero-banner-light.svg">
+    <img src="assets/hero-banner-light.svg" alt="ScriptSentinel by MONAR — client-side JavaScript integrity" width="846">
   </picture>
 </p>
 
+<h3 align="center">Audit the JavaScript your checkout actually runs.</h3>
+
 <p align="center">
-  <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-10b981?style=flat-square&logo=github&labelColor=151515" alt="CI Status"></a>
-  <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-151515?style=flat-square&logo=python" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/runtime%20overhead-0ms-151515?style=flat-square" alt="Zero Runtime Overhead">
-  <img src="https://img.shields.io/badge/compliance-PCI--DSS_v4.0_Ready-10b981?style=flat-square" alt="PCI-DSS v4.0 Ready">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-151515?style=flat-square" alt="License: MIT"></a>
+  <sub><b>BY MONAR</b> · <a href="https://www.monarservices.org">monarservices.org</a></sub>
 </p>
 
 <p align="center">
-  <a href="#live-terminal-showcase">Terminal</a> ·
-  <a href="#the-problem-client-side-blind-spots">The Problem</a> ·
-  <a href="#system-architecture">Architecture</a> ·
-  <a href="#quick-start">Quick Start</a> ·
-  <a href="#pci-dss-v40-regulatory-mapping">PCI-DSS v4.0</a> ·
-  <a href="docs/DETECTION-RULES.md">Detection Rules</a> ·
-  <a href="#infrastructure--ai-partner">Partner</a>
+  <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-151515?style=flat-square&labelColor=151515" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/runtime%20deps-3-151515?style=flat-square&labelColor=151515" alt="Three runtime dependencies">
+  <img src="https://img.shields.io/badge/PCI--DSS-v4.0-d9000b?style=flat-square&labelColor=151515" alt="PCI-DSS v4.0 evidence">
+  <img src="https://img.shields.io/badge/license-MIT-151515?style=flat-square&labelColor=151515" alt="MIT license">
 </p>
 
-</div>
+<p align="center">
+  <a href="#live-audit">Live audit</a> ·
+  <a href="#what-it-checks">What it checks</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#ci-gate">CI gate</a> ·
+  <a href="#pci-dss-v40">PCI-DSS</a> ·
+  <a href="#documentation">Documentation</a>
+</p>
 
 ---
 
-## Live Terminal Showcase
+**ScriptSentinel** is a CLI-first audit engine for third-party JavaScript. It inventories every script on a page, computes canonical SHA-256 and SHA-384 digests, verifies Subresource Integrity, grades Content-Security-Policy posture, scans for payment-card harvesting and known C2 indicators, and emits remediation plus PCI-DSS v4.0 evidence. Pure Python. No browser dependency. No telemetry.
 
-Audit and evaluate any web application endpoint (e.g. checkout forms, authentication portals) with instant cryptographic hash drift tracking and CSP vulnerability scoring:
+> Checkout pages load scripts from vendors you do not control. A compromised vendor control plane runs malicious JavaScript inside the buyer's browser — after TLS, after WAF, after the SIEM. ScriptSentinel makes that layer auditable, reproducible, and gateable in CI.
 
-<div align="center">
-  <img alt="ScriptSentinel CLI live execution output" src="assets/terminal-showcase.svg" width="846">
-</div>
+## Live Audit
 
----
+<p align="center">
+  <img src="assets/terminal-showcase.svg" alt="ScriptSentinel terminal audit of a page with no CSP header and missing SRI" width="846">
+</p>
 
-## The Problem: Client-Side Blind Spots
+Example run against the OPTIJACK simulation lab: `http://localhost:8100/no-csp/checkout`. The page returns HTTP 200, exposes one external script with no SRI, and ships no CSP header. The values shown match `report/no-csp.json`.
 
-Modern web applications embed dozens of external third-party scripts into the document root: tag managers, analytics, A/B experimentation SDKs, and payment widgets.
+## What It Checks
 
-When an upstream vendor control plane or CDN is compromised:
+| Plane | Engine | What it produces |
+| --- | --- | --- |
+| Inventory & integrity | `auditor.py`, `integrity.py` | External and inline script inventory; canonical SHA-256/SHA-384 digests; declared versus calculated SRI; drift against a pinned baseline. |
+| CSP posture | `csp_analyzer.py` | Directive parsing with duplicate merge; six fatal/loose findings; 0–100 score; A–F grade. |
+| Behavior | `scanner.py` | Payment/CVV harvesting, global input listeners, clipboard tampering, dynamic eval, base64 unpacking, `sendBeacon`, and IOC domain/hash matching. |
+| Remediation | `remediate.py` | Hardened CSP header, drop-in SRI tags, Nginx/Apache configuration blocks, PCI-DSS 6.4.3 / 11.6.1 mapping. |
+| Evidence | `report/`, `rules/` | Terminal summary, JSON, Markdown, standalone HTML, Sigma YAML, and Suricata HTTP/DNS rules. |
 
-- **Malicious code executes inside consumer browser sessions** within the origin context.
-- **Credit card numbers, CVVs, and credentials are stolen prior to transmission or encryption** via DOM manipulation and global input listeners.
-- **Traditional perimeter security is completely blind**: WAFs, firewalls, and server SIEMs never see the harvested data because it routes directly from the victim browser to adversary C2 endpoints.
+## Detection Rules
 
-```
-+-----------------------------------------------------------------------------+
-| Browser DOM & Payment Form                                                  |
-|   |                                                                         |
-|   +--> Compromised Third-Party Script (Injected via Vendor CDN / S3)        |
-|          |                                                                  |
-|          +--> Exfiltrates data via sendBeacon() / fetch()                   |
-|                 |                                                           |
-|                 v                                                           |
-|        Adversary C2 Sink (Bypasses Backend SIEM & Perimeter WAFs Entirely)  |
-+-----------------------------------------------------------------------------+
-```
+| Plane | Rule IDs |
+| --- | --- |
+| CSP | `CSP-MISSING`, `CSP-UNSAFE-EVAL`, `CSP-UNSAFE-INLINE`, `CSP-STRICT-DYNAMIC-RISK`, `CSP-CONNECT-WILDCARD`, `CSP-REPORTING-ABSENT` |
+| SRI | `VERIFIED`, `MISSING_SRI`, `INTEGRITY_MISMATCH`, `SCRIPT_DRIFT` |
+| Behavior | `SKIM-INPUT-HARVEST`, `SKIM-DOM-LISTENER`, `SKIM-CLIPBOARD-TAMPER`, `SKIM-EVAL-EXEC`, `SKIM-BASE64-UNPACK`, `SKIM-EXFIL-BEACON` |
+| IOC | `IOC-MATCH-C2-DOMAIN`, `IOC-MATCH-C2-HASH` |
 
----
-
-## System Architecture
-
-ScriptSentinel analyzes client-side attack surfaces across three distinct inspection vectors:
-
-<div align="center">
-  <img alt="ScriptSentinel System Architecture Diagram" src="assets/architecture-diagram.svg" width="846">
-</div>
-
-1. **Cryptographic Integrity & Drift Engine**: Computes canonical SHA-256 and SHA-384 Subresource Integrity (SRI) hashes. When evaluated against pinned baselines, it immediately flags unauthorized upstream vendor script modifications.
-2. **CSP Directive Analyzer**: Parses `Content-Security-Policy` headers, detects fatal keywords (`'unsafe-eval'`, `'unsafe-inline'`, loose `'strict-dynamic'`), flags wildcard exfiltration paths, and assigns a health grade (A to F).
-3. **Behavioral AST & Threat Scanner**: Statically audits script content for payment field scraping, global input interception, dynamic code evaluation, base64 unpackers, and known adversary C2 IOCs.
-
----
-
-## Defense Matrix
-
-| Attack Vector / Defense Capability | Perimeter WAF | SAST / DAST | ScriptSentinel |
-| :--- | :---: | :---: | :---: |
-| Detects Upstream CDN Code Tampering | No | No | **Real-Time SRI Drift** |
-| Flags Browser-Side Form Field Scraping | No | No | **Behavioral AST Heuristics** |
-| Discovers Runtime CSP Exfiltration Leaks | Partial | Static only | **Strict-Dynamic & Connect Audits** |
-| Generates Drop-in Nonced CSP & SRI Tags | No | No | **Automated Quick-Pack** |
-| Proves PCI-DSS v4.0 Req 6.4.3 & 11.6.1 | No | No | **Cryptographic Audit Ledger** |
-
----
+The full rule catalog, pattern logic, severities, and evidence fields are in [docs/DETECTION-RULES.md](docs/DETECTION-RULES.md).
 
 ## Quick Start
 
-### Installation
+From the repository root:
 
 ```bash
-# Clone the repository
-git clone https://github.com/Ally-Released/scriptsentinel.git
-cd scriptsentinel
-
-# Install locally in editable mode
-pip install -e .
+python -m pip install -e ".[dev]"
+# or: uv pip install -e ".[dev]"
 ```
 
-*Requires Python 3.10 or higher.*
+| Command | Purpose | Example |
+| --- | --- | --- |
+| `audit` | Full page audit: scripts, SRI, CSP, behavior, remediation, evidence | `scriptsentinel audit https://checkout.example.com --baseline baselines/checkout.json --format json --output report.json --fail-on high` |
+| `check-csp` | CSP-only analysis from a URL or a raw header | `scriptsentinel check-csp https://checkout.example.com` |
+| `monitor` | Compare script hashes against a pinned baseline; exits non-zero on drift | `scriptsentinel monitor https://checkout.example.com --baseline baselines/checkout.json --alert-webhook https://hooks.example.com/csp` |
+| `remediate` | Generate hardened CSP and copy-paste SRI tags | `scriptsentinel remediate https://checkout.example.com` |
+| `export-rules` | Emit Sigma YAML or Suricata HTTP/DNS rules | `scriptsentinel export-rules --format sigma --output rules/sigma.yml` |
 
----
+`audit --fail-on` accepts `none`, `low`, `medium`, `high`, `critical`, or `drift`. `monitor` returns exit code `1` when a pinned baseline hash changes. `scriptsentinel --version` prints the installed version.
 
-### 1. Audit a Target Endpoint
+## CI Gate
 
-Scan any web application endpoint (checkout page, login form):
+ScriptSentinel ships a composite action at the repository root and a reusable workflow at `.github/workflows/scriptsentinel-gate.yml`. Drop the action into any checkout-page pipeline:
 
-```bash
-scriptsentinel audit https://example.com/checkout
+```yaml
+name: Script integrity gate
+
+on: [pull_request]
+
+jobs:
+  scriptsentinel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Ally-Released/scriptsentinel@main
+        with:
+          url: https://checkout.example.com
+          baseline: baselines/checkout.json
+          fail-on: drift
+          report-path: scriptsentinel-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scriptsentinel-report
+          path: scriptsentinel-report.json
 ```
 
-### 2. Monitor Upstream Script Drift Against Baselines
+Or call the reusable workflow directly:
 
-Pin approved script hashes and automatically flag unexpected vendor alterations:
-
-```bash
-scriptsentinel audit https://example.com/checkout --baseline baselines.json --output audit_report.json
+```yaml
+jobs:
+  gate:
+    uses: Ally-Released/scriptsentinel/.github/workflows/scriptsentinel-gate.yml@main
+    with:
+      url: https://checkout.example.com
+      baseline: baselines/checkout.json
+      fail-on: high
 ```
 
-### 3. Generate Drop-in Remediation Pack
+The action installs the package, runs `audit`, writes the JSON report, and fails the job at the requested threshold. Configuration details are in [docs/CI-GATE.md](docs/CI-GATE.md).
 
-Produce hardened CSP headers, Nginx/Apache configuration blocks, and drop-in `<script>` tags with computed SRI hashes:
+## PCI-DSS v4.0
 
-```bash
-scriptsentinel remediate https://example.com/checkout
-```
+| Requirement | Evidence ScriptSentinel produces |
+| --- | --- |
+| 6.4.3 — Manage scripts and other code loaded into payment pages | Script inventory, declared versus calculated SRI, CSP directives, and a pinned SHA-256 baseline for change detection. |
+| 11.6.1 — Change- and tamper-detection for payment page HTTP headers and contents | SHA-256/SHA-384 digests, `SCRIPT_DRIFT` events, CSP violation reporting path, and deterministic JSON evidence. |
 
-### 4. Export Executive Reports
+The full mapping, evidence fields, and remediation status is in [docs/PCI-DSS-MAPPING.md](docs/PCI-DSS-MAPPING.md).
 
-Generate standalone dark-mode HTML executive reports or structured Markdown:
+## Architecture
 
-```bash
-scriptsentinel audit https://example.com/checkout --html report.html
-scriptsentinel audit https://example.com/checkout --markdown report.md
-```
+<p align="center">
+  <img src="assets/architecture-diagram.svg" alt="ScriptSentinel inspection planes: harvest, analysis core, evidence" width="846">
+</p>
 
----
+The pipeline is deterministic and browser-free: `httpx` fetches the target, BeautifulSoup parses the HTML, `integrity.py` computes digests, `csp_analyzer.py` grades the policy, `scanner.py` inspects behavior and IOCs, and `remediate.py` builds the fix pack. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for module boundaries, failure handling, and data contracts.
 
-## PCI-DSS v4.0 Regulatory Mapping
+## Documentation
 
-ScriptSentinel directly satisfies the client-side security mandates introduced in PCI-DSS v4.0:
+| Document | Contents |
+| --- | --- |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Data flow, module boundaries, typed contracts, failure handling. |
+| [docs/DETECTION-RULES.md](docs/DETECTION-RULES.md) | CSP, SRI, behavioral, and IOC rule catalog. |
+| [docs/PCI-DSS-MAPPING.md](docs/PCI-DSS-MAPPING.md) | PCI-DSS v4.0 6.4.3 / 11.6.1 evidence. |
+| [docs/DESIGN.md](docs/DESIGN.md) | MONAR visual tokens, 846px asset standard, SVG rules. |
+| [docs/CI-GATE.md](docs/CI-GATE.md) | Composite action, reusable workflow, exit codes. |
+| [docs/RELEASE.md](docs/RELEASE.md) | Release-stage checklist, build artifacts, verification. |
+| [CHANGELOG.md](CHANGELOG.md) | Version history and verification summary. |
 
-| Requirement | Specification | Enforcement Mechanism |
-| :--- | :--- | :--- |
-| **Requirement 6.4.3** | All payment page scripts must be authorized, justified, and integrity-verified. | Maintains an automated inventory of scripts executing on checkout endpoints, confirms written business justification, and computes Subresource Integrity (SRI) attributes. |
-| **Requirement 11.6.1** | Change- and tamper-detection mechanisms for payment page HTTP headers and script contents. | Tracks cryptographic script hash drift against approved baselines and verifies CSP violation telemetry streams. |
+## Compute Partner
 
----
+<p align="center">
+  <img src="assets/partner-unquant.svg" alt="Unquant — infrastructure and AI compute partner" width="846">
+</p>
 
-## Detection Rules & Heuristics
-
-ScriptSentinel enforces an extensible suite of detection rules:
-
-- **CSP Misconfigurations**: `CSP-MISSING`, `CSP-UNSAFE-EVAL`, `CSP-UNSAFE-INLINE`, `CSP-CONNECT-WILDCARD`, `CSP-STRICT-DYNAMIC-EXFIL-RISK`, `CSP-REPORTING-ABSENT`.
-- **Integrity & Drift**: `SCRIPT_DRIFT`, `INTEGRITY_MISMATCH`, `MISSING_SRI`, `VERIFIED`.
-- **Behavioral Skimmer Heuristics**: `SKIM-INPUT-HARVEST`, `SKIM-DOM-LISTENER`, `SKIM-CLIPBOARD-TAMPER`, `SKIM-EVAL-EXEC`, `SKIM-BASE64-UNPACK`, `SKIM-EXFIL-BEACON`, and `IOC-MATCH-C2-DOMAIN` (OPTIJACK / CVE-2026-132224 threat feeds).
-
-Read the complete catalog and severity ratings in **[`docs/DETECTION-RULES.md`](docs/DETECTION-RULES.md)**.
-
----
-
-## Infrastructure & AI Partner
-
-<div align="center">
-  <a href="https://unquant.io/">
-    <img alt="Unquant — Infrastructure &amp; AI Compute Partner" src="assets/partner-unquant.svg" width="846">
-  </a>
-</div>
-
-<br>
-
-ScriptSentinel is supported by **[Unquant](https://unquant.io/)**, who provided the necessary high-performance compute and scalable AI model runtime access to conduct supply-chain simulations, fuzz tampered script variants, and benchmark drift detection algorithms.
-
-> *Special thanks to **Luke** at Unquant for his dedication and extraordinary support in advancing open-source defensive security research.*
-
----
-
-## Documentation Suite
-
-- **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**: Data flow, headless DOM hooks, hash computation engine, and AST analyzer.
-- **[`docs/PCI-DSS-MAPPING.md`](docs/PCI-DSS-MAPPING.md)**: Requirement 6.4.3 & 11.6.1 compliance ledger and operational evidence.
-- **[`docs/DETECTION-RULES.md`](docs/DETECTION-RULES.md)**: Catalog of all detection rules, severity grades, and remediation guidance.
-
----
+[Unquant](https://unquant.io/) provided server infrastructure and AI compute access for the OPTIJACK simulation and model runs used to validate ScriptSentinel. Special thanks to Luke for championing open-source client-side defense research.
 
 ## Contributing
 
-We welcome contributions from security researchers, detection engineers, and developers:
+Run the full gates before opening a pull request:
 
-- Review [`CONTRIBUTING.md`](CONTRIBUTING.md) to get started.
-- Propose new C2 drop domains or skimmer signatures via the [Threat Intel Contribution Issue Template](https://github.com/Ally-Released/scriptsentinel/issues/new?template=threat_intel_rule.yml).
-- Verification requirements: `ruff check .` and `pytest`.
+```bash
+pytest -v
+ruff check .
+mypy --strict src/scriptsentinel
+```
 
----
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the module map, IOC feed schema, and test conventions. Security reports follow [SECURITY.md](SECURITY.md). The project is MIT licensed.
 
-## Security Policy
-
-For vulnerability disclosures, refer to [`SECURITY.md`](SECURITY.md). Please report vulnerabilities privately through [GitHub Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories).
-
----
-
-## License
-
-ScriptSentinel is open-source software licensed under the **[MIT License](LICENSE)**.
-
-<br>
-
-<div align="center">
-<sub>Crafted with conviction by <a href="https://www.monarservices.org/">MONAR</a>. Chances make Champions.</sub>
-</div>
+<p align="center">
+  <sub>ScriptSentinel is a MONAR project. Built for checkout-page integrity.</sub>
+</p>

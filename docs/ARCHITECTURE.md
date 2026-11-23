@@ -1,122 +1,102 @@
-# ScriptSentinel Architecture & Internal Design
+# ScriptSentinel Architecture
 
-ScriptSentinel (`scriptsentinel`) is a CLI-first client-side supply-chain defense engine designed by **MONAR**. It operates out-of-band to inspect, verify, and enforce integrity across all third-party JavaScript executing inside consumer web sessions.
+ScriptSentinel is a deterministic, browser-free audit pipeline for third-party JavaScript on payment and checkout pages. The engine fetches a target, parses the document, computes cryptographic digests, grades the Content-Security-Policy, scans script behavior and IOC exposure, and emits remediation and evidence.
 
-![ScriptSentinel System Architecture](../assets/architecture-diagram.svg)
+<p align="center">
+  <img src="../assets/architecture-diagram.svg" alt="ScriptSentinel inspection planes: harvest, analysis core, evidence" width="846">
+</p>
 
----
+## Pipeline
 
-## 1. Design Thesis: The Client-Side Blind Spot
-
-Traditional perimeter defenses (Web Application Firewalls, Next-Gen Gateways, and SIEM pipelines) inspect ingress and egress traffic arriving at your origin servers. They possess **zero visibility** into client-side DOM execution inside user browsers.
-
-When an upstream CDN, vendor tag manager, analytics SDK, or customer chat script is tampered with:
-1. Malicious payloads execute dynamically within the consumer's browser context.
-2. Form fields (credit cards, CVVs, credentials, PII) are scraped directly from the DOM before form submission or encryption.
-3. Harvested data is exfiltrated directly from the browser to adversary C2 endpoints using `fetch()`, `XMLHttpRequest`, or `navigator.sendBeacon()`.
-4. The transaction proceeds normally to the merchant server; no server-side anomaly or error occurs.
-
-ScriptSentinel solves this by providing **deterministic client-side verification**: automated Subresource Integrity (SRI) drift tracking, static Content-Security-Policy (CSP) misconfiguration analysis, and behavioral AST heuristics targeting Magecart and OPTIJACK skimmers.
-
----
-
-## 2. System Execution Pipeline
-
-The audit workflow executes across five sequential stages:
-
-```
-[ Target URL / DOM ]
-         │
-         ▼
-[ 1. Harvester (Headless Chromium) ] ── Extracts inline scripts, external <script src>, CSP headers
-         │
-         ├───────────────────────────┬───────────────────────────┐
-         ▼                           ▼                           ▼
-[ 2. Cryptographic SRI ]   [ 3. CSP Analyzer ]        [ 4. Behavioral AST Scanner ]
-  • SHA-256 / SHA-384        • Directive Tokenizer      • Form/CVV Harvesting (SKIM-01)
-  • Base64 SRI Generation    • unsafe-eval / inline     • Keystroke Listeners (SKIM-02)
-  • Baseline Drift Matcher   • Exfil Vectors (connect)  • Eval / Function Unpackers (SKIM-04)
-  • Status: SCRIPT_DRIFT     • Grading Algorithm (A-F)  • C2 Domain Feeds (OPTIJACK)
-         │                           │                           │
-         └───────────────────────────┼───────────────────────────┘
-                                     ▼
-                      [ 5. Triage & Correlation ]
-                        • Risk Scoring (0–100)
-                        • PCI-DSS v4.0 Attestation
-                                     │
-         ┌───────────────────────────┴───────────────────────────┐
-         ▼                                                       ▼
-[ Executive Terminal / JSON ]                          [ Remediation Quick-Pack ]
-  • Rich Console Tables                                  • Hardened Nonced CSP Header
-  • machine-readable JSON                                • Drop-in SRI <script> Tags
-                                                         • Nginx & Apache Directives
+```mermaid
+flowchart LR
+  A[Target URL] --> B[httpx GET: timeout 10s, redirects on, TLS verify]
+  B --> C[BeautifulSoup html.parser]
+  C --> D[auditor.py: script inventory]
+  D --> E[integrity.py: SHA-256 / SHA-384 + SRI]
+  D --> F[csp_analyzer.py: directives + grade]
+  D --> G[scanner.py: behavior + IOC]
+  E --> H[models.py: typed AuditReport]
+  F --> H
+  G --> H
+  H --> I[remediate.py: CSP + SRI + server blocks]
+  H --> J[report/*: terminal, JSON, Markdown, HTML]
+  H --> K[rules/*: Sigma YAML, Suricata HTTP/DNS]
 ```
 
----
+## Module Boundaries
 
-## 3. Module Breakdown
+| Module | Responsibility | Inputs | Outputs |
+| --- | --- | --- | --- |
+| `auditor.py` | Fetch target, parse HTML, collect inline and external `<script>` elements, build the complete audit report. | URL, optional baseline map, timeout, optional `httpx` transport. | `AuditReport`. |
+| `integrity.py` | Compute SHA-256/SHA-384 hex and SRI base64 digests; compare declared integrity and pinned baseline. | Script bytes, declared integrity, baseline SHA-256. | `ScriptIntegrityResult`, `HashDigests`, `IntegrityIssue`. |
+| `csp_analyzer.py` | Parse CSP directives, merge duplicate directives, apply penalties, grade A–F. | Raw CSP header or `None`. | `CSPAnalysis`. |
+| `scanner.py` | Match payment-field harvesting, listeners, clipboard access, eval, base64 unpacking, beacons, and IOC domains/hashes. | JavaScript source and script name. | `ScanResult`, `ScanFinding`. |
+| `remediate.py` | Build hardened CSP, SRI replacement tags, Nginx/Apache blocks, PCI-DSS mapping. | Site URL, CSP analysis, script inventory. | `RemediationPack`. |
+| `report/*` | Render standalone evidence in terminal, JSON, Markdown, HTML. | `AuditReport`. | Report files and strings. |
+| `rules/*` | Export Sigma YAML and Suricata HTTP/DNS rules from the packaged IOC feed and optional audit. | Feed records, optional `AuditReport`. | Rule files. |
+| `iocs/loader.py` | Load, validate, merge, and digest versioned IOC feeds. | Feed JSON path or packaged resource. | `IOCFeed`, `IOCRecord`. |
+| `cli.py` | Parse subcommands, render Rich output, write reports, return CI exit codes. | CLI argv. | Terminal output, files, exit code. |
 
-### `scriptsentinel.cli`
-Entry point for command execution. Exposes commands:
-- `audit <url>`: Orchestrates the target audit, fetches script inventory, performs SRI drift analysis against `--baseline <file>`, grades CSP, and prints console tables or JSON (`--output <file>`).
-- `remediate <url>`: Generates drop-in server configuration blocks (Nginx, Apache), hardened CSP headers with cryptographic nonces, and verified `<script>` tags with computed SRI hashes.
+## Typed Contract
 
-### `scriptsentinel.auditor`
-The orchestrator module:
-- Spawns headless browser sessions (or HTTP client requests) to fetch the target DOM.
-- Extracts all inline scripts, remote `<script src>` links, and response HTTP headers (`Content-Security-Policy`, `Content-Security-Policy-Report-Only`).
-- Concurrently fetches external script contents while respecting timeout boundaries.
+`models.py` is the frozen shared contract. Engines return typed dataclasses with `to_dict()` projections for reporters:
 
-### `scriptsentinel.integrity`
-The cryptographic verification engine:
-- Computes SHA-256 and SHA-384 binary digests and formats standard W3C SRI strings:
-  `sha256-<base64>` and `sha384-<base64>`.
-- Evaluates script status against four states:
-  - `VERIFIED`: Declared `integrity` matches calculated cryptographic hash.
-  - `MISSING_SRI`: External script is loaded without an `integrity` attribute.
-  - `INTEGRITY_MISMATCH`: Declared SRI does not match calculated hash; browser will block execution.
-  - `SCRIPT_DRIFT`: Current script hash differs from a pinned baseline (`--baseline baselines.json`), proving upstream CDN tampering.
+- `Finding`
+- `CSPAnalysis`
+- `HashDigests`
+- `IntegrityIssue`
+- `ScriptIntegrityResult`
+- `ScanFinding`
+- `ScanResult`
+- `ScriptAudit`
+- `ScriptTagReplacement`
+- `ComplianceItem`
+- `RemediationPack`
+- `AuditReport`
 
-### `scriptsentinel.csp_analyzer`
-Comprehensive CSP tokenizer and threat evaluator:
-- Directives parsed: `default-src`, `script-src`, `script-src-elem`, `connect-src`, `form-action`, `frame-ancestors`, `report-uri`, `report-to`.
-- Misconfiguration detection:
-  - `CSP-MISSING`: Total absence of CSP header (Score 0, Grade F).
-  - `CSP-UNSAFE-EVAL`: Permits `eval()`, `Function()`, and string-to-code compilation used by obfuscated skimmers.
-  - `CSP-UNSAFE-INLINE`: Permits arbitrary inline script execution without nonce or hash verification.
-  - `CSP-CONNECT-WILDCARD`: Open `connect-src *`, permitting unrestricted outbound exfiltration via `fetch()` and `sendBeacon()`.
-  - `CSP-STRICT-DYNAMIC-EXFIL-RISK`: `strict-dynamic` enabled without restricting `connect-src`.
-  - `CSP-REPORTING-ABSENT`: Lack of telemetry endpoints to alert SOC teams when browser violations occur.
-- Health grading: 100-point penalty deduction system mapping to grades **A**, **B**, **C**, **D**, and **F**.
+The package ships `py.typed` for PEP 561 consumers.
 
-### `scriptsentinel.scanner`
-Behavioral AST heuristic scanner:
-- Scans script bodies for skimmer indicators, DOM scraping, and anti-analysis evasion.
-- Rules implemented:
-  - `SKIM-INPUT-HARVEST`: Regex targeting card number, CVV, expiration, password, or SSN DOM value scrapers.
-  - `SKIM-DOM-LISTENER`: Interceptors hooking `input`, `change`, `keydown`, `keyup`, and `submit` events.
-  - `SKIM-CLIPBOARD-TAMPER`: Direct access to `navigator.clipboard.readText()` or `writeText()`.
-  - `SKIM-EVAL-EXEC`: Dynamic code evaluation via `eval()` or `new Function()`.
-  - `SKIM-BASE64-UNPACK`: Runtime decoding of base64 strings (`atob()`).
-  - `SKIM-EXFIL-BEACON`: Asynchronous data dispatch via `navigator.sendBeacon()`.
-  - `IOC-MATCH-C2-DOMAIN`: Domain match against threat intelligence feeds.
+## Failure Handling
 
-### `scriptsentinel.iocs`
-Adversary threat intelligence subsystem:
-- Bundles curated IOC feeds including `malicious_c2.json` and recent campaign indicators (`optimjack_2026-11-23.json`).
-- Supports extensible community threat intelligence ingestion.
+- Fetch failures produce `AuditReport(overall_risk="ERROR", error=...)` with an empty script inventory.
+- HTML parse failures are recorded in `AuditReport.error`; the audit continues with zero scripts.
+- External script fetch failures produce `ScriptAudit.error` and `FETCH_FAILED` in report output.
+- Remediation failures are recorded in `AuditReport.error`; the rest of the report remains valid.
+- `httpx.AsyncClient` uses `timeout=10.0`, `follow_redirects=True`, and `verify=True`.
+- Malformed CSP headers are parsed permissively; missing headers produce `CSP-MISSING` with score 0 / grade F.
+- IOC feeds reject records without `source` or `first_seen`; malformed feeds raise `IOCError`.
 
-### `scriptsentinel.remediate`
-Remediation synthesis engine:
-- Generates hardened CSP headers restricting `script-src` to verified origins and requiring per-response nonces (`'nonce-{NONCE}'`).
-- Emits drop-in HTML `<script>` tags configured with `integrity="sha256-..." crossorigin="anonymous"`.
-- Outputs production-ready server blocks for Nginx (`add_header`) and Apache (`Header set`).
-- Generates PCI-DSS v4.0 Requirement 6.4.3 and 11.6.1 attestation checklists.
+## Determinism
 
----
+- No browser dependency, no JavaScript execution, no telemetry, no phone-home.
+- Timestamps are UTC ISO-8601 strings.
+- Reporters render from typed dataclasses, not ad hoc dictionaries.
+- External requests are limited to the target URL and optional drift webhook.
+- SRI digests are computed from the exact fetched bytes.
 
-## 4. Performance & Operational Constraints
+## Runtime Dependencies
 
-1. **Zero Runtime Friction**: ScriptSentinel audits happen in CI/CD pipelines, scheduled synthetic monitors, or local security scans. It introduces **0ms latency** to end-user transactions.
-2. **Deterministic Outputs**: Given identical script bytes and baseline configs, ScriptSentinel produces identical cryptographic hashes and audit grades.
-3. **No External Telemetry Leakage**: ScriptSentinel does not phone home or transmit audited URLs/scripts to third parties. All processing executes locally on your hardware.
+| Dependency | Use |
+| --- | --- |
+| `httpx` | Async HTTP fetch and optional webhook delivery. |
+| `beautifulsoup4` | HTML parsing with `html.parser`. |
+| `rich` | CLI panels, tables, and banner rendering. |
+
+Development dependencies: `pytest`, `pytest-cov`, `ruff`, `mypy`, `types-pyyaml`.
+
+## Security Boundaries
+
+- TLS verification is enabled.
+- Redirects are followed, but the final response URL is used to resolve relative script sources.
+- Script content is scanned statically; the scanner does not execute JavaScript.
+- IOC matching uses exact hostname and exact 64-hex SHA-256 boundaries, not substring matches.
+- HTML reports escape all dynamic values with `html.escape`.
+- CI exit codes are explicit: `audit --fail-on` and `monitor` return `1` on threshold or drift.
+
+## Limits
+
+- Behavioral scanning is static regex matching, not AST execution or browser instrumentation.
+- IOC coverage is limited to the packaged OPTIJACK feed and legacy C2 domains.
+- SRI baseline maintenance is operator-owned; legitimate vendor releases must update the pinned baseline.
+- Lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not the blast radius of the real-world incident.

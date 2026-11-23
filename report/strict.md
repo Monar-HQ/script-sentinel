@@ -1,14 +1,14 @@
 # ScriptSentinel Audit Report
 
 **Target:** `http://localhost:8100/strict/checkout`
-**Timestamp:** 2026-11-23T14:39:37+00:00
+**Timestamp:** 2026-11-23T23:18:30+00:00
 
 ## Executive Summary
 
 | Metric | Value |
 | --- | --- |
 | Target URL | http://localhost:8100/strict/checkout |
-| Timestamp | 2026-11-23T14:39:37+00:00 |
+| Timestamp | 2026-11-23T23:18:30+00:00 |
 | HTTP Status | 200 |
 | Overall Risk | **HIGH** |
 | CSP Grade | A (100/100) |
@@ -20,14 +20,14 @@
 **Raw CSP header:**
 
 ```http
-default-src 'self'; script-src 'self' 'nonce-62e888a67bbfe7e356d500087cd33531' http://localhost:8001; report-uri http://localhost:8200/report
+default-src 'self'; script-src 'self' 'nonce-98435d30ba299fd7cfab33c71b5bba85' http://localhost:8001; report-uri http://localhost:8200/report
 ```
 
 | Directive | Values |
 | --- | --- |
 | default-src | 'self' |
 | report-uri | http://localhost:8200/report |
-| script-src | 'self' 'nonce-62e888a67bbfe7e356d500087cd33531' http://localhost:8001 |
+| script-src | 'self' 'nonce-98435d30ba299fd7cfab33c71b5bba85' http://localhost:8001 |
 
 _No CSP misconfigurations detected._
 
@@ -35,7 +35,7 @@ _No CSP misconfigurations detected._
 
 | # | Type | Source | Nonce | SRI Status | SHA-256 | Scan Findings |
 | --- | --- | --- | --- | --- | --- | --- |
-| 0 | external | http://localhost:8001/js/acme.js | 62e888a67bbfe7e356d500087cd33531 | MISSING_SRI | 1ddc1b32fb1e... | clean |
+| 0 | external | http://localhost:8001/js/acme.js | 98435d30ba299fd7cfab33c71b5bba85 | MISSING_SRI | 1ddc1b32fb1e... | clean |
 
 ## Integrity Findings
 

@@ -10,7 +10,7 @@ body:
     id: version
     attributes:
       label: ScriptSentinel Version
-      description: What version of ScriptSentinel / ScriptSentinel are you running? (Run `scriptsentinel --version`)
+      description: What version of ScriptSentinel are you running? (Run `scriptsentinel --version`)
       placeholder: e.g., 0.1.0
     validations:
       required: true

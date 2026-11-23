@@ -10,6 +10,8 @@
 
 ## Checklist
 - [ ] My code follows the code style of this project (`ruff check .`).
+- [ ] Type checking passes (`mypy --strict src/scriptsentinel`).
 - [ ] I have added tests that prove my fix is effective or that my feature works.
-- [ ] New and existing unit tests pass locally (`pytest`).
+- [ ] New and existing unit tests pass locally (`pytest -v`).
 - [ ] I have updated the documentation accordingly.
+- [ ] IOC changes include `source` and `first_seen`; rule changes include TP/FP evidence.
