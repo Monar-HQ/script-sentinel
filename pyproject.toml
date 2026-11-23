@@ -21,8 +21,9 @@ classifiers = [
     "Topic :: Security",
 ]
 dependencies = [
-    "playwright>=1.40",
+    "beautifulsoup4>=4.12",
     "httpx>=0.27",
+    "rich>=13.7",
 ]
 
 [project.optional-dependencies]
