@@ -1,5 +1,5 @@
 name: Bug Report
-description: Create a report to help us improve CodeSentinel
+description: Create a report to help us improve ScriptSentinel
 labels: ["bug", "triage"]
 body:
   - type: markdown
@@ -9,8 +9,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: CodeSentinel Version
-      description: What version of CodeSentinel / ScriptSentinel are you running? (Run `scriptsentinel --version`)
+      label: ScriptSentinel Version
+      description: What version of ScriptSentinel / ScriptSentinel are you running? (Run `scriptsentinel --version`)
       placeholder: e.g., 0.1.0
     validations:
       required: true

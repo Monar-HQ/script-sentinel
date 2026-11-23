@@ -11,7 +11,7 @@
 
 ## Reporting a Vulnerability
 
-We take the security of CodeSentinel (ScriptSentinel) seriously. If you discover a vulnerability or security flaw, please report it responsibly.
+We take the security of ScriptSentinel (ScriptSentinel) seriously. If you discover a vulnerability or security flaw, please report it responsibly.
 
 ### How to Report
 
@@ -19,7 +19,7 @@ We take the security of CodeSentinel (ScriptSentinel) seriously. If you discover
    - Go to the repository's [Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories) tab.
    - Click **Report a vulnerability** to open a confidential report.
 2. **Direct Contact**:
-   - If GitHub Private Reporting is unavailable, send an email to `iamnotlol30@gmail.com` with the subject line `[SECURITY] CodeSentinel Vulnerability Report`.
+   - If GitHub Private Reporting is unavailable, send an email to `iamnotlol30@gmail.com` with the subject line `[SECURITY] ScriptSentinel Vulnerability Report`.
    - Please include:
      - Target component / file / function
      - Type of issue (e.g. AST bypass, ReDoS in regex scanner, injection in report rendering)

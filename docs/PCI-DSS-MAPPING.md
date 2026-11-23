@@ -2,7 +2,7 @@
 
 PCI-DSS version 4.0 introduced mandatory requirements targeting client-side payment security to combat browser-based digital skimming (Magecart, formjacking, and upstream CDN tampering). 
 
-This document details how **CodeSentinel** (`scriptsentinel`) provides the technical enforcement, inventory tracking, and cryptographic proofs required to satisfy **Requirement 6.4.3** and **Requirement 11.6.1**.
+This document details how **ScriptSentinel** (`scriptsentinel`) provides the technical enforcement, inventory tracking, and cryptographic proofs required to satisfy **Requirement 6.4.3** and **Requirement 11.6.1**.
 
 ---
 
@@ -24,9 +24,9 @@ To close this attack surface, the PCI Security Standards Council (SSC) introduce
 > *• An inventory of all scripts is maintained with written justification for why each is necessary."*
 > — **PCI-DSS v4.0 Requirement 6.4.3**
 
-### How CodeSentinel Enforces Requirement 6.4.3:
+### How ScriptSentinel Enforces Requirement 6.4.3:
 
-| Sub-Requirement | CodeSentinel Technical Implementation | Audit Evidence Generated |
+| Sub-Requirement | ScriptSentinel Technical Implementation | Audit Evidence Generated |
 | :--- | :--- | :--- |
 | **Script Authorization** | Audits DOM to extract complete inventory of inline and external `<script>` elements. Validates origins against approved whitelist in `--baseline` configuration. | `audit_report.json` containing `scripts_audit` inventory with origin domain validation. |
 | **Script Integrity** | Computes SHA-256 and SHA-384 cryptographic digests for every discovered script. Detects missing `integrity` attributes (`MISSING_SRI`) and flags hash drift (`SCRIPT_DRIFT`). Generates valid W3C Subresource Integrity (SRI) hashes (`sri_sha256`, `sri_sha384`). | `integrity_status` field for every script: `VERIFIED`, `MISSING_SRI`, or `SCRIPT_DRIFT`. |
@@ -50,13 +50,13 @@ scriptsentinel remediate https://checkout.merchant.com/pay
 > *• The mechanism is configured to evaluate the received page at least once every seven days or periodically at the frequency defined in the entity's targeted risk analysis."*
 > — **PCI-DSS v4.0 Requirement 11.6.1**
 
-### How CodeSentinel Enforces Requirement 11.6.1:
+### How ScriptSentinel Enforces Requirement 11.6.1:
 
-| Mandate Element | CodeSentinel Enforcement Mechanism | Output Verification |
+| Mandate Element | ScriptSentinel Enforcement Mechanism | Output Verification |
 | :--- | :--- | :--- |
 | **HTTP Header Tampering** | Parses response headers and alerts on Content-Security-Policy modifications, missing security headers, or open `connect-src` directives that permit data exfiltration. | CSP health score and detailed finding logs (`CSP-MISSING`, `CSP-UNSAFE-EVAL`, `CSP-CONNECT-WILDCARD`). |
 | **Script Content Tampering** | Re-computes live script SHA-256 hashes and compares against the pinned baseline (`--baseline`). Triggers an immediate `SCRIPT_DRIFT` critical alert upon single-byte code divergence. | `drift_detected: true` flag and terminal alert identifying the exact altered script URL. |
-| **Automated Periodic Evaluation** | CodeSentinel CLI is lightweight and deterministic, enabling execution via GitHub Actions, GitLab CI, Kubernetes cronjobs, or synthetic monitoring every hour or day (exceeding the 7-day minimum). | Non-zero exit code on failure, enabling automated Slack/PagerDuty/SIEM alerting. |
+| **Automated Periodic Evaluation** | ScriptSentinel CLI is lightweight and deterministic, enabling execution via GitHub Actions, GitLab CI, Kubernetes cronjobs, or synthetic monitoring every hour or day (exceeding the 7-day minimum). | Non-zero exit code on failure, enabling automated Slack/PagerDuty/SIEM alerting. |
 
 ### Operational Workflow for Req 11.6.1:
 ```bash
@@ -82,4 +82,4 @@ When undergoing your annual PCI-DSS v4.0 assessment, provide your QSA with:
 3. **Hardened CSP Directives**: Demonstrates technical controls restricting unauthorized script injection and exfiltration channels.
 4. **Subresource Integrity Deployment**: Demonstrates browser-level cryptographic enforcement on all third-party CDN scripts.
 
-CodeSentinel provides the complete technical foundation to achieve and maintain compliance without third-party vendor lock-in.
+ScriptSentinel provides the complete technical foundation to achieve and maintain compliance without third-party vendor lock-in.

@@ -3,7 +3,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-banner-dark.svg">
-    <img alt="CodeSentinel" src="assets/hero-banner-light.svg" width="100%">
+    <img alt="ScriptSentinel" src="assets/hero-banner-light.svg" width="100%">
   </picture>
 </p>
 
@@ -34,7 +34,7 @@
 Audit and evaluate any web application endpoint (e.g. checkout forms, authentication portals) with instant cryptographic hash drift tracking and CSP vulnerability scoring:
 
 <div align="center">
-  <img alt="CodeSentinel CLI live execution output" src="assets/terminal-showcase.svg" width="846">
+  <img alt="ScriptSentinel CLI live execution output" src="assets/terminal-showcase.svg" width="846">
 </div>
 
 ---
@@ -66,10 +66,10 @@ When an upstream vendor control plane or CDN is compromised:
 
 ## System Architecture
 
-CodeSentinel analyzes client-side attack surfaces across three distinct inspection vectors:
+ScriptSentinel analyzes client-side attack surfaces across three distinct inspection vectors:
 
 <div align="center">
-  <img alt="CodeSentinel System Architecture Diagram" src="assets/architecture-diagram.svg" width="846">
+  <img alt="ScriptSentinel System Architecture Diagram" src="assets/architecture-diagram.svg" width="846">
 </div>
 
 1. **Cryptographic Integrity & Drift Engine**: Computes canonical SHA-256 and SHA-384 Subresource Integrity (SRI) hashes. When evaluated against pinned baselines, it immediately flags unauthorized upstream vendor script modifications.
@@ -80,7 +80,7 @@ CodeSentinel analyzes client-side attack surfaces across three distinct inspecti
 
 ## Defense Matrix
 
-| Attack Vector / Defense Capability | Perimeter WAF | SAST / DAST | CodeSentinel |
+| Attack Vector / Defense Capability | Perimeter WAF | SAST / DAST | ScriptSentinel |
 | :--- | :---: | :---: | :---: |
 | Detects Upstream CDN Code Tampering | No | No | **Real-Time SRI Drift** |
 | Flags Browser-Side Form Field Scraping | No | No | **Behavioral AST Heuristics** |
@@ -144,7 +144,7 @@ scriptsentinel audit https://example.com/checkout --markdown report.md
 
 ## PCI-DSS v4.0 Regulatory Mapping
 
-CodeSentinel directly satisfies the client-side security mandates introduced in PCI-DSS v4.0:
+ScriptSentinel directly satisfies the client-side security mandates introduced in PCI-DSS v4.0:
 
 | Requirement | Specification | Enforcement Mechanism |
 | :--- | :--- | :--- |
@@ -155,7 +155,7 @@ CodeSentinel directly satisfies the client-side security mandates introduced in 
 
 ## Detection Rules & Heuristics
 
-CodeSentinel enforces an extensible suite of detection rules:
+ScriptSentinel enforces an extensible suite of detection rules:
 
 - **CSP Misconfigurations**: `CSP-MISSING`, `CSP-UNSAFE-EVAL`, `CSP-UNSAFE-INLINE`, `CSP-CONNECT-WILDCARD`, `CSP-STRICT-DYNAMIC-EXFIL-RISK`, `CSP-REPORTING-ABSENT`.
 - **Integrity & Drift**: `SCRIPT_DRIFT`, `INTEGRITY_MISMATCH`, `MISSING_SRI`, `VERIFIED`.
@@ -175,7 +175,7 @@ Read the complete catalog and severity ratings in **[`docs/DETECTION-RULES.md`](
 
 <br>
 
-CodeSentinel is supported by **[Unquant](https://unquant.io/)**, who provided the necessary high-performance compute and scalable AI model runtime access to conduct supply-chain simulations, fuzz tampered script variants, and benchmark drift detection algorithms.
+ScriptSentinel is supported by **[Unquant](https://unquant.io/)**, who provided the necessary high-performance compute and scalable AI model runtime access to conduct supply-chain simulations, fuzz tampered script variants, and benchmark drift detection algorithms.
 
 > *Special thanks to **Luke** at Unquant for his dedication and extraordinary support in advancing open-source defensive security research.*
 
@@ -207,7 +207,7 @@ For vulnerability disclosures, refer to [`SECURITY.md`](SECURITY.md). Please rep
 
 ## License
 
-CodeSentinel is open-source software licensed under the **[MIT License](LICENSE)**.
+ScriptSentinel is open-source software licensed under the **[MIT License](LICENSE)**.
 
 <br>
 

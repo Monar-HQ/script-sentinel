@@ -28,7 +28,7 @@
     <polygon points="36,-3 42,0 36,3" fill="#d9000b"/>
   </g>
 
-  <!-- Stage 2: CodeSentinel Multi-Vector Inspection -->
+  <!-- Stage 2: ScriptSentinel Multi-Vector Inspection -->
   <g transform="translate(276, 30)">
     <rect width="294" height="160" fill="#080a11" stroke="#2a3242" stroke-width="1"/>
     <rect x="0" y="0" width="294" height="26" fill="#0f1422"/>

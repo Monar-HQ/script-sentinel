@@ -1,4 +1,4 @@
-"""CodeSentinel / ScriptSentinel.
+"""ScriptSentinel / ScriptSentinel.
 
 Open-source client-side supply-chain defense: audit third-party JavaScript,
 detect suspicious dependencies, monitor script integrity, identify CSP

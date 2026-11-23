@@ -1,4 +1,4 @@
-"""CodeSentinel CLI entry point.
+"""ScriptSentinel CLI entry point.
 
 Rich terminal interface for client-side supply-chain auditing, CSP checks,
 script-drift monitoring, remediation generation, and detection-rule export.
@@ -317,7 +317,7 @@ def _export_rules(fmt: str, output: str, url: str | None) -> int:
 def _build_parser() -> argparse.ArgumentParser:
     """Build the argparse CLI parser."""
     parser = argparse.ArgumentParser(
-        description="CodeSentinel: Client-Side Supply-Chain Defense & Script Auditor"
+        description="ScriptSentinel: Client-Side Supply-Chain Defense & Script Auditor"
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 

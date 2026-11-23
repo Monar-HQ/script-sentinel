@@ -1,6 +1,6 @@
-# CodeSentinel Detection Rule Reference
+# ScriptSentinel Detection Rule Reference
 
-This document provides the definitive specification of all security detection rules, behavioral heuristics, integrity checks, and CSP evaluation criteria enforced by **CodeSentinel** (`scriptsentinel`).
+This document provides the definitive specification of all security detection rules, behavioral heuristics, integrity checks, and CSP evaluation criteria enforced by **ScriptSentinel** (`scriptsentinel`).
 
 ---
 
@@ -63,7 +63,7 @@ Evaluated by `scriptsentinel.integrity` against external script bytes and baseli
 ### `MISSING_SRI`
 - **Severity**: `HIGH`
 - **Description**: An external JavaScript resource is loaded via `<script src="...">` without an `integrity` attribute. The browser will execute whatever content the remote server serves without cryptographic verification.
-- **Action**: Add `integrity="sha256-<hash>"` and `crossorigin="anonymous"` to the script element using CodeSentinel's remediation generator.
+- **Action**: Add `integrity="sha256-<hash>"` and `crossorigin="anonymous"` to the script element using ScriptSentinel's remediation generator.
 
 ### `VERIFIED`
 - **Severity**: `INFO`

@@ -1,8 +1,8 @@
-# CodeSentinel Architecture & Internal Design
+# ScriptSentinel Architecture & Internal Design
 
-CodeSentinel (`scriptsentinel`) is a CLI-first client-side supply-chain defense engine designed by **MONAR**. It operates out-of-band to inspect, verify, and enforce integrity across all third-party JavaScript executing inside consumer web sessions.
+ScriptSentinel (`scriptsentinel`) is a CLI-first client-side supply-chain defense engine designed by **MONAR**. It operates out-of-band to inspect, verify, and enforce integrity across all third-party JavaScript executing inside consumer web sessions.
 
-![CodeSentinel System Architecture](../assets/architecture-diagram.svg)
+![ScriptSentinel System Architecture](../assets/architecture-diagram.svg)
 
 ---
 
@@ -16,7 +16,7 @@ When an upstream CDN, vendor tag manager, analytics SDK, or customer chat script
 3. Harvested data is exfiltrated directly from the browser to adversary C2 endpoints using `fetch()`, `XMLHttpRequest`, or `navigator.sendBeacon()`.
 4. The transaction proceeds normally to the merchant server; no server-side anomaly or error occurs.
 
-CodeSentinel solves this by providing **deterministic client-side verification**: automated Subresource Integrity (SRI) drift tracking, static Content-Security-Policy (CSP) misconfiguration analysis, and behavioral AST heuristics targeting Magecart and OPTIJACK skimmers.
+ScriptSentinel solves this by providing **deterministic client-side verification**: automated Subresource Integrity (SRI) drift tracking, static Content-Security-Policy (CSP) misconfiguration analysis, and behavioral AST heuristics targeting Magecart and OPTIJACK skimmers.
 
 ---
 
@@ -117,6 +117,6 @@ Remediation synthesis engine:
 
 ## 4. Performance & Operational Constraints
 
-1. **Zero Runtime Friction**: CodeSentinel audits happen in CI/CD pipelines, scheduled synthetic monitors, or local security scans. It introduces **0ms latency** to end-user transactions.
-2. **Deterministic Outputs**: Given identical script bytes and baseline configs, CodeSentinel produces identical cryptographic hashes and audit grades.
-3. **No External Telemetry Leakage**: CodeSentinel does not phone home or transmit audited URLs/scripts to third parties. All processing executes locally on your hardware.
+1. **Zero Runtime Friction**: ScriptSentinel audits happen in CI/CD pipelines, scheduled synthetic monitors, or local security scans. It introduces **0ms latency** to end-user transactions.
+2. **Deterministic Outputs**: Given identical script bytes and baseline configs, ScriptSentinel produces identical cryptographic hashes and audit grades.
+3. **No External Telemetry Leakage**: ScriptSentinel does not phone home or transmit audited URLs/scripts to third parties. All processing executes locally on your hardware.

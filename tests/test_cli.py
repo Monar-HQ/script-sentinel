@@ -1,4 +1,4 @@
-"""Unit tests for CodeSentinel CLI entry point."""
+"""Unit tests for ScriptSentinel CLI entry point."""
 
 from __future__ import annotations
 
