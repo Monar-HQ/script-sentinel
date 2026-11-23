@@ -1,0 +1,30 @@
+name: Threat Feed / Rule Contribution
+description: Propose a new IOC feed entry or behavioral scanner rule for supply-chain skimmers
+labels: ["rules", "threat-intel"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Contribute new skimmer patterns, C2 drop domains, or behavioral heuristics.
+  - type: dropdown
+    id: contribution-type
+    attributes:
+      label: Contribution Type
+      options:
+        - "C2 Domain / Exfiltration Endpoint IOC"
+        - "Script SHA-256 Hash IOC"
+        - "Behavioral AST Detection Pattern"
+        - "CSP Bypass / Misconfiguration Rule"
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Technical Details & Provenance
+      description: Provide the indicator, campaign name (e.g. Magecart Group X, OPTIJACK), and public reference or research link.
+      placeholder: |
+        Campaign: OPTIJACK / Magecart
+        Indicators / Regex / AST signature:
+        Public reference / Report:
+    validations:
+      required: true

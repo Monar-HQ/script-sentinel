@@ -1,0 +1,40 @@
+name: Bug Report
+description: Create a report to help us improve CodeSentinel
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue! Please do NOT report security vulnerabilities here — consult [SECURITY.md](https://github.com/Ally-Released/scriptsentinel/blob/main/SECURITY.md) instead.
+  - type: input
+    id: version
+    attributes:
+      label: CodeSentinel Version
+      description: What version of CodeSentinel / ScriptSentinel are you running? (Run `scriptsentinel --version`)
+      placeholder: e.g., 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Tell us what went wrong. Include command executed and error trace.
+      placeholder: |
+        When running `scriptsentinel audit ...`, the following error occurred:
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Info
+      description: OS, Python version, architecture
+      value: |
+        - OS: [e.g. Ubuntu 22.04 / Windows 11]
+        - Python version: [e.g. 3.10.11]

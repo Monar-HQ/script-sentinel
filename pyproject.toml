@@ -7,15 +7,17 @@ name = "scriptsentinel"
 version = "0.1.0"
 description = "CLI-first audit of third-party JavaScript: inventory, integrity baselines, CSP misconfiguration detection, IOC matching, and verifiable remediation."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "ScriptSentinel Contributors" }]
 keywords = ["csp", "supply-chain", "javascript", "integrity", "security"]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: Microsoft :: Windows",
+    "Operating System :: OS Independent",
     "Topic :: Security",
 ]
 dependencies = [
@@ -65,6 +67,7 @@ warn_redundant_casts = true
 files = ["src/scriptsentinel"]
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-q --strict-markers"
 markers = ["integration: requires the local OPTIJACK lab to be running"]

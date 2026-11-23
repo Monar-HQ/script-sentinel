@@ -7,7 +7,9 @@
     "pay.pay-cloud.online",
     "pay-relay.wordpressadmin001.workers.dev",
     "5vobauua3ojpklx.icu",
-    "eil786npto9u5bq.icu"
+    "eil786npto9u5bq.icu",
+    "sink.analytics-collector-edge.net",
+    "c2.attacker-control.net"
   ],
   "patterns": [
     "exfil",
