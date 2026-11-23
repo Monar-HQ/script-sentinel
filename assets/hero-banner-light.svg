@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 220" width="846" height="220" fill="none">
+  <defs>
+    <pattern id="grid-light" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e8e7e1" stroke-width="0.75"/>
+    </pattern>
+    <style>
+      .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+      .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <!-- Background Base Canvas -->
+  <rect width="846" height="220" fill="#fbfaf7" stroke="#e0ded6" stroke-width="1"/>
+  <rect width="846" height="220" fill="url(#grid-light)"/>
+
+  <!-- Top Accent Band (Monar Red) -->
+  <rect x="0" y="0" width="846" height="2" fill="#d9000b"/>
+
+  <!-- Left Technical Geometric Monogram -->
+  <g transform="translate(40, 42)">
+    <path d="M0 16 L16 0 H96 L112 16 V96 L96 112 H16 L0 96 Z" fill="#ffffff" stroke="#d5d3cb" stroke-width="1.2"/>
+    <path d="M0 24 L0 16 L16 0 L24 0" fill="none" stroke="#d9000b" stroke-width="2"/>
+    <path d="M112 88 L112 96 L96 112 L88 112" fill="none" stroke="#d9000b" stroke-width="2"/>
+    <circle cx="56" cy="56" r="32" fill="none" stroke="#e0ded6" stroke-width="1"/>
+    <circle cx="56" cy="56" r="20" fill="#f4f3ec" stroke="#b0aea4" stroke-width="1"/>
+    <circle cx="56" cy="56" r="6" fill="#d9000b"/>
+    <line x1="14" y1="56" x2="30" y2="56" stroke="#8c897d" stroke-width="1"/>
+    <line x1="82" y1="56" x2="98" y2="56" stroke="#8c897d" stroke-width="1"/>
+    <line x1="56" y1="14" x2="56" y2="30" stroke="#8c897d" stroke-width="1"/>
+    <line x1="56" y1="82" x2="56" y2="98" stroke="#8c897d" stroke-width="1"/>
+  </g>
+
+  <!-- Vertical Divider -->
+  <line x1="182" y1="36" x2="182" y2="184" stroke="#e0ded6" stroke-width="1"/>
+
+  <!-- Main Headline & Narrative -->
+  <g transform="translate(206, 0)">
+    <g transform="translate(0, 48)">
+      <rect width="72" height="18" fill="#eae8df" stroke="#d0cebf" stroke-width="0.8"/>
+      <text x="36" y="13" text-anchor="middle" class="mono" font-size="9" font-weight="700" fill="#525046" letter-spacing="1.2">MONAR</text>
+      <text x="82" y="13" class="mono" font-size="9" font-weight="600" fill="#787569" letter-spacing="1">DEFENSIVE ENGINE · v0.1.0</text>
+    </g>
+
+    <text x="0" y="98" class="sans" font-size="34" font-weight="800" fill="#151515" letter-spacing="-0.8">
+      CodeSentinel
+    </text>
+
+    <text x="0" y="126" class="sans" font-size="13" font-weight="400" fill="#4a483e">
+      Client-side JavaScript security auditor: SRI drift tracking, CSP hardening, &amp; DOM skimmer triage.
+    </text>
+
+    <!-- Bottom Feature Tags (Precision Chamfered Chips) -->
+    <g transform="translate(0, 150)">
+      <g>
+        <path d="M0 0 H120 L126 6 V22 H6 L0 16 Z" fill="#ffffff" stroke="#d5d3cb" stroke-width="1"/>
+        <text x="12" y="15" class="mono" font-size="9.5" font-weight="600" fill="#2d2b24">SRI HASH DRIFT</text>
+      </g>
+      <g transform="translate(136, 0)">
+        <path d="M0 0 H124 L130 6 V22 H6 L0 16 Z" fill="#ffffff" stroke="#d5d3cb" stroke-width="1"/>
+        <text x="12" y="15" class="mono" font-size="9.5" font-weight="600" fill="#2d2b24">CSP GRADING (A–F)</text>
+      </g>
+      <g transform="translate(276, 0)">
+        <path d="M0 0 H144 L150 6 V22 H6 L0 16 Z" fill="#ffffff" stroke="#d5d3cb" stroke-width="1"/>
+        <text x="12" y="15" class="mono" font-size="9.5" font-weight="600" fill="#2d2b24">MAGECART / OPTIJACK</text>
+      </g>
+      <g transform="translate(436, 0)">
+        <path d="M0 0 H144 L150 6 V22 H6 L0 16 Z" fill="#ffffff" stroke="#d5d3cb" stroke-width="1"/>
+        <text x="12" y="15" class="mono" font-size="9.5" font-weight="600" fill="#2d2b24">PCI-DSS 6.4.3 / 11.6.1</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Bottom Corner Mark -->
+  <path d="M836 220 L846 210 V220 Z" fill="#d9000b"/>
+</svg>

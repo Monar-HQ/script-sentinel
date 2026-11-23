@@ -1,166 +1,200 @@
-"""
-CSP Misconfiguration Analyzer
-Evaluates Content-Security-Policy headers against client-side supply-chain risks.
-"""
+"""Content-Security-Policy parsing and risk analysis for ScriptSentinel."""
 
-from typing import Any
+from __future__ import annotations
 
+from .models import CSPAnalysis, Finding, Grade, Severity
 
-class CSPFinding:
-    def __init__(
-        self, rule_id: str, severity: str, title: str, description: str, recommendation: str
-    ):
-        self.rule_id = rule_id
-        self.severity = severity  # CRITICAL, HIGH, MEDIUM, LOW, INFO
-        self.title = title
-        self.description = description
-        self.recommendation = recommendation
+__all__ = ["analyze_csp", "parse_csp"]
 
-    def to_dict(self) -> dict[str, str]:
-        return {
-            "rule_id": self.rule_id,
-            "severity": self.severity,
-            "title": self.title,
-            "description": self.description,
-            "recommendation": self.recommendation,
-        }
+_SEVERITY_PENALTY: dict[Severity, int] = {
+    "CRITICAL": 35,
+    "HIGH": 20,
+    "MEDIUM": 10,
+    "LOW": 5,
+    "INFO": 0,
+}
 
 
 def parse_csp(csp_header: str | None) -> dict[str, list[str]]:
+    """Parse a CSP header into directive names mapped to token lists."""
     if not csp_header:
         return {}
-    directives = {}
-    tokens = csp_header.strip().split(";")
-    for token in tokens:
-        token = token.strip()
-        if not token:
+
+    directives: dict[str, list[str]] = {}
+    for raw_segment in csp_header.strip().split(";"):
+        segment = raw_segment.strip()
+        if not segment:
             continue
-        parts = token.split()
-        directive_name = parts[0].lower()
-        directive_values = parts[1:]
-        directives[directive_name] = directive_values
+        parts = segment.split()
+        if not parts:
+            continue
+        name = parts[0].lower()
+        values = parts[1:]
+        directives.setdefault(name, []).extend(values)
     return directives
 
 
-def analyze_csp(csp_header: str | None) -> dict[str, Any]:
-    findings: list[CSPFinding] = []
+def _grade_for_score(score: int) -> Grade:
+    """Map a 0-100 security score to a letter grade."""
+    if score >= 90:
+        return "A"
+    if score >= 75:
+        return "B"
+    if score >= 50:
+        return "C"
+    if score >= 30:
+        return "D"
+    return "F"
+
+
+def _finding(
+    rule_id: str,
+    severity: Severity,
+    title: str,
+    description: str,
+    recommendation: str,
+    evidence: str = "",
+) -> Finding:
+    """Build a typed CSP finding."""
+    return Finding(
+        rule_id=rule_id,
+        severity=severity,
+        title=title,
+        description=description,
+        recommendation=recommendation,
+        evidence=evidence,
+    )
+
+
+def analyze_csp(csp_header: str | None) -> CSPAnalysis:
+    """Analyze a CSP header and return a typed ``CSPAnalysis``."""
     directives = parse_csp(csp_header)
+    findings: list[Finding] = []
 
     if not csp_header:
         findings.append(
-            CSPFinding(
+            _finding(
                 "CSP-MISSING",
                 "CRITICAL",
                 "Content-Security-Policy Header Missing",
-                "The web application returns no Content-Security-Policy header. Any injected third-party JavaScript executes with full origin authority and can exfiltrate DOM inputs, cookies, and tokens without restriction.",
-                "Deploy a strict Content-Security-Policy header enforcing default-src 'self', script-src with cryptographic nonces, and restricted connect-src.",
+                (
+                    "The application returns no Content-Security-Policy header. Injected "
+                    "third-party JavaScript executes with full origin authority and can "
+                    "exfiltrate DOM inputs, cookies, and tokens without restriction."
+                ),
+                (
+                    "Deploy a strict CSP enforcing default-src 'self', script-src with "
+                    "cryptographic nonces, and a restricted connect-src."
+                ),
             )
         )
-        return {
-            "score": 0,
-            "grade": "F",
-            "directives": {},
-            "findings": [f.to_dict() for f in findings],
-            "raw": None,
-        }
+        return CSPAnalysis(
+            score=0,
+            grade="F",
+            directives={},
+            findings=tuple(findings),
+            raw=None,
+        )
 
     script_src = directives.get("script-src", directives.get("default-src", []))
-    connect_src = directives.get("connect-src", directives.get("default-src", []))
+    script_lower = [value.lower() for value in script_src]
 
-    # 1. Check for unsafe-eval
-    if "'unsafe-eval'" in [s.lower() for s in script_src]:
+    if "'unsafe-eval'" in script_lower:
         findings.append(
-            CSPFinding(
+            _finding(
                 "CSP-UNSAFE-EVAL",
                 "CRITICAL",
-                "'unsafe-eval' Keyword Permitted in script-src",
-                "Allows execution of strings as code via eval(), Function(), and setTimeout(). Skimmers (such as OPTIJACK Variant C) use eval() fallbacks to unpack obfuscated payloads in memory.",
-                "Remove 'unsafe-eval' from script-src. Refactor dynamic evaluations to static functions.",
+                "'unsafe-eval' Permitted in script-src",
+                (
+                    "Allows execution of strings as code via eval(), Function(), and "
+                    "setTimeout(). Skimmers such as OPTIJACK Variant C use eval() "
+                    "fallbacks to unpack obfuscated payloads in memory."
+                ),
+                "Remove 'unsafe-eval' from script-src and refactor dynamic evaluation.",
+                "'unsafe-eval'",
             )
         )
 
-    # 2. Check for unsafe-inline without nonces
-    has_nonce = any(s.lower().startswith("'nonce-") for s in script_src)
+    has_nonce = any(value.startswith("'nonce-") for value in script_lower)
     has_hash = any(
-        s.lower().startswith("'sha256-") or s.lower().startswith("'sha384-") for s in script_src
+        value.startswith("'sha256-") or value.startswith("'sha384-") for value in script_lower
     )
-    if "'unsafe-inline'" in [s.lower() for s in script_src] and not (has_nonce or has_hash):
+    if "'unsafe-inline'" in script_lower and not (has_nonce or has_hash):
         findings.append(
-            CSPFinding(
+            _finding(
                 "CSP-UNSAFE-INLINE",
                 "CRITICAL",
                 "'unsafe-inline' Allowed Without Nonce/Hash",
-                "Allows execution of arbitrary inline <script> tags and event handlers, enabling cross-site scripting (XSS) and inline payload execution.",
-                "Remove 'unsafe-inline' and replace with per-response cryptographically random nonces (e.g. 'nonce-<random>').",
+                (
+                    "Allows arbitrary inline <script> tags and event handlers, enabling "
+                    "inline payload execution and cross-site scripting."
+                ),
+                "Remove 'unsafe-inline' and deploy per-response cryptographic nonces.",
+                "'unsafe-inline'",
             )
         )
 
-    # 3. Check for strict-dynamic risks
-    if "'strict-dynamic'" in [s.lower() for s in script_src] and (
-        not connect_src or "*" in connect_src
+    connect_values = directives.get("connect-src", directives.get("default-src", []))
+    if "'strict-dynamic'" in script_lower and (
+        not connect_values or "*" in connect_values
     ):
         findings.append(
-            CSPFinding(
-                    "CSP-STRICT-DYNAMIC-EXFIL-RISK",
-                    "HIGH",
-                    "'strict-dynamic' Enabled Without Restricted connect-src",
-                    "While 'strict-dynamic' simplifies nonce deployment, any compromised vendor script carrying a valid nonce can dynamically inject and execute child skimmer scripts. Without a strict connect-src, exfiltration succeeds.",
-                    "Ensure connect-src is strictly locked down to 'self' and pre-approved API endpoints to prevent child scripts from dialing out to rogue C2 servers.",
-                )
-            )
-
-    # 4. Check connect-src exfiltration exposure
-    if not connect_src or "*" in connect_src or "http:" in connect_src or "https:" in connect_src:
-        findings.append(
-            CSPFinding(
-                "CSP-CONNECT-WILDCARD",
-                "CRITICAL",
-                "Wildcard or Unrestricted connect-src Exfiltration Vector",
-                "connect-src governs fetch(), XMLHttpRequest, navigator.sendBeacon(), and WebSockets. An open connect-src allows compromised third-party scripts to exfiltrate stolen cardholder data and credentials to arbitrary C2 servers.",
-                "Restrict connect-src explicitly to 'self' and trusted backend API origins. Do not use wildcards.",
+            _finding(
+                "CSP-STRICT-DYNAMIC-RISK",
+                "HIGH",
+                "'strict-dynamic' Enabled Without Restricted connect-src",
+                (
+                    "A compromised vendor script holding a valid nonce can dynamically "
+                    "inject child loader scripts; an open connect-src lets those children "
+                    "exfiltrate to adversary infrastructure."
+                ),
+                "Restrict connect-src to 'self' and approved API origins.",
+                "'strict-dynamic'",
             )
         )
 
-    # 5. Check reporting configuration
+    if not connect_values or "*" in connect_values or any(
+        value in {"http:", "https:"} for value in connect_values
+    ):
+        findings.append(
+            _finding(
+                "CSP-CONNECT-WILDCARD",
+                "CRITICAL",
+                "Missing or Wildcard connect-src Exfiltration Vector",
+                (
+                    "connect-src governs fetch(), XMLHttpRequest, sendBeacon(), and "
+                    "WebSockets. Missing or wildcard values permit exfiltration of "
+                    "cardholder data and credentials to arbitrary C2 servers."
+                ),
+                "Set connect-src explicitly to 'self' and trusted backend API origins.",
+                "*" if "*" in connect_values else "connect-src absent",
+            )
+        )
+
     if "report-uri" not in directives and "report-to" not in directives:
         findings.append(
-            CSPFinding(
+            _finding(
                 "CSP-REPORTING-ABSENT",
                 "MEDIUM",
                 "CSP Violation Reporting Not Configured",
-                "Browser violation reports are not collected. SOC and security teams remain blind when browser-side injection attacks or policy blocks occur.",
-                "Add 'report-uri /api/csp-report' or modern Reporting API 'report-to' directives to stream violations into your SIEM/Kafka broker.",
+                (
+                    "Browser violation reports are not collected, leaving SOC and "
+                    "security teams blind to browser-side injection attacks and policy blocks."
+                ),
+                "Add report-uri or report-to to stream violations into the SIEM.",
+                "no report-uri/report-to",
             )
         )
 
-    # Compute Score
-    penalty = 0
-    for f in findings:
-        if f.severity == "CRITICAL":
-            penalty += 35
-        elif f.severity == "HIGH":
-            penalty += 20
-        elif f.severity == "MEDIUM":
-            penalty += 10
-        elif f.severity == "LOW":
-            penalty += 5
-
+    penalty = sum(_SEVERITY_PENALTY[finding.severity] for finding in findings)
     score = max(0, 100 - penalty)
-    if score >= 90:
-        grade = "A"
-    elif score >= 75:
-        grade = "B"
-    elif score >= 50:
-        grade = "C"
-    elif score >= 30:
-        grade = "D"
-    else:
-        grade = "F"
+    grade = _grade_for_score(score)
 
-    return {
-        "score": score,
-        "grade": grade,
-        "directives": directives,
-        "findings": [f.to_dict() for f in findings],
-        "raw": csp_header,
-    }
+    typed_directives = {name: tuple(values) for name, values in directives.items()}
+    return CSPAnalysis(
+        score=score,
+        grade=grade,
+        directives=typed_directives,
+        findings=tuple(findings),
+        raw=csp_header,
+    )

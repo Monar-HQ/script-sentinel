@@ -49,7 +49,7 @@ def test_analyze_csp_strict_dynamic_with_open_connect():
     header = "default-src 'self'; script-src 'nonce-abc123' 'strict-dynamic'; connect-src *; report-uri /csp"
     res = analyze_csp(header)
     rule_ids = [f["rule_id"] for f in res["findings"]]
-    assert "CSP-STRICT-DYNAMIC-EXFIL-RISK" in rule_ids
+    assert "CSP-STRICT-DYNAMIC-RISK" in rule_ids
     assert "CSP-CONNECT-WILDCARD" in rule_ids
 
 

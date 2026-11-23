@@ -1,200 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" width="100%" height="540" fill="none">
-  <defs>
-    <linearGradient id="arch-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#070a10"/>
-      <stop offset="50%" stop-color="#0d1424"/>
-      <stop offset="100%" stop-color="#04070c"/>
-    </linearGradient>
-
-    <!-- Node Gradient Fills -->
-    <linearGradient id="node-target" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-
-    <linearGradient id="node-sri" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0c2338"/>
-      <stop offset="100%" stop-color="#081420"/>
-    </linearGradient>
-
-    <linearGradient id="node-csp" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e183a"/>
-      <stop offset="100%" stop-color="#0e0c1f"/>
-    </linearGradient>
-
-    <linearGradient id="node-ast" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2d111d"/>
-      <stop offset="100%" stop-color="#17070e"/>
-    </linearGradient>
-
-    <linearGradient id="node-engine" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f2b3b"/>
-      <stop offset="100%" stop-color="#0a1a24"/>
-    </linearGradient>
-
-    <linearGradient id="node-out" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0e2318"/>
-      <stop offset="100%" stop-color="#07130c"/>
-    </linearGradient>
-
-    <!-- Connector Lines -->
-    <linearGradient id="line-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#60a5fa"/>
-    </linearGradient>
-
-    <pattern id="arch-grid" width="36" height="36" patternUnits="userSpaceOnUse">
-      <path d="M 36 0 L 0 0 0 36" fill="none" stroke="#162032" stroke-width="0.75"/>
-      <circle cx="36" cy="0" r="1" fill="#38bdf8" fill-opacity="0.2"/>
-    </pattern>
-
-    <filter id="arch-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-  </defs>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 220" width="846" height="220" fill="none">
   <style>
     .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
-    .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
   </style>
 
-  <!-- Canvas Container -->
-  <rect width="1000" height="540" rx="14" fill="url(#arch-bg)" stroke="#1e2d42" stroke-width="1.5"/>
-  <rect width="1000" height="540" rx="14" fill="url(#arch-grid)"/>
+  <!-- Base Canvas -->
+  <rect width="846" height="220" fill="#04050a" stroke="#232730" stroke-width="1"/>
+  <rect x="0" y="0" width="846" height="1" fill="#d9000b"/>
 
-  <!-- Diagram Title Header -->
-  <g transform="translate(40, 36)">
-    <circle cx="6" cy="6" r="4.5" fill="#38bdf8"/>
-    <text x="20" y="10" class="mono" font-size="12" font-weight="700" fill="#94a3b8" letter-spacing="1.5">
-      CODESENTINEL · SYSTEM EXECUTION &amp; THREAT CORRELATION PIPELINE
-    </text>
+  <!-- Stage 1: Client DOM & Script Ingestion -->
+  <g transform="translate(24, 30)">
+    <rect width="210" height="160" fill="#080a11" stroke="#1d222e" stroke-width="1"/>
+    <rect x="0" y="0" width="210" height="26" fill="#0d111a"/>
+    <text x="12" y="17" class="mono" font-size="9.5" font-weight="700" fill="#8892b0" letter-spacing="1">1. INGESTION PLANE</text>
+    
+    <text x="12" y="52" class="mono" font-size="11" font-weight="600" fill="#f8fafc">DOM &amp; Scripts</text>
+    <text x="12" y="70" class="sans" font-size="11" fill="#64748b">• External &lt;script&gt; tags</text>
+    <text x="12" y="88" class="sans" font-size="11" fill="#64748b">• Inline script blocks</text>
+    <text x="12" y="106" class="sans" font-size="11" fill="#64748b">• Dynamic document.write</text>
+    <text x="12" y="124" class="sans" font-size="11" fill="#64748b">• HTTP Response CSP</text>
+    <text x="12" y="142" class="sans" font-size="11" fill="#64748b">• Pinned baseline hashes</text>
   </g>
 
-  <!-- STAGE 1: Target Ingestion -->
-  <g transform="translate(40, 80)">
-    <rect width="180" height="390" rx="10" fill="url(#node-target)" stroke="#334155" stroke-width="1.2"/>
-    <rect width="180" height="34" rx="10" fill="#1e293b"/>
-    <rect y="22" width="180" height="12" fill="#1e293b"/>
-    <line x1="0" y1="34" x2="180" y2="34" stroke="#334155" stroke-width="1"/>
-    <text x="90" y="22" text-anchor="middle" class="mono" font-size="11" font-weight="700" fill="#cbd5e1">1. INGESTION</text>
-
-    <!-- Content inside Ingestion -->
-    <g transform="translate(14, 52)">
-      <rect width="152" height="68" rx="6" fill="#0f172a" stroke="#1e293b"/>
-      <text x="10" y="22" class="sans" font-size="12" font-weight="700" fill="#f8fafc">Target Endpoint</text>
-      <text x="10" y="40" class="mono" font-size="10.5" fill="#94a3b8">Checkout Form</text>
-      <text x="10" y="56" class="mono" font-size="10.5" fill="#94a3b8">Payment Portal / DOM</text>
-
-      <rect y="84" width="152" height="80" rx="6" fill="#0f172a" stroke="#1e293b"/>
-      <text x="10" y="106" class="sans" font-size="12" font-weight="700" fill="#f8fafc">Script Harvester</text>
-      <text x="10" y="124" class="mono" font-size="10.5" fill="#94a3b8">• Headless Chromium</text>
-      <text x="10" y="140" class="mono" font-size="10.5" fill="#94a3b8">• DOM Script Extractor</text>
-      <text x="10" y="156" class="mono" font-size="10.5" fill="#94a3b8">• Inline &amp; CDN Tags</text>
-
-      <rect y="180" width="152" height="68" rx="6" fill="#0f172a" stroke="#1e293b"/>
-      <text x="10" y="202" class="sans" font-size="12" font-weight="700" fill="#f8fafc">HTTP Headers</text>
-      <text x="10" y="220" class="mono" font-size="10.5" fill="#94a3b8">Content-Security-Policy</text>
-      <text x="10" y="236" class="mono" font-size="10.5" fill="#94a3b8">CORS &amp; Integrity Meta</text>
-    </g>
+  <!-- Connector 1 -->
+  <g transform="translate(234, 110)">
+    <line x1="0" y1="0" x2="36" y2="0" stroke="#d9000b" stroke-width="1.5"/>
+    <polygon points="36,-3 42,0 36,3" fill="#d9000b"/>
   </g>
 
-  <!-- Connectors: Ingestion to Parallel Engines -->
-  <path d="M 220 275 L 265 145 L 290 145" fill="none" stroke="#38bdf8" stroke-width="1.8"/>
-  <path d="M 220 275 L 290 275" fill="none" stroke="#818cf8" stroke-width="1.8"/>
-  <path d="M 220 275 L 265 405 L 290 405" fill="none" stroke="#fb7185" stroke-width="1.8"/>
+  <!-- Stage 2: CodeSentinel Multi-Vector Inspection -->
+  <g transform="translate(276, 30)">
+    <rect width="294" height="160" fill="#080a11" stroke="#2a3242" stroke-width="1"/>
+    <rect x="0" y="0" width="294" height="26" fill="#0f1422"/>
+    <text x="12" y="17" class="mono" font-size="9.5" font-weight="700" fill="#d9000b" letter-spacing="1">2. CODESENTINEL CORE ENGINE</text>
 
-  <!-- STAGE 2: Parallel Analysis Engine Cluster -->
-  <g transform="translate(290, 80)">
-    <!-- Engine 1: SRI & Drift -->
-    <g transform="translate(0, 0)">
-      <rect width="210" height="120" rx="8" fill="url(#node-sri)" stroke="#0284c7" stroke-width="1.2"/>
-      <text x="14" y="24" class="sans" font-size="12.5" font-weight="700" fill="#38bdf8">SRI &amp; Drift Engine</text>
-      <text x="14" y="44" class="mono" font-size="10" fill="#94a3b8">• SHA-256 / SHA-384 Hash</text>
-      <text x="14" y="60" class="mono" font-size="10" fill="#94a3b8">• Base64 SRI Tag Compute</text>
-      <text x="14" y="76" class="mono" font-size="10" fill="#94a3b8">• Baseline Drift Matcher</text>
-      <text x="14" y="96" class="mono" font-size="10" font-weight="600" fill="#7dd3fc">Status: SCRIPT_DRIFT (!)</text>
+    <!-- Sub-Block A: SRI -->
+    <g transform="translate(12, 38)">
+      <rect width="270" height="32" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="20" class="mono" font-size="10" font-weight="600" fill="#38bdf8">SRI &amp; Cryptographic Drift</text>
+      <text x="260" y="20" text-anchor="end" class="mono" font-size="9" fill="#64748b">SHA-256 / 384</text>
     </g>
 
-    <!-- Engine 2: CSP Analyzer -->
-    <g transform="translate(0, 135)">
-      <rect width="210" height="120" rx="8" fill="url(#node-csp)" stroke="#6366f1" stroke-width="1.2"/>
-      <text x="14" y="24" class="sans" font-size="12.5" font-weight="700" fill="#818cf8">CSP Analyzer (A–F)</text>
-      <text x="14" y="44" class="mono" font-size="10" fill="#94a3b8">• Directive Tokenizer</text>
-      <text x="14" y="60" class="mono" font-size="10" fill="#94a3b8">• unsafe-eval / inline flags</text>
-      <text x="14" y="76" class="mono" font-size="10" fill="#94a3b8">• connect-src Exfil Leaks</text>
-      <text x="14" y="96" class="mono" font-size="10" font-weight="600" fill="#c7d2fe">Grade: F (High Exfil Risk)</text>
+    <!-- Sub-Block B: CSP -->
+    <g transform="translate(12, 76)">
+      <rect width="270" height="32" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="20" class="mono" font-size="10" font-weight="600" fill="#818cf8">CSP Directive Analyzer</text>
+      <text x="260" y="20" text-anchor="end" class="mono" font-size="9" fill="#64748b">Grade A–F</text>
     </g>
 
-    <!-- Engine 3: Behavioral AST Scanner -->
-    <g transform="translate(0, 270)">
-      <rect width="210" height="120" rx="8" fill="url(#node-ast)" stroke="#e11d48" stroke-width="1.2"/>
-      <text x="14" y="24" class="sans" font-size="12.5" font-weight="700" fill="#fb7185">AST Behavioral Scanner</text>
-      <text x="14" y="44" class="mono" font-size="10" fill="#94a3b8">• Payment/CVV Field Scraper</text>
-      <text x="14" y="60" class="mono" font-size="10" fill="#94a3b8">• Global Keylogger Hooks</text>
-      <text x="14" y="76" class="mono" font-size="10" fill="#94a3b8">• Dynamic eval() unpacker</text>
-      <text x="14" y="96" class="mono" font-size="10" font-weight="600" fill="#fda4af">Matches: SKIM-INPUT-HARVEST</text>
+    <!-- Sub-Block C: AST -->
+    <g transform="translate(12, 114)">
+      <rect width="270" height="32" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
+      <text x="10" y="20" class="mono" font-size="10" font-weight="600" fill="#f43f5e">Behavioral AST &amp; IOC Feed</text>
+      <text x="260" y="20" text-anchor="end" class="mono" font-size="9" fill="#64748b">Magecart / C2</text>
     </g>
   </g>
 
-  <!-- Connectors: Engines to Triage Center -->
-  <path d="M 500 145 L 530 145 L 560 275" fill="none" stroke="#38bdf8" stroke-width="1.8"/>
-  <path d="M 500 275 L 560 275" fill="none" stroke="#818cf8" stroke-width="1.8"/>
-  <path d="M 500 405 L 530 405 L 560 275" fill="none" stroke="#fb7185" stroke-width="1.8"/>
-
-  <!-- STAGE 3: Triage & Correlation Engine -->
-  <g transform="translate(560, 185)">
-    <rect width="170" height="180" rx="10" fill="url(#node-engine)" stroke="#0ea5e9" stroke-width="1.5" filter="url(#arch-glow)"/>
-    <rect width="170" height="34" rx="10" fill="#0c2338"/>
-    <rect y="22" width="170" height="12" fill="#0c2338"/>
-    <line x1="0" y1="34" x2="170" y2="34" stroke="#0ea5e9" stroke-width="1"/>
-    <text x="85" y="22" text-anchor="middle" class="mono" font-size="11" font-weight="700" fill="#38bdf8">3. TRIAGE &amp; EVAL</text>
-
-    <!-- Details inside Triage -->
-    <g transform="translate(12, 50)">
-      <text x="0" y="14" class="sans" font-size="11.5" font-weight="700" fill="#f8fafc">Threat Scoring</text>
-      <text x="0" y="30" class="mono" font-size="10" fill="#94a3b8">• CVSS Severity Weight</text>
-      <text x="0" y="46" class="mono" font-size="10" fill="#94a3b8">• IOC Feed Correlation</text>
-      <text x="0" y="62" class="mono" font-size="10" fill="#94a3b8">• PCI-DSS 6.4.3 / 11.6.1</text>
-      <line x1="0" y1="74" x2="146" y2="74" stroke="#1e2e46" stroke-width="1"/>
-      <text x="0" y="94" class="mono" font-size="10.5" font-weight="700" fill="#f43f5e">CRITICAL ALERT</text>
-      <text x="0" y="110" class="mono" font-size="10" fill="#94a3b8">Active Skimmer Verified</text>
-    </g>
+  <!-- Connector 2 -->
+  <g transform="translate(570, 110)">
+    <line x1="0" y1="0" x2="36" y2="0" stroke="#d9000b" stroke-width="1.5"/>
+    <polygon points="36,-3 42,0 36,3" fill="#d9000b"/>
   </g>
 
-  <!-- Connectors: Triage to Output Remediations -->
-  <path d="M 730 275 L 770 275" fill="none" stroke="url(#line-cyan)" stroke-width="2"/>
+  <!-- Stage 3: Defense & Compliance Output -->
+  <g transform="translate(612, 30)">
+    <rect width="210" height="160" fill="#080a11" stroke="#1d222e" stroke-width="1"/>
+    <rect x="0" y="0" width="210" height="26" fill="#0d111a"/>
+    <text x="12" y="17" class="mono" font-size="9.5" font-weight="700" fill="#8892b0" letter-spacing="1">3. ACTIONABLE REMEDIATION</text>
 
-  <!-- STAGE 4: Automated Outputs & Remediations -->
-  <g transform="translate(770, 80)">
-    <rect width="190" height="390" rx="10" fill="url(#node-out)" stroke="#16a34a" stroke-width="1.2"/>
-    <rect width="190" height="34" rx="10" fill="#142c1b"/>
-    <rect y="22" width="190" height="12" fill="#142c1b"/>
-    <line x1="0" y1="34" x2="190" y2="34" stroke="#16a34a" stroke-width="1"/>
-    <text x="95" y="22" text-anchor="middle" class="mono" font-size="11" font-weight="700" fill="#4ade80">4. REMEDIATIONS</text>
-
-    <!-- Output Cards -->
-    <g transform="translate(14, 50)">
-      <rect width="162" height="66" rx="6" fill="#08140d" stroke="#143820"/>
-      <text x="10" y="20" class="sans" font-size="11.5" font-weight="700" fill="#4ade80">Hardened CSP Header</text>
-      <text x="10" y="38" class="mono" font-size="10" fill="#94a3b8">strict-dynamic + nonces</text>
-      <text x="10" y="52" class="mono" font-size="10" fill="#94a3b8">connect-src 'self' locked</text>
-
-      <rect y="78" width="162" height="66" rx="6" fill="#08140d" stroke="#143820"/>
-      <text x="10" y="98" class="sans" font-size="11.5" font-weight="700" fill="#4ade80">Drop-in SRI Tags</text>
-      <text x="10" y="116" class="mono" font-size="10" fill="#94a3b8">&lt;script integrity="..."</text>
-      <text x="10" y="130" class="mono" font-size="10" fill="#94a3b8">crossorigin="anonymous"&gt;</text>
-
-      <rect y="156" width="162" height="66" rx="6" fill="#08140d" stroke="#143820"/>
-      <text x="10" y="176" class="sans" font-size="11.5" font-weight="700" fill="#4ade80">Web Server Configs</text>
-      <text x="10" y="194" class="mono" font-size="10" fill="#94a3b8">Nginx add_header</text>
-      <text x="10" y="208" class="mono" font-size="10" fill="#94a3b8">Apache Header set</text>
-
-      <rect y="234" width="162" height="84" rx="6" fill="#08140d" stroke="#143820"/>
-      <text x="10" y="254" class="sans" font-size="11.5" font-weight="700" fill="#4ade80">Compliance Proof</text>
-      <text x="10" y="272" class="mono" font-size="10" fill="#94a3b8">PCI-DSS v4.0 Req 6.4.3</text>
-      <text x="10" y="286" class="mono" font-size="10" fill="#94a3b8">PCI-DSS v4.0 Req 11.6.1</text>
-      <text x="10" y="300" class="mono" font-size="10" fill="#86efac">audit_report.json Ledger</text>
-    </g>
+    <text x="12" y="52" class="mono" font-size="11" font-weight="600" fill="#f8fafc">Artifacts &amp; Gates</text>
+    <text x="12" y="70" class="sans" font-size="11" fill="#64748b">• Hardened CSP Header</text>
+    <text x="12" y="88" class="sans" font-size="11" fill="#64748b">• Drop-in SRI &lt;script&gt; tags</text>
+    <text x="12" y="106" class="sans" font-size="11" fill="#64748b">• Nginx / Apache configs</text>
+    <text x="12" y="124" class="sans" font-size="11" fill="#64748b">• PCI-DSS 6.4.3 / 11.6.1</text>
+    <text x="12" y="142" class="sans" font-size="11" fill="#10b981">• CI/CD Gate Enforcement</text>
   </g>
 </svg>

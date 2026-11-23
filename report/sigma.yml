@@ -1,0 +1,39 @@
+title: ScriptSentinel IOC Detection - optimjack-2026-11-23
+id: 2834b861-c66b-5262-aaed-c44fc22ca38a
+status: stable
+description: IOC feed optimjack-2026-11-23 version 1.0.0 (as of 2026-11-23) contains
+  8 C2 domains and 2 SHA-256 hashes.
+author: ScriptSentinel Contributors
+date: '2026-11-23'
+logsource:
+  category: webserver
+detection:
+  selection_domains:
+    cs-host:
+    - 1688360.cc
+    - 5vobauua3ojpklx.icu
+    - eil786npto9u5bq.icu
+    - linkforge.cc
+    - pay-cloud.online
+    - pay-relay.wordpressadmin001.workers.dev
+    - pay.pay-cloud.online
+    - webshell.lol
+  selection_hashes:
+    file_hash:
+    - 814a963c0da480e2449d9b6664480156e1cd6d731014117401bf635badec3a0f
+    - f7b84b9a94f749f8ced3f0112d0a66894e8bbc3b4aa5592021d1b8976a9bad40
+  condition: selection_domains or selection_hashes
+fields:
+- cs-host
+- cs-uri
+- file_hash
+level: critical
+falsepositives:
+- Benign requests to a listed domain (vendor or CDN reuse).
+- A SHA-256 match on an unrelated file with identical bytes.
+tags:
+- attack.command_and_control
+- attack.t1071.001
+- scriptsentinel.ioc.feed
+- scriptsentinel.ioc.domain
+- scriptsentinel.ioc.sha256

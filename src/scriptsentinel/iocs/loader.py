@@ -14,10 +14,13 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 VALID_KINDS = frozenset({"domain", "sha256"})
+VALID_SEVERITIES = frozenset({"critical", "high", "medium", "low", "info"})
+IOCSeverity = Literal["critical", "high", "medium", "low", "info"]
+_HOSTNAME_LABEL_RE = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
 
 
 class IOCError(ValueError):

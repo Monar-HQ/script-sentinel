@@ -84,7 +84,7 @@ def test_generate_remediation_pack_returns_typed_contract() -> None:
     assert payload["sri_replacement_tags"] == [
         {"url": "https://cdn.optimized-edge.com/geo.js", "tag": _SUGGESTED_TAG}
     ]
-    assert len(payload["compliance"]) == 2
+    assert payload["compliance"] == [item.to_dict() for item in pack.compliance]
 
 
 def test_hardened_csp_strips_unsafe_keywords_and_adds_strict_directives() -> None:

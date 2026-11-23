@@ -1,125 +1,115 @@
+<div align="center">
+
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
-    <img alt="CodeSentinel by MONAR" src="assets/banner-light.svg" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-banner-dark.svg">
+    <img alt="CodeSentinel" src="assets/hero-banner-light.svg" width="100%">
   </picture>
 </p>
 
-<h3 align="center">Client-side supply-chain defense &amp; real-time JavaScript drift tracking.</h3>
-<p align="center"><sub><b>BY MONAR</b></sub></p>
-
 <p align="center">
-  Audits third-party JavaScript, detects client-side formjackers (Magecart &amp; OPTIJACK),<br>
-  tracks Subresource Integrity (SRI) baseline drift, uncovers fatal CSP misconfigurations, and generates drop-in remediations.
-</p>
-
-<p align="center">
-  <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-10b981?style=flat-square&logo=github&labelColor=090d16" alt="CI Status"></a>
-  <img src="https://img.shields.io/badge/python-3.10%2B-090d16?style=flat-square&logo=python" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/runtime%20overhead-0ms-090d16?style=flat-square" alt="Zero Runtime Overhead">
+  <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-passing-10b981?style=flat-square&logo=github&labelColor=151515" alt="CI Status"></a>
+  <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-151515?style=flat-square&logo=python" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/runtime%20overhead-0ms-151515?style=flat-square" alt="Zero Runtime Overhead">
   <img src="https://img.shields.io/badge/compliance-PCI--DSS_v4.0_Ready-10b981?style=flat-square" alt="PCI-DSS v4.0 Ready">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-38bdf8?style=flat-square" alt="License: MIT"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-151515?style=flat-square" alt="License: MIT"></a>
 </p>
 
 <p align="center">
-  <a href="#-live-terminal-showcase"><b>Live Terminal</b></a> ·
-  <a href="#-the-problem-client-side-blind-spots"><b>The Problem</b></a> ·
-  <a href="#-system-architecture"><b>Architecture</b></a> ·
-  <a href="#-quick-start"><b>Quick Start</b></a> ·
-  <a href="#-pci-dss-v40-regulatory-mapping"><b>PCI-DSS v4.0</b></a> ·
-  <a href="docs/DETECTION-RULES.md"><b>Detection Rules</b></a> ·
-  <a href="#-infrastructure--ai-partner"><b>Partner &amp; Sponsor</b></a>
+  <a href="#live-terminal-showcase">Terminal</a> ·
+  <a href="#the-problem-client-side-blind-spots">The Problem</a> ·
+  <a href="#system-architecture">Architecture</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#pci-dss-v40-regulatory-mapping">PCI-DSS v4.0</a> ·
+  <a href="docs/DETECTION-RULES.md">Detection Rules</a> ·
+  <a href="#infrastructure--ai-partner">Partner</a>
 </p>
+
+</div>
 
 ---
 
-## 🖥️ Live Terminal Showcase
+## Live Terminal Showcase
 
-Inspect and evaluate any web application endpoint (e.g., checkout page, login portal) with instant cryptographic drift tracking:
+Audit and evaluate any web application endpoint (e.g. checkout forms, authentication portals) with instant cryptographic hash drift tracking and CSP vulnerability scoring:
 
-<p align="center">
-  <img src="assets/terminal-showcase.svg" alt="CodeSentinel Terminal Audit CLI" width="100%">
-</p>
+<div align="center">
+  <img alt="CodeSentinel CLI live execution output" src="assets/terminal-showcase.svg" width="846">
+</div>
 
 ---
 
-## 🎯 The Problem: Client-Side Blind Spots
+## The Problem: Client-Side Blind Spots
 
-Modern web applications embed dozens of external third-party scripts into the document root—analytics, tag managers, A/B testing SDKs, and customer support widgets. 
+Modern web applications embed dozens of external third-party scripts into the document root: tag managers, analytics, A/B experimentation SDKs, and payment widgets.
 
-When an upstream vendor control plane, CDN, or AWS S3 bucket is compromised:
-- **Malicious payloads execute directly in consumer browsers** within the origin context.
-- **Credit cards, passwords, and PII are harvested prior to transmission or encryption** via DOM manipulation and input interception.
-- **Traditional WAFs, network firewalls, and server SIEMs are completely blind** because the malicious traffic never touches your backend servers.
+When an upstream vendor control plane or CDN is compromised:
 
-```mermaid
-flowchart LR
-    subgraph Browser ["Victim Browser Session"]
-        DOM["DOM & Payment Form"] -->|Scraped by Skimmer| TamperedScript["Compromised Vendor Tag"]
-    end
-    subgraph Vendor ["Upstream Vendor Plane"]
-        CDN["Compromised CDN / S3"] -.->|Injects Unverified JS| TamperedScript
-    end
-    subgraph Adversary ["Adversary C2"]
-        Sink["Exfiltration Endpoint"]
-    end
-    subgraph Perimeter ["Traditional Defenses (BLIND)"]
-        WAF["WAF / Cloudflare"]
-        SIEM["Server SIEM / Logs"]
-    end
-    TamperedScript -->|sendBeacon() / fetch()| Sink
-    Perimeter -.->|No Visibility Into Client Memory| Browser
+- **Malicious code executes inside consumer browser sessions** within the origin context.
+- **Credit card numbers, CVVs, and credentials are stolen prior to transmission or encryption** via DOM manipulation and global input listeners.
+- **Traditional perimeter security is completely blind**: WAFs, firewalls, and server SIEMs never see the harvested data because it routes directly from the victim browser to adversary C2 endpoints.
+
+```
++-----------------------------------------------------------------------------+
+| Browser DOM & Payment Form                                                  |
+|   |                                                                         |
+|   +--> Compromised Third-Party Script (Injected via Vendor CDN / S3)        |
+|          |                                                                  |
+|          +--> Exfiltrates data via sendBeacon() / fetch()                   |
+|                 |                                                           |
+|                 v                                                           |
+|        Adversary C2 Sink (Bypasses Backend SIEM & Perimeter WAFs Entirely)  |
++-----------------------------------------------------------------------------+
 ```
 
-> **Why we built this.** I'm Ally, head developer at [MONAR](https://www.monarservices.org). Attackers no longer bother trying to break hardened enterprise backends when they can compromise an obscure third-party analytics tag or chat widget and siphon raw customer credit cards straight out of the DOM. Server-side WAFs can't see client memory. CodeSentinel gives security engineers, compliance leads, and developers deterministic cryptographic visibility and immediate remediation.
+---
+
+## System Architecture
+
+CodeSentinel analyzes client-side attack surfaces across three distinct inspection vectors:
+
+<div align="center">
+  <img alt="CodeSentinel System Architecture Diagram" src="assets/architecture-diagram.svg" width="846">
+</div>
+
+1. **Cryptographic Integrity & Drift Engine**: Computes canonical SHA-256 and SHA-384 Subresource Integrity (SRI) hashes. When evaluated against pinned baselines, it immediately flags unauthorized upstream vendor script modifications.
+2. **CSP Directive Analyzer**: Parses `Content-Security-Policy` headers, detects fatal keywords (`'unsafe-eval'`, `'unsafe-inline'`, loose `'strict-dynamic'`), flags wildcard exfiltration paths, and assigns a health grade (A to F).
+3. **Behavioral AST & Threat Scanner**: Statically audits script content for payment field scraping, global input interception, dynamic code evaluation, base64 unpackers, and known adversary C2 IOCs.
 
 ---
 
-## ⚡ Comparison: Where CodeSentinel Fits
+## Defense Matrix
 
-| Capability | WAF (Cloudflare/AWS) | SAST / DAST | CodeSentinel |
+| Attack Vector / Defense Capability | Perimeter WAF | SAST / DAST | CodeSentinel |
 | :--- | :---: | :---: | :---: |
-| **Detects Upstream CDN Code Tampering** | ❌ Blind | ❌ Static only | ✅ **Real-Time Cryptographic SRI Drift** |
-| **Flags Browser-Side Form Field Scraping** | ❌ Blind | ❌ False-positive heavy | ✅ **Targeted AST Behavioral Heuristics** |
-| **Evaluates Runtime CSP Exfiltration Vectors** | ⚠️ Partial | ⚠️ Header presence only | ✅ **Strict-Dynamic & connect-src Audits** |
-| **Generates Drop-in Nonced CSP & SRI Tags** | ❌ No | ❌ No | ✅ **Automated Remediation Quick-Pack** |
-| **PCI-DSS v4.0 Req 6.4.3 & 11.6.1 Proof** | ❌ No | ❌ No | ✅ **Automated Audit Ledger & Hash Pinning** |
-| **Runtime Performance Impact** | 1–5ms | N/A (Build only) | ✅ **0ms (Out-of-band audit & CI gating)** |
+| Detects Upstream CDN Code Tampering | No | No | **Real-Time SRI Drift** |
+| Flags Browser-Side Form Field Scraping | No | No | **Behavioral AST Heuristics** |
+| Discovers Runtime CSP Exfiltration Leaks | Partial | Static only | **Strict-Dynamic & Connect Audits** |
+| Generates Drop-in Nonced CSP & SRI Tags | No | No | **Automated Quick-Pack** |
+| Proves PCI-DSS v4.0 Req 6.4.3 & 11.6.1 | No | No | **Cryptographic Audit Ledger** |
 
 ---
 
-## 🏛️ System Architecture
-
-CodeSentinel couples headless DOM harvesting with a high-throughput parallel evaluation pipeline:
-
-<p align="center">
-  <img src="assets/architecture-diagram.svg" alt="CodeSentinel System Architecture Diagram" width="100%">
-</p>
-
-For a technical deep dive into internal modules, data flow, memory model, and concurrency guarantees, see **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**.
-
----
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
-Requires **Python 3.10+**. Install locally in development mode:
-
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/Ally-Released/scriptsentinel.git
 cd scriptsentinel
 
-# Install package
+# Install locally in editable mode
 pip install -e .
 ```
 
+*Requires Python 3.10 or higher.*
+
 ---
 
-### 1. Audit a Target Page
+### 1. Audit a Target Endpoint
 
-Audit any web application endpoint (e.g., checkout page, login portal):
+Scan any web application endpoint (checkout page, login form):
 
 ```bash
 scriptsentinel audit https://example.com/checkout
@@ -127,95 +117,100 @@ scriptsentinel audit https://example.com/checkout
 
 ### 2. Monitor Upstream Script Drift Against Baselines
 
-Pin approved script hashes and automatically flag upstream vendor alterations:
+Pin approved script hashes and automatically flag unexpected vendor alterations:
 
 ```bash
-# First scan generates or validates against pinned baseline
 scriptsentinel audit https://example.com/checkout --baseline baselines.json --output audit_report.json
 ```
 
 ### 3. Generate Drop-in Remediation Pack
 
-Produce hardened CSP headers with cryptographic nonces, Nginx/Apache configuration snippets, and drop-in `<script>` tags with computed SRI hashes:
+Produce hardened CSP headers, Nginx/Apache configuration blocks, and drop-in `<script>` tags with computed SRI hashes:
 
 ```bash
 scriptsentinel remediate https://example.com/checkout
 ```
 
----
+### 4. Export Executive Reports
 
-## 📋 PCI-DSS v4.0 Regulatory Mapping
+Generate standalone dark-mode HTML executive reports or structured Markdown:
 
-PCI-DSS v4.0 mandates strict client-side controls for all payment-processing web pages:
-
-| Standard | Section | CodeSentinel Enforcement Mechanism | Technical Guide |
-| :--- | :--- | :--- | :---: |
-| **PCI-DSS v4.0** | **Requirement 6.4.3** | Maintains an automated inventory of all scripts running in consumer browsers, verifies written justification, and confirms Subresource Integrity (SRI). | [**Read Mapping**](docs/PCI-DSS-MAPPING.md#2-requirement-643-script-authorization--integrity-verification) |
-| **PCI-DSS v4.0** | **Requirement 11.6.1** | Deploys tamper-detection mechanisms (hash drift monitoring and CSP violation reporting) to alert security teams of unauthorized script modifications within 7 days. | [**Read Mapping**](docs/PCI-DSS-MAPPING.md#3-requirement-1161-tamper--and-drift-detection-mechanisms) |
-| **GDPR** | **Article 32** | Mitigates unauthorized exfiltration of consumer payment and identity records from client-side DOM forms. | [**Read Architecture**](docs/ARCHITECTURE.md) |
-
-For complete implementation workflows, evidence gathering, and QSA audit preparation, see **[`docs/PCI-DSS-MAPPING.md`](docs/PCI-DSS-MAPPING.md)**.
+```bash
+scriptsentinel audit https://example.com/checkout --html report.html
+scriptsentinel audit https://example.com/checkout --markdown report.md
+```
 
 ---
 
-## 🔍 Detection Rules & Heuristics
+## PCI-DSS v4.0 Regulatory Mapping
 
-CodeSentinel enforces an extensible suite of detection rules across CSP headers, cryptographic SRI, and behavioral script AST analysis:
+CodeSentinel directly satisfies the client-side security mandates introduced in PCI-DSS v4.0:
+
+| Requirement | Specification | Enforcement Mechanism |
+| :--- | :--- | :--- |
+| **Requirement 6.4.3** | All payment page scripts must be authorized, justified, and integrity-verified. | Maintains an automated inventory of scripts executing on checkout endpoints, confirms written business justification, and computes Subresource Integrity (SRI) attributes. |
+| **Requirement 11.6.1** | Change- and tamper-detection mechanisms for payment page HTTP headers and script contents. | Tracks cryptographic script hash drift against approved baselines and verifies CSP violation telemetry streams. |
+
+---
+
+## Detection Rules & Heuristics
+
+CodeSentinel enforces an extensible suite of detection rules:
 
 - **CSP Misconfigurations**: `CSP-MISSING`, `CSP-UNSAFE-EVAL`, `CSP-UNSAFE-INLINE`, `CSP-CONNECT-WILDCARD`, `CSP-STRICT-DYNAMIC-EXFIL-RISK`, `CSP-REPORTING-ABSENT`.
 - **Integrity & Drift**: `SCRIPT_DRIFT`, `INTEGRITY_MISMATCH`, `MISSING_SRI`, `VERIFIED`.
 - **Behavioral Skimmer Heuristics**: `SKIM-INPUT-HARVEST`, `SKIM-DOM-LISTENER`, `SKIM-CLIPBOARD-TAMPER`, `SKIM-EVAL-EXEC`, `SKIM-BASE64-UNPACK`, `SKIM-EXFIL-BEACON`, and `IOC-MATCH-C2-DOMAIN` (OPTIJACK / CVE-2026-132224 threat feeds).
 
-Read the complete catalog and severity grading in **[`docs/DETECTION-RULES.md`](docs/DETECTION-RULES.md)**.
+Read the complete catalog and severity ratings in **[`docs/DETECTION-RULES.md`](docs/DETECTION-RULES.md)**.
 
 ---
 
-## 🤝 Infrastructure & AI Partner
+## Infrastructure & AI Partner
 
-<p align="center">
+<div align="center">
   <a href="https://unquant.io/">
-    <img src="assets/partner-unquant.svg" alt="Unquant - Infrastructure & AI Compute Partner" width="100%">
+    <img alt="Unquant — Infrastructure &amp; AI Compute Partner" src="assets/partner-unquant.svg" width="846">
   </a>
-</p>
+</div>
 
-CodeSentinel is supported by **[Unquant](https://unquant.io/)**, who provided the necessary high-performance GPU and server infrastructure alongside scalable AI access to conduct extensive client-side supply-chain simulations, fuzz script tampered payloads, and benchmark drift detection algorithms.
+<br>
 
-> *Special thanks to **Luke** at Unquant for his extraordinary support and commitment to advancing open-source security research.*
+CodeSentinel is supported by **[Unquant](https://unquant.io/)**, who provided the necessary high-performance compute and scalable AI model runtime access to conduct supply-chain simulations, fuzz tampered script variants, and benchmark drift detection algorithms.
 
----
-
-## 🗺️ Roadmap
-
-- [x] CLI core engine with headless Chromium harvester
-- [x] Subresource Integrity (SRI) calculator & drift tracker
-- [x] CSP directive parser and grading engine (A–F)
-- [x] AST-based behavioral skimmer pattern detector
-- [x] OPTIJACK / CVE-2026-132224 threat intelligence feed integration
-- [x] Remediation pack generator (Nginx, Apache, drop-in SRI tags)
-- [x] Comprehensive documentation suite (`ARCHITECTURE.md`, `PCI-DSS-MAPPING.md`, `DETECTION-RULES.md`)
-- [ ] Automated Sigma rule & Suricata rule exporter
-- [x] Standalone dark-mode HTML executive report generator
-- [ ] GitHub Action for automated CI/CD PR script drift gating
+> *Special thanks to **Luke** at Unquant for his dedication and extraordinary support in advancing open-source defensive security research.*
 
 ---
 
-## 🤝 Contributing
+## Documentation Suite
 
-We welcome contributions from security researchers, detection engineers, and developers!
+- **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**: Data flow, headless DOM hooks, hash computation engine, and AST analyzer.
+- **[`docs/PCI-DSS-MAPPING.md`](docs/PCI-DSS-MAPPING.md)**: Requirement 6.4.3 & 11.6.1 compliance ledger and operational evidence.
+- **[`docs/DETECTION-RULES.md`](docs/DETECTION-RULES.md)**: Catalog of all detection rules, severity grades, and remediation guidance.
+
+---
+
+## Contributing
+
+We welcome contributions from security researchers, detection engineers, and developers:
+
 - Review [`CONTRIBUTING.md`](CONTRIBUTING.md) to get started.
-- Add new skimmer signatures or C2 drop domains via [Threat Intel Contribution Issue Template](https://github.com/Ally-Released/scriptsentinel/issues/new?template=threat_intel_rule.yml).
-- Code format: `ruff check .` and tests: `pytest`.
+- Propose new C2 drop domains or skimmer signatures via the [Threat Intel Contribution Issue Template](https://github.com/Ally-Released/scriptsentinel/issues/new?template=threat_intel_rule.yml).
+- Verification requirements: `ruff check .` and `pytest`.
 
 ---
 
-## 🔒 Security Policy
+## Security Policy
 
-For vulnerability disclosures or bug bounties, refer to [`SECURITY.md`](SECURITY.md). Please report security issues privately through [GitHub Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories).
+For vulnerability disclosures, refer to [`SECURITY.md`](SECURITY.md). Please report vulnerabilities privately through [GitHub Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories).
 
 ---
 
-## 📄 License
+## License
 
 CodeSentinel is open-source software licensed under the **[MIT License](LICENSE)**.
+
 <br>
+
+<div align="center">
 <sub>Crafted with conviction by <a href="https://www.monarservices.org/">MONAR</a>. Chances make Champions.</sub>
+</div>
