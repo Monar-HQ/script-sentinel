@@ -1,8 +1,41 @@
-"""
-CodeSentinel / ScriptSentinel
-Open-source client-side supply chain defensive tool:
-Audits third-party JavaScript, detects suspicious dependencies, monitors script integrity,
-identifies CSP misconfigurations, and generates verifiable remediations.
+"""CodeSentinel / ScriptSentinel.
+
+Open-source client-side supply-chain defense: audit third-party JavaScript,
+detect suspicious dependencies, monitor script integrity, identify CSP
+misconfigurations, and generate verifiable remediations.
 """
 
+from __future__ import annotations
+
+from .models import (
+    AuditReport,
+    ComplianceItem,
+    CSPAnalysis,
+    Finding,
+    HashDigests,
+    IntegrityIssue,
+    RemediationPack,
+    ScanFinding,
+    ScanResult,
+    ScriptAudit,
+    ScriptIntegrityResult,
+    ScriptTagReplacement,
+)
+
 __version__ = "0.1.0"
+
+__all__ = [
+    "AuditReport",
+    "CSPAnalysis",
+    "ComplianceItem",
+    "Finding",
+    "HashDigests",
+    "IntegrityIssue",
+    "RemediationPack",
+    "ScanFinding",
+    "ScanResult",
+    "ScriptAudit",
+    "ScriptIntegrityResult",
+    "ScriptTagReplacement",
+    "__version__",
+]

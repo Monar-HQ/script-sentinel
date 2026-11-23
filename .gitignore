@@ -25,6 +25,7 @@ scriptsentinel.db
 baselines.db
 reports/
 *.png
+!assets/*.png
 *.gif
 
 # Lab replay scratch
