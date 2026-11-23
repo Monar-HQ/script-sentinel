@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Tooling
+.ruff_cache/
+.mypy_cache/
+
+# ScriptSentinel runtime state
+*.db
+*.db-wal
+*.db-shm
+scriptsentinel.db
+baselines.db
+reports/
+*.png
+*.gif
+
+# Lab replay scratch
+chrome-runs/
+chrome-profile*/
+replay/

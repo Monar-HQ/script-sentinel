@@ -1,0 +1,18 @@
+{
+  "domains": [
+    "1688360.cc",
+    "webshell.lol",
+    "linkforge.cc",
+    "pay-cloud.online",
+    "pay.pay-cloud.online",
+    "pay-relay.wordpressadmin001.workers.dev",
+    "5vobauua3ojpklx.icu",
+    "eil786npto9u5bq.icu"
+  ],
+  "patterns": [
+    "exfil",
+    "skimmer",
+    "collect_card",
+    "stealer"
+  ]
+}

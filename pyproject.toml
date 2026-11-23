@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scriptsentinel"
+version = "0.1.0"
+description = "CLI-first audit of third-party JavaScript: inventory, integrity baselines, CSP misconfiguration detection, IOC matching, and verifiable remediation."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "ScriptSentinel Contributors" }]
+keywords = ["csp", "supply-chain", "javascript", "integrity", "security"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Security",
+]
+dependencies = [
+    "playwright>=1.40",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "mypy>=1.10"]
+ai = ["httpx>=0.27"]
+
+[project.scripts]
+scriptsentinel = "scriptsentinel.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["scriptsentinel*"]
+
+[tool.setuptools.package-data]
+scriptsentinel = ["iocs/feeds/*.json"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "C4", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "B011"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_redundant_casts = true
+files = ["src/scriptsentinel"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = ["integration: requires the local OPTIJACK lab to be running"]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["scriptsentinel"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

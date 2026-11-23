@@ -1,0 +1,88 @@
+{
+  "feed_id": "optimjack-2026-11-23",
+  "version": "1.0.0",
+  "as_of": "2026-11-23",
+  "description": "OPTIMJACK / CVE-2026-132224 indicators observed in the OPTIJACK simulation lab on 2026-11-23. Every record carries source and first_seen.",
+  "records": [
+    {
+      "kind": "domain",
+      "value": "1688360.cc",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains; lab_run/harness/browser_run.js OVERRIDE set",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": "Override host serving loader.js and receiving /exfil"
+    },
+    {
+      "kind": "domain",
+      "value": "webshell.lol",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "domain",
+      "value": "linkforge.cc",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "domain",
+      "value": "pay-cloud.online",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "domain",
+      "value": "pay.pay-cloud.online",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "domain",
+      "value": "pay-relay.wordpressadmin001.workers.dev",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "domain",
+      "value": "5vobauua3ojpklx.icu",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "domain",
+      "value": "eil786npto9u5bq.icu",
+      "source": "OPTIJACK lab_run/artifacts/recon.json: c2-sink overridden_domains",
+      "first_seen": "2026-11-23",
+      "severity": "high",
+      "note": ""
+    },
+    {
+      "kind": "sha256",
+      "value": "f7b84b9a94f749f8ced3f0112d0a66894e8bbc3b4aa5592021d1b8976a9bad40",
+      "source": "OPTIJACK lab_run/artifacts/detection_rules.json IOC-2-TRACKJS-HASH (public incident IOC for the compromised vendor tag)",
+      "first_seen": "2026-11-23",
+      "severity": "critical",
+      "note": "track.js hash; not served in the lab, retained as a real-world indicator"
+    },
+    {
+      "kind": "sha256",
+      "value": "814a963c0da480e2449d9b6664480156e1cd6d731014117401bf635badec3a0f",
+      "source": "OPTIJACK IOC set supplied with the lab ground truth (second compromised track.js variant)",
+      "first_seen": "2026-11-23",
+      "severity": "critical",
+      "note": ""
+    }
+  ]
+}
