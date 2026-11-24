@@ -11,7 +11,7 @@
 
 GitHub private vulnerability reporting is the preferred channel:
 
-1. Open the repository's [Security Advisories](https://github.com/Ally-Released/scriptsentinel/security/advisories) tab.
+1. Open the repository's [Security Advisories](https://github.com/Monar-HQ/scriptsentinel/security/advisories) tab.
 2. Select **Report a vulnerability**.
 3. Include the affected component or file, the issue class, a minimal reproduction, and the impact assessment.
 

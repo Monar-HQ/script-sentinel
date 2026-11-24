@@ -8,8 +8,8 @@ authors:
     website: "https://www.monarservices.org"
 version: "1.0.0rc1"
 date-released: "2026-11-24"
-url: "https://github.com/Ally-Released/scriptsentinel"
-repository-code: "https://github.com/Ally-Released/scriptsentinel"
+url: "https://github.com/Monar-HQ/scriptsentinel"
+repository-code: "https://github.com/Monar-HQ/scriptsentinel"
 license: "MIT"
 keywords:
   - "client-side security"

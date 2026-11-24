@@ -58,6 +58,5 @@ Build artifacts and SHA-256 hashes are recorded in [docs/RELEASE.md](docs/RELEAS
 
 ### Notes
 
-- Repository remains private at `https://github.com/Ally-Released/scriptsentinel`; release-stage changes live on the working branch pending merge to `main`.
-- Tag `v0.1.0` and the GitHub release `v0.1.0 - Initial Release` exist. PyPI publication has not been performed.
+- Repository is privately hosted at `https://github.com/Monar-HQ/scriptsentinel`. Version 1.0.0rc1 is on `main`; no GitHub release or version tag has been published. PyPI publication has not been performed.
 - OPTIJACK lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not real-world blast radius.
