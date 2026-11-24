@@ -52,5 +52,5 @@ python -m pytest --cov=scriptsentinel --cov-report=term-missing
 
 - Python 3.10+, `from __future__ import annotations`, type annotations on public functions.
 - Dataclasses for records; tuple-based immutable results.
-- Prefer stdlib (`hashlib`, `json`, `re`, `base64`) and the existing runtime dependencies (`httpx`, `beautifulsoup4`, `rich`).
+- Prefer stdlib (`hashlib`, `json`, `re`, `base64`) and the existing runtime dependencies (`httpx`, `beautifulsoup4`, `rich`, `PyYAML`).
 - Keep CLI output in the MONAR palette: red accent, bone text, slate metadata, no cyan/green/purple status walls.

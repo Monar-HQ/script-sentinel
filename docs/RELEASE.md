@@ -1,6 +1,6 @@
 # Release 0.1.0
 
-ScriptSentinel 0.1.0 is prepared for release under MONAR. The repository remains private; no PyPI publication, tag, or GitHub release has been performed in this stage.
+ScriptSentinel 0.1.0 is prepared for release under MONAR. Tag `v0.1.0` and the GitHub release exist; the repository remains private and PyPI publication is still pending.
 
 ## Release Scope
 
@@ -43,8 +43,10 @@ Result on 2026-11-24:
 
 | Artifact | Size | SHA-256 |
 | --- | --- | --- |
-| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,752 bytes | `01a8638af419180ed0e83a15ad9d952cf21401d1017df45a3c976e3fab61ff2a` |
-| `dist/scriptsentinel-0.1.0.tar.gz` | 184,247 bytes | `33a7923ae9d465f1b62004a1b03ad5233596f38cf869f6b16cf5f7c0d7496026` |
+| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,356 bytes | `fa497245673bd052b8a36d4d868d6255f9d9591d82935f99c52ca391e088d5e4` |
+| `dist/scriptsentinel-0.1.0.tar.gz` | 181,650 bytes | `e9baa4a8aaa303ef9ae132d2b02b8f771c5deae402d45f30a790999706d7906b` |
+
+Asset upload to the GitHub release is pending: `uploads.github.com` is unreachable from the build sandbox. Attach both files with `gh release upload v0.1.0 dist/*` from a network with GitHub uploads access.
 
 Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NOTICE`, and the `scriptsentinel` console entry point. The sdist includes `CITATION.cff`, `docs/CASE-STUDY.md`, and the OPTIMJACK case-study SVG/PNG assets.
 
@@ -61,20 +63,18 @@ Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NO
 2. Build the wheel and sdist; install the wheel in a clean environment; run `scriptsentinel --version`.
 3. Review README, OPTIMJACK case study, docs, assets, and social preview for relative paths, CVE links, and 846px asset width.
 4. Commit release-stage changes with a clear message.
-5. Create tag `v0.1.0`.
+5. Create tag `v0.1.0`. *(done — `v0.1.0` exists on the remote)*
 6. Make the repository public.
 7. Publish `scriptsentinel` to PyPI.
-8. Create the GitHub release with the terminal showcase and social preview.
+8. Create the GitHub release with the terminal showcase and social preview. *(notes rewritten to match the shipped feature set — done; attach the wheel and sdist with `gh release upload v0.1.0 dist/*` — pending sandbox upload access)*
 9. Upload `assets/social-preview.png` as the repository social preview image.
-10. Send the Telegram notification.
 
 ## Current State
 
 - Repository: private at `https://github.com/Ally-Released/scriptsentinel`.
-- Case study: `docs/CASE-STUDY.md` with CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and credits.
+- Case study: `docs/CASE-STUDY.md` with CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and source provenance.
 - GitHub metadata: description, homepage (`https://www.monarservices.org`), topics (`optimjack`, `payment-skimmer`, `content-security-policy`, `cli`, `python`, `security-tools`), and discussions enabled.
 - Social preview: `assets/social-preview.png` (1280×640) is ready for GitHub UI upload; `usesCustomOpenGraphImage` remains false until uploaded. GitHub exposes no public API for social-preview upload.
 - PyPI: not published.
-- Git tag: not created.
-- GitHub release: not created.
-- Telegram notification: delivered to chat `5700018165` (`message_id` 66).
+- Git tag: `v0.1.0` created on the remote.
+- GitHub release: `v0.1.0 - Initial Release` published (2026-11-23); notes rewritten 2026-11-24, wheel/sdist upload pending (sandbox cannot reach `uploads.github.com`).

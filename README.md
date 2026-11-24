@@ -9,13 +9,13 @@
 <h3 align="center">Audit the JavaScript your checkout actually runs.</h3>
 
 <p align="center">
-  <sub><b>BY MONAR</b> · <a href="https://www.monarservices.org">monarservices.org</a></sub>
+  <sub><b><a href="https://github.com/Monar-HQ">MONAR</a></b> · <a href="https://www.monarservices.org">monarservices.org</a></sub>
 </p>
 
 <p align="center">
   <a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml"><img src="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-151515?style=flat-square&labelColor=151515" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/runtime%20deps-3-151515?style=flat-square&labelColor=151515" alt="Three runtime dependencies">
+  <img src="https://img.shields.io/badge/runtime%20deps-4-151515?style=flat-square&labelColor=151515" alt="Four runtime dependencies">
   <img src="https://img.shields.io/badge/PCI--DSS-v4.0-d9000b?style=flat-square&labelColor=151515" alt="PCI-DSS v4.0 evidence">
   <img src="https://img.shields.io/badge/CVE--2026--132224-OPTIMJACK-d9000b?style=flat-square&labelColor=151515" alt="OPTIMJACK case study">
   <img src="https://img.shields.io/badge/license-MIT-151515?style=flat-square&labelColor=151515" alt="MIT license">
@@ -55,7 +55,7 @@ On 16 November 2026, an attacker exploited Optimizely Web Experimentation's acco
 
 **CVE records:** [CVE.org](https://www.cve.org/CVERecord?id=CVE-2026-132224) · [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-132224) · [GHSA-XR6G-WR3X-R365](https://github.com/advisories/GHSA-XR6G-WR3X-R365) · [Rapid7](https://www.rapid7.com/db/vulnerabilities/cve-2026-132224/) · [Tenable](https://www.tenable.com/cve/CVE-2026-132224) · [ENISA EUVD](https://euvd.enisa.europa.eu/enisa/EUVD-2026-129010).
 
-Read the full case study: [docs/CASE-STUDY.md](docs/CASE-STUDY.md) — timeline, attack chain, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and credits.
+Read the full case study: [docs/CASE-STUDY.md](docs/CASE-STUDY.md) — timeline, attack chain, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and source provenance.
 
 ## What It Checks
 
@@ -159,7 +159,7 @@ The pipeline is deterministic and browser-free: `httpx` fetches the target, Beau
 
 | Document | Contents |
 | --- | --- |
-| [docs/CASE-STUDY.md](docs/CASE-STUDY.md) | OPTIMJACK incident narrative, CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, credits. |
+| [docs/CASE-STUDY.md](docs/CASE-STUDY.md) | OPTIMJACK incident narrative, CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, sources. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Data flow, module boundaries, typed contracts, failure handling. |
 | [docs/DETECTION-RULES.md](docs/DETECTION-RULES.md) | CSP, SRI, behavioral, and IOC rule catalog. |
 | [docs/PCI-DSS-MAPPING.md](docs/PCI-DSS-MAPPING.md) | PCI-DSS v4.0 6.4.3 / 11.6.1 evidence. |
@@ -169,28 +169,17 @@ The pipeline is deterministic and browser-free: `httpx` fetches the target, Beau
 | [CHANGELOG.md](CHANGELOG.md) | Version history and verification summary. |
 | [CITATION.cff](CITATION.cff) | Citation metadata for research and incident reports. |
 
-## Compute Partner
+## Acknowledgements
+
+**ScriptSentinel is a [MONAR](https://github.com/Monar-HQ) project** — designed, built, and maintained by MONAR ([monarservices.org](https://www.monarservices.org)).
 
 <p align="center">
   <img src="assets/partner-unquant.svg" alt="Unquant — infrastructure and AI compute partner" width="846">
 </p>
 
-[Unquant](https://unquant.io/) provided server infrastructure and AI compute access for the OPTIJACK simulation and model runs used to validate ScriptSentinel. Special thanks to Luke for championing open-source client-side defense research.
+[Unquant](https://unquant.io/) provided the server infrastructure and AI compute access used to run the OPTIJACK simulation and validate ScriptSentinel's detection rules. Special thanks to Luke at Unquant for championing open-source client-side defense research.
 
-## Credits & Thanks
-
-- **Goyya** — community feedback and release review.
-- **Luke / Unquant** — infrastructure and AI compute for the OPTIJACK simulation and model validation.
-- **Scott Helme / Report URI** — incident discovery, the 178-organization count, snippet analysis, and public IOC reporting.
-- **Owais Shaikh / StepSecurity** — payload tracing, wallet analysis, attacker infrastructure, and the OPTIMJACK write-up.
-- **Sherrod DeGrippo / Unit42** — third-party privilege and segmentation analysis.
-- **Salesforce Security** — affected-organization response and exposure-window reporting.
-- **Gianpietro Cutolo / Netskope Threat Labs** — attack-chain telemetry, iOS routing, and domain observations.
-- **Optimizely** — vendor advisory, incident timeline, and remediation record.
-- **Amirul Cyber** — campaign naming.
-- **MITRE, NVD, CISA** — CVE record, CVSS metrics, and SSVC enrichment.
-
-The full acknowledgement list and source provenance are in [docs/CASE-STUDY.md](docs/CASE-STUDY.md#credits-and-acknowledgements).
+The OPTIMJACK case study builds on public incident reporting from Optimizely, Report URI, StepSecurity, Unit42, Salesforce Security, and Netskope Threat Labs. Every source is cited in [docs/CASE-STUDY.md](docs/CASE-STUDY.md#references).
 
 ## Community
 
@@ -213,5 +202,5 @@ mypy --strict src/scriptsentinel
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for the module map, IOC feed schema, and test conventions. Security reports follow [SECURITY.md](SECURITY.md). The project is MIT licensed.
 
 <p align="center">
-  <sub>ScriptSentinel is a MONAR project. Built for checkout-page integrity.</sub>
+  <sub><a href="https://github.com/Monar-HQ">MONAR</a> · ScriptSentinel — built for checkout-page integrity.</sub>
 </p>

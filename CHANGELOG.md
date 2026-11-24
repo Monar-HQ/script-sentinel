@@ -13,7 +13,7 @@
 - IOC loader with validation, merge, digest, and packaged OPTIJACK feeds.
 - Composite action `action.yml` and reusable workflow `.github/workflows/scriptsentinel-gate.yml`.
 - Documentation suite: OPTIMJACK case study, architecture, detection rules, PCI-DSS mapping, design system, CI gate, release notes.
-- OPTIMJACK case study with incident narrative, CVE links, timeline, IOC analysis, OPTIJACK lab outcome matrix, remediation, critical notes, and credits.
+- OPTIMJACK case study with incident narrative, CVE links, timeline, IOC analysis, OPTIJACK lab outcome matrix, remediation, critical notes, and sources.
 - `CITATION.cff` for community and research citation.
 - OPTIMJACK case-study SVG and PNG, plus CVE chip in the social preview.
 - Dark/light hero banners, terminal showcase, architecture diagram, Unquant partner card, and 1280×640 social preview SVG/PNG.
@@ -24,9 +24,8 @@
 - Replaced cyan/green/purple CLI styling with MONAR red, bone, and slate.
 - Replaced gradient-heavy HTML report styling with a flat verification-ledger layout.
 - Updated README, CONTRIBUTING, SECURITY, LICENSE, and issue templates to the actual Python package and IOC schema.
-- README now surfaces the OPTIMJACK case study, CVE badge, credits, source provenance, and a community star call-to-action.
+- README now surfaces the OPTIMJACK case study, CVE badge, source provenance, and a community star call-to-action.
 - GitHub repository metadata refreshed: description, homepage, topics, and discussions enabled.
-- Added Goyya to README credits and `NOTICE` acknowledgements.
 - Removed redundant banner assets and preview scratch files.
 
 ### Verification
@@ -46,7 +45,6 @@ Build artifacts and SHA-256 hashes are recorded in [docs/RELEASE.md](docs/RELEAS
 
 ### Notes
 
-- Repository remains private at `https://github.com/Ally-Released/scriptsentinel`; release-stage changes pushed to `main`.
-- No PyPI publication, tag, or GitHub release has been created.
-- Telegram notification delivered to chat `5700018165` (`message_id` 64).
+- Repository remains private at `https://github.com/Ally-Released/scriptsentinel`; release-stage changes live on the working branch pending merge to `main`.
+- Tag `v0.1.0` and the GitHub release `v0.1.0 - Initial Release` exist. PyPI publication has not been performed.
 - OPTIJACK lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not real-world blast radius.

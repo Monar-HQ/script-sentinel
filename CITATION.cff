@@ -6,10 +6,6 @@ type: software
 authors:
   - family-names: "MONAR"
     website: "https://www.monarservices.org"
-  - given-names: "Goyya"
-    affiliation: "Community review"
-  - given-names: "Luke"
-    affiliation: "Unquant"
 version: "0.1.0"
 date-released: "2026-11-24"
 url: "https://github.com/Ally-Released/scriptsentinel"
