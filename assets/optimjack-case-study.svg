@@ -73,8 +73,8 @@
   <!-- Footer -->
   <rect x="24" y="388" width="798" height="30" fill="#090c14" stroke="#1e2433" stroke-width="1"/>
   <text x="38" y="407" class="mono" font-size="8" fill="#8892b0">OPTIJACK LAB · 144 visits · 36 outcome rows · 9 rules · clean FP 0</text>
-  <text x="786" y="407" text-anchor="end" class="mono" font-size="8" fill="#64748b">MONAR / v0.1.0</text>
+  <text x="786" y="407" text-anchor="end" class="mono" font-size="8" fill="#8892b0">MONAR / v0.1.0</text>
 
-  <text x="24" y="432" class="mono" font-size="7" fill="#64748b">Sources: Optimizely advisory · Report URI · StepSecurity · Unit42 · Salesforce · Netskope</text>
+  <text x="24" y="432" class="mono" font-size="7.5" fill="#8892b0">Sources: Optimizely advisory · Report URI · StepSecurity · Unit42 · Salesforce · Netskope</text>
   <rect x="0" y="438" width="846" height="2" fill="#d9000b"/>
 </svg>
