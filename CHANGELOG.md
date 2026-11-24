@@ -41,6 +41,7 @@
 
 ### Notes
 
-- Repository remains private at `https://github.com/Ally-Released/scriptsentinel`.
+- Repository remains private at `https://github.com/Ally-Released/scriptsentinel`; release-stage changes pushed to `main`.
 - No PyPI publication, tag, or GitHub release has been created.
+- Telegram notification delivered to chat `5700018165` (`message_id` 63).
 - OPTIJACK lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not real-world blast radius.
