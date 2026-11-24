@@ -15,7 +15,7 @@ GitHub private vulnerability reporting is the preferred channel:
 2. Select **Report a vulnerability**.
 3. Include the affected component or file, the issue class, a minimal reproduction, and the impact assessment.
 
-If private reporting is unavailable, send an email to `iamnotlol30@gmail.com` with the subject `[SECURITY] ScriptSentinel Vulnerability Report`.
+If private reporting is unavailable, email `mail@monarservices.org` with the subject `[SECURITY] ScriptSentinel Vulnerability Report`.
 
 Do not open a public issue for an unpatched vulnerability, and do not disclose details before a coordinated release.
 

@@ -293,19 +293,12 @@ Re-test headline:
 
 ---
 
-## Credits and acknowledgements
+## Acknowledgements
 
-- **MONAR** — project owner and maintainer; ScriptSentinel and the OPTIJACK lab.
-- **Goyya** — community feedback and release review.
-- **Luke / Unquant** — infrastructure and AI compute for the OPTIJACK simulation and model validation.
-- **Scott Helme / Report URI** — incident discovery, the 178-organization count, snippet analysis, and public IOC reporting.
-- **Owais Shaikh / StepSecurity** — payload tracing, wallet analysis, attacker infrastructure, and the OPTIMJACK write-up.
-- **Sherrod DeGrippo / Unit42** — third-party privilege and segmentation analysis.
-- **Salesforce Security** — affected-organization response and exposure-window reporting.
-- **Gianpietro Cutolo / Netskope Threat Labs** — attack-chain telemetry, iOS routing, and domain observations.
-- **Optimizely** — vendor advisory, incident timeline, and remediation record.
-- **Amirul Cyber** — campaign naming.
-- **MITRE, NVD, CISA** — CVE record, CVSS metrics, and SSVC enrichment.
+- **MONAR** — project owner and maintainer; ScriptSentinel and the OPTIJACK lab ([github.com/Monar-HQ](https://github.com/Monar-HQ)).
+- **Unquant** — server infrastructure and AI compute for the OPTIJACK simulation and model validation. Special thanks to Luke.
+
+Incident research builds on public reporting from Optimizely, Report URI, StepSecurity, Unit42, Salesforce Security, Netskope Threat Labs, The Hacker News, Ars Technica, MITRE, NVD, and CISA. Every source is cited in [References](#references).
 
 ---
 

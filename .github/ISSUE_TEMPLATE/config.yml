@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
   - name: OPTIMJACK Case Study
     url: https://github.com/Ally-Released/scriptsentinel/blob/main/docs/CASE-STUDY.md
-    about: Read the incident narrative, CVE links, IOC analysis, lab evidence, remediation, and credits.
+    about: Read the incident narrative, CVE links, IOC analysis, lab evidence, remediation, and sources.
   - name: Security Advisories (Vulnerability Reports)
     url: https://github.com/Ally-Released/scriptsentinel/security/advisories
     about: Please report security vulnerabilities privately here.

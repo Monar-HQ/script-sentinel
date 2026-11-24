@@ -13,7 +13,7 @@ body:
       options:
         - "C2 Domain / Exfiltration Endpoint IOC"
         - "Script SHA-256 Hash IOC"
-        - "Behavioral AST Detection Pattern"
+        - "Behavioral Detection Pattern"
         - "CSP Bypass / Misconfiguration Rule"
     validations:
       required: true

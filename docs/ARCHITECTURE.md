@@ -82,6 +82,7 @@ The package ships `py.typed` for PEP 561 consumers.
 | `httpx` | Async HTTP fetch and optional webhook delivery. |
 | `beautifulsoup4` | HTML parsing with `html.parser`. |
 | `rich` | CLI panels, tables, and banner rendering. |
+| `PyYAML` | Sigma rule serialization in `rules/sigma_exporter.py`. |
 
 Development dependencies: `pytest`, `pytest-cov`, `ruff`, `mypy`, `types-pyyaml`.
 
