@@ -1,54 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 220" width="846" height="220" role="img" aria-label="ScriptSentinel by MONAR. Client-side JavaScript integrity, CSP grading, and skimmer detection.">
-  <title>ScriptSentinel by MONAR. Client-side JavaScript integrity, CSP grading, and skimmer detection.</title>
-  <defs>
-    <pattern id="sentinel-grid-dark" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M24 0H0V24" fill="none" stroke="#141822" stroke-width="0.6"/>
-    </pattern>
-    <style>
-      .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
-      .sans { font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; }
-    </style>
-  </defs>
-
-  <rect width="846" height="220" fill="#04050a"/>
-  <rect width="846" height="220" fill="url(#sentinel-grid-dark)"/>
-  <rect width="846" height="2" fill="#d9000b"/>
-
-  <!-- Integrity seal -->
-  <g transform="translate(36 54)">
-    <path d="M0 18 L18 0 H90 L108 18 V90 L90 108 H18 L0 90 Z" fill="#080a11" stroke="#252b38" stroke-width="1"/>
-    <path d="M10 28 L28 10 H80 L98 28 V80 L80 98 H28 L10 80 Z" fill="#0d1017" stroke="#3b4252" stroke-width="1"/>
-    <path d="M54 36 L72 54 L54 72 L36 54 Z" fill="#d9000b"/>
-    <path d="M0 18 L18 0 H26" fill="none" stroke="#d9000b" stroke-width="2"/>
-    <path d="M108 90 L90 108 H82" fill="none" stroke="#d9000b" stroke-width="2"/>
-    <line x1="12" y1="54" x2="30" y2="54" stroke="#4c566a" stroke-width="1"/>
-    <line x1="78" y1="54" x2="96" y2="54" stroke="#4c566a" stroke-width="1"/>
-    <line x1="54" y1="12" x2="54" y2="30" stroke="#4c566a" stroke-width="1"/>
-    <line x1="54" y1="78" x2="54" y2="96" stroke="#4c566a" stroke-width="1"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="846" height="220" viewBox="0 0 846 220" role="img" aria-labelledby="title desc">
+  <title id="title">ScriptSentinel</title>
+  <desc id="desc">Signal yellow ScriptSentinel monogram and off-white wordmark on graphite.</desc>
+  <rect width="846" height="220" fill="#101110"/>
+  <g transform="translate(148 74) scale(2.25)">
+    <rect width="32" height="32" rx="1.5" fill="#dffc70"/>
+    <path d="M7 7h18v4H11v3h14v11H7v-4h14v-3H7z" fill="#101110"/>
   </g>
-
-  <line x1="182" y1="36" x2="182" y2="184" stroke="#1c202a" stroke-width="1"/>
-
-  <g transform="translate(206 0)">
-    <rect x="0" y="43" width="6" height="6" fill="#d9000b"/>
-    <text x="14" y="50" class="mono" font-size="9" font-weight="700" fill="#8892b0" letter-spacing="1.3">MONAR / CLIENT-SIDE DEFENSE</text>
-
-    <text x="0" y="92" class="sans" font-size="36" font-weight="800" fill="#fbfaf7" letter-spacing="-0.8">ScriptSentinel</text>
-
-    <text x="0" y="120" class="sans" font-size="13" font-weight="400" fill="#94a3b8">SRI drift, CSP grading, and skimmer detection for checkout pages.</text>
-
-    <g transform="translate(0 150)">
-      <rect width="604" height="34" fill="#090c14" stroke="#252b38" stroke-width="1"/>
-      <rect width="2" height="34" fill="#d9000b"/>
-      <text x="14" y="21" class="mono" font-size="9.5" font-weight="600" fill="#cbd5e1">SRI · SHA-256</text>
-      <line x1="151" y1="8" x2="151" y2="26" stroke="#252b38" stroke-width="1"/>
-      <text x="165" y="21" class="mono" font-size="9.5" font-weight="600" fill="#cbd5e1">CSP · A–F</text>
-      <line x1="302" y1="8" x2="302" y2="26" stroke="#252b38" stroke-width="1"/>
-      <text x="316" y="21" class="mono" font-size="9.5" font-weight="600" fill="#cbd5e1">IOC · OPTIJACK</text>
-      <line x1="453" y1="8" x2="453" y2="26" stroke="#252b38" stroke-width="1"/>
-      <text x="467" y="21" class="mono" font-size="9.5" font-weight="600" fill="#cbd5e1">PCI-DSS 6.4.3 / 11.6.1</text>
-    </g>
-  </g>
-
-  <path d="M836 220 L846 210 V220 Z" fill="#d9000b"/>
+  <text x="245" y="138" fill="#f1f3e9" font-family="Arial, Helvetica, sans-serif" font-size="67" font-weight="700" letter-spacing="-3">ScriptSentinel</text>
 </svg>

@@ -12,7 +12,7 @@ AI; Intelligence and host-agent advice are optional.
 
 Social preview source and upload image: `assets/social-preview.svg` and
 `assets/social-preview.png` (1200 × 630). Set the PNG under repository Settings
-→ General → Social preview before making the repository public.
+→ General → Social preview to update the GitHub share card.
 
 ## Short announcement
 

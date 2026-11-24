@@ -1,5 +1,5 @@
 <!-- ScriptSentinel: JavaScript supply-chain security -->
-<p align="center"><img src="assets/workflow-loop.gif" alt="Animated workflow diagram: local scripts, static analysis, reviewed baseline, proposed diff and required operator approval." width="100%"></p>
+<p align="center"><img src="assets/hero-banner-dark.svg" alt="ScriptSentinel logo: signal yellow monogram and off-white wordmark on graphite." width="100%"></p>
 
 <p align="center">
 <a href="#start-in-two-minutes">Try the demo</a> &nbsp; / &nbsp;
@@ -15,7 +15,8 @@
 | :--- | :--- | :--- | :--- |
 | **1.0.0rc1** | Python **3.11.5+** | **MIT** | Local Core · optional AI |
 
-<sub>Header: schematic workflow animation, not incident footage or a live audit. [View the static version](assets/workflow-poster.svg).</sub>
+<p align="center"><img src="assets/workflow-loop.gif" alt="Schematic workflow animation: local scripts, static analysis, reviewed baseline, proposed diff and required operator approval." width="100%"></p>
+<sub>Workflow illustration, not incident footage or a live audit. [View the static version](assets/workflow-poster.svg).</sub>
 
 ## Inside a review
 
