@@ -31,7 +31,7 @@
 
 ### Verification
 
-- `python -m pytest -v`: 67 passed in 8.06s with the OPTIJACK integration tests active.
+- `python -m pytest -v`: 67 passed in 8.08s with the OPTIJACK integration tests active.
 - `python -m ruff check .`: All checks passed.
 - `python -m mypy --strict src/scriptsentinel`: Success, 18 source files.
 - `uv build`: wheel and sdist produced successfully.
@@ -48,5 +48,5 @@ Build artifacts and SHA-256 hashes are recorded in [docs/RELEASE.md](docs/RELEAS
 
 - Repository remains private at `https://github.com/Ally-Released/scriptsentinel`; release-stage changes pushed to `main`.
 - No PyPI publication, tag, or GitHub release has been created.
-- Telegram notification delivered to chat `5700018165` (`message_id` 63).
+- Telegram notification delivered to chat `5700018165` (`message_id` 64).
 - OPTIJACK lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not real-world blast radius.

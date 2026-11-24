@@ -29,7 +29,7 @@ python -m mypy --strict src/scriptsentinel
 
 Result on 2026-11-24:
 
-- `python -m pytest -v`: 67 passed in 8.06s with OPTIJACK integration tests active.
+- `python -m pytest -v`: 67 passed in 8.08s with OPTIJACK integration tests active.
 - `python -m ruff check .`: All checks passed.
 - `python -m mypy --strict src/scriptsentinel`: Success, 18 source files.
 - `uv build`: wheel and sdist produced successfully.
@@ -43,8 +43,8 @@ Result on 2026-11-24:
 
 | Artifact | Size | SHA-256 |
 | --- | --- | --- |
-| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,710 bytes | `8ff0418b145fee52057178839de4fb80f3be35f7fc3bae436f8e02b466f87694` |
-| `dist/scriptsentinel-0.1.0.tar.gz` | 183,910 bytes | `d31eea0f9f001103f8ee5a731fdd8bca916da43db0d5149e8b7300e8f1b0e847` |
+| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,710 bytes | `e70463aaa8d4e2d95fcfa4efe716d36d3a363c21a4531d2fa00430fef4a26c7c` |
+| `dist/scriptsentinel-0.1.0.tar.gz` | 183,889 bytes | `d6fa1eed9f4a03b78a2c9e83ffc349ec7b2bf46852630aca39dbdf8238e93bf8` |
 
 Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NOTICE`, and the `scriptsentinel` console entry point. The sdist includes `CITATION.cff`, `docs/CASE-STUDY.md`, and the OPTIMJACK case-study SVG/PNG assets.
 
@@ -77,4 +77,4 @@ Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NO
 - PyPI: not published.
 - Git tag: not created.
 - GitHub release: not created.
-- Telegram notification: delivered to chat `5700018165` (`message_id` 63).
+- Telegram notification: delivered to chat `5700018165` (`message_id` 64).
