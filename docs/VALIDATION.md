@@ -11,6 +11,17 @@ Chromium workflows ran under 3.12. Unclosed SQLite connections found during
 
 ## Executed checks
 
+### Remote CI
+
+[GitHub Actions run 45435739490](https://github.com/Ally-Released/scriptsentinel/actions/runs/45435739490)
+passed for commit `6e782bd`: Python 3.12 and 3.14 on Windows, Linux and macOS,
+lint and strict typing, real Chromium workflows, the locked dependency audit,
+and a wheel/source build with installed-package smoke checks. All ten jobs
+completed successfully. Subsequent commits have their own Actions records;
+this result applies to the named commit.
+
+### Local checks
+
 - Windows / CPython 3.12.14 with the locked Core, browser, credentials and dev
   dependencies; fixed Soup Sieve 4.0 is installed.
 - Ruff and strict Mypy across 39 source modules.
@@ -63,8 +74,7 @@ resolution gaps and discovery budgets applied too late. Those paths were fixed
 and covered by additional regression tests. The reviewer did not run exploits
 or certify production security; runtime verification was performed separately.
 
-At the local validation checkpoint, no remote GitHub CI run, macOS/Linux machine run, Docker/Kubernetes deployment,
-paid provider request, independent human security audit, production application
+No Docker/Kubernetes deployment, paid provider request, independent human security audit, production application
 compatibility test, platform code signing or public release was performed.
 Docker was unavailable locally. Snyk tooling was unavailable. C: was full; builds
 and tooling used D: without deleting user files. No application deployment,

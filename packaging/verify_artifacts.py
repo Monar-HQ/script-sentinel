@@ -31,7 +31,7 @@ with tarfile.open(source) as archive:
     names = archive.getnames()
     assert any(name.endswith("/CREDITS.md") for name in names)
     assert any(name.endswith("/assets/brandkit/README.md") for name in names)
-    assert any(name.endswith("/assets/brandkit/identity-board.png") for name in names)
+    assert any(name.endswith("/assets/brandkit/identity-system.svg") for name in names)
     assert not any("/.scriptsentinel/" in name or name.startswith("scriptsentinel-1.0.0rc1/report/") for name in names)
 records = []
 for path in (

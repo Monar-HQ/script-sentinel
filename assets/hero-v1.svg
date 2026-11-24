@@ -1,16 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="640" viewBox="0 0 1600 640" role="img" aria-labelledby="title desc">
-<title id="title">ScriptSentinel — Know what runs. Prove what changed.</title><desc id="desc">A local-first client-side supply-chain defense tool by MONAR Services, with AI infrastructure support from unquant.io. Core and optional Intelligence share a deterministic verification gate.</desc>
+<title id="title">ScriptSentinel — JavaScript supply-chain security</title><desc id="desc">Local JavaScript inventory, integrity review and change monitoring by MONAR Services, with research infrastructure support from Unquant.</desc>
 <rect width="1600" height="640" fill="#101110"/><path d="M0 639H1600M1060 0V640" stroke="#343a33"/>
 <g transform="translate(64 52) scale(1.375)"><rect width="32" height="32" rx="3" fill="#dffc70"/><path d="M7 7h18v4H11v3h14v11H7v-4h14v-3H7z" fill="#101110"/></g>
 <text x="126" y="83" fill="#f1f3e9" font-family="Arial,sans-serif" font-size="26" font-weight="600">ScriptSentinel</text>
-<text x="64" y="163" fill="#b0b6a9" font-family="monospace" font-size="13" letter-spacing="2">CLIENT-SIDE SUPPLY-CHAIN DEFENSE</text>
-<text x="60" y="280" fill="#f1f3e9" font-family="Arial,sans-serif" font-size="91" font-weight="600" letter-spacing="-3">Know what runs.</text>
-<text x="60" y="380" fill="#dffc70" font-family="Arial,sans-serif" font-size="91" font-weight="600" letter-spacing="-3">Prove what changed.</text>
-<text x="64" y="447" fill="#b0b6a9" font-family="Arial,sans-serif" font-size="23">Script evidence. Reviewed baselines. Verifiable fixes.</text>
-<rect x="64" y="495" width="340" height="48" rx="4" fill="#dffc70"/><text x="86" y="526" fill="#101110" font-family="monospace" font-size="18">$ scriptsentinel demo</text>
-<text x="64" y="597" fill="#b0b6a9" font-family="monospace" font-size="12">MONAR SERVICES × UNQUANT.IO</text><text x="684" y="597" fill="#b0b6a9" font-family="monospace" font-size="12">LOCAL FIRST / AI OPTIONAL</text>
-<text x="1110" y="89" fill="#b0b6a9" font-family="monospace" font-size="12" letter-spacing="1">THE VERIFICATION PATH</text>
-<g font-family="Arial,sans-serif" font-size="22" fill="#f1f3e9"><text x="1110" y="172">Discover</text><text x="1110" y="256">Analyze</text><text x="1110" y="340">Review</text><text x="1110" y="424">Validate</text></g>
-<g stroke="#59664a"><path d="M1114 190V223M1114 274V307M1114 358V391M1114 442V475"/><path d="M1109 218L1114 223L1119 218M1109 302L1114 307L1119 302M1109 386L1114 391L1119 386M1109 470L1114 475L1119 470" fill="none"/></g>
-<rect x="1090" y="490" width="440" height="56" rx="4" fill="#1d201d" stroke="#59664a"/><text x="1110" y="525" fill="#dffc70" font-family="Arial,sans-serif" font-size="22">Approve → Apply → Verify</text><text x="1110" y="598" fill="#b0b6a9" font-family="monospace" font-size="12">EVERY MODEL. THE SAME GATE.</text>
+<text x="64" y="163" fill="#b0b6a9" font-family="monospace" font-size="13" letter-spacing="2">SECURITY ENGINEERING / V1 RELEASE CANDIDATE</text>
+<text x="60" y="280" fill="#f1f3e9" font-family="Arial,sans-serif" font-size="86" font-weight="600" letter-spacing="-3">JavaScript</text>
+<text x="60" y="380" fill="#f1f3e9" font-family="Arial,sans-serif" font-size="80" font-weight="600" letter-spacing="-3">supply-chain security.</text>
+<text x="64" y="447" fill="#b0b6a9" font-family="Arial,sans-serif" font-size="23">Inventory, integrity review and change monitoring.</text>
+<path d="M64 494H970" stroke="#343a33"/><text x="64" y="534" fill="#dffc70" font-family="monospace" font-size="18">$ scriptsentinel demo</text>
+<text x="64" y="597" fill="#b0b6a9" font-family="monospace" font-size="12">MONAR SERVICES × UNQUANT</text><text x="684" y="597" fill="#b0b6a9" font-family="monospace" font-size="12">LOCAL ANALYSIS / OPTIONAL AI</text>
+<text x="1110" y="89" fill="#b0b6a9" font-family="monospace" font-size="12" letter-spacing="1">REVIEW WORKFLOW</text>
+<g font-family="monospace" font-size="12" fill="#dffc70"><text x="1110" y="153">01</text><text x="1110" y="250">02</text><text x="1110" y="347">03</text><text x="1110" y="444">04</text></g>
+<g font-family="Arial,sans-serif" font-size="22" fill="#f1f3e9"><text x="1152" y="157">Script inventory</text><text x="1152" y="254">Integrity and CSP</text><text x="1152" y="351">Reviewed baselines</text><text x="1152" y="448">Patch validation</text></g>
+<path d="M1110 192H1530M1110 289H1530M1110 386H1530M1110 483H1530" stroke="#343a33"/>
+<text x="1110" y="535" fill="#b0b6a9" font-family="Arial,sans-serif" font-size="17">Changes require explicit approval.</text><text x="1110" y="598" fill="#b0b6a9" font-family="monospace" font-size="12">CLI / LOCAL CONSOLE / HOST TOOLS</text>
 </svg>

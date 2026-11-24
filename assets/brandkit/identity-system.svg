@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="950" viewBox="0 0 1440 950" role="img" aria-labelledby="title desc">
+<title id="title">ScriptSentinel visual identity reference</title><desc id="desc">Editable monogram, wordmark, color specifications, typography, command line and contributor credit.</desc>
+<defs><symbol id="mark" viewBox="0 0 32 32"><rect width="32" height="32" rx="3" fill="#dffc70"/><path d="M7 7h18v4H11v3h14v11H7v-4h14v-3H7z" fill="#101110"/></symbol></defs>
+<rect width="1440" height="950" fill="#eeefe8"/>
+<g font-family="Arial,Helvetica,sans-serif" fill="#101110">
+<text x="48" y="58" font-size="23" font-weight="600">ScriptSentinel</text><text x="1392" y="58" text-anchor="end" font-family="monospace" font-size="12">IDENTITY REFERENCE / 01</text><path d="M48 87H1392" stroke="#b9beb2"/>
+<rect x="48" y="116" width="886" height="312" fill="#101110"/><use href="#mark" x="95" y="226" width="82" height="82"/><text x="205" y="284" font-size="57" font-weight="600" letter-spacing="-2" fill="#f1f3e9">ScriptSentinel</text><text x="95" y="392" font-family="monospace" font-size="12" fill="#b0b6a9">01 / PRIMARY SIGNATURE</text>
+<rect x="958" y="116" width="434" height="312" fill="#e0e3d8"/>
+<g stroke="#b9beb2" stroke-width="1"><path d="M1093 155V357M1133 155V357M1173 155V357M1213 155V357M1253 155V357M1073 175H1273M1073 215H1273M1073 255H1273M1073 295H1273M1073 335H1273"/></g>
+<g transform="translate(1093 175) scale(5)"><rect width="32" height="32" rx="3" fill="none" stroke="#101110" stroke-width=".2"/><path d="M7 7h18v4H11v3h14v11H7v-4h14v-3H7z" fill="#101110"/></g><text x="986" y="392" font-family="monospace" font-size="12">02 / MONOGRAM GEOMETRY</text>
+<path d="M48 456H1392" stroke="#b9beb2"/><text x="48" y="490" font-family="monospace" font-size="12">03 / COLOR SPECIFICATIONS</text>
+<rect x="48" y="514" width="280" height="122" fill="#101110"/><rect x="346" y="514" width="280" height="122" fill="#f1f3e9" stroke="#b9beb2"/><rect x="644" y="514" width="280" height="122" fill="#dffc70"/>
+<text x="48" y="665" font-size="15">Graphite</text><text x="328" y="665" text-anchor="end" font-family="monospace" font-size="12">#101110</text><text x="346" y="665" font-size="15">Off-white</text><text x="626" y="665" text-anchor="end" font-family="monospace" font-size="12">#F1F3E9</text><text x="644" y="665" font-size="15">Signal yellow</text><text x="924" y="665" text-anchor="end" font-family="monospace" font-size="12">#DFFC70</text>
+<text x="986" y="490" font-family="monospace" font-size="12">04 / TYPOGRAPHY</text><text x="986" y="567" font-size="61" font-weight="600" letter-spacing="-2">Aa 012</text><text x="986" y="605" font-size="15">System sans / Interface and headings</text><text x="986" y="644" font-family="monospace" font-size="15">Monospace / Code and metadata</text>
+<path d="M48 702H1392" stroke="#b9beb2"/><text x="48" y="741" font-family="monospace" font-size="12">05 / COMMAND LINE</text><rect x="48" y="766" width="886" height="100" fill="#101110"/><text x="76" y="808" font-family="monospace" font-size="18" fill="#dffc70">$ scriptsentinel auto ./webroot --json</text><text x="76" y="840" font-family="monospace" font-size="12" fill="#b0b6a9">Local inventory and integrity review</text>
+<text x="986" y="741" font-family="monospace" font-size="12">06 / PROJECT CREDITS</text><text x="986" y="792" font-size="22" font-weight="600">MONAR Services</text><text x="986" y="824" font-size="15">Research infrastructure: Unquant</text>
+<path d="M48 900H1392" stroke="#b9beb2"/><text x="48" y="929" font-family="monospace" font-size="11">JAVASCRIPT SUPPLY-CHAIN SECURITY</text><text x="1392" y="929" text-anchor="end" font-family="monospace" font-size="11">SVG / EDITABLE MASTER</text>
+</g></svg>

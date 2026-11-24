@@ -5,7 +5,9 @@
 A security engineer reviewing a checkout on a desk monitor, often beside a code
 editor, needs a low-glare evidence workspace; a store owner needs the next step
 to be understandable. The product uses the master plan's graphite and signal
-yellow identity, restrained in controls and decisive in the trust-boundary panel.
+yellow identity, restricted to controls and small workflow identifiers.
+Headings name the task directly. Avoid paired slogans, promotional claims and
+large decorative accent panels in the working console.
 
 ## Tokens
 

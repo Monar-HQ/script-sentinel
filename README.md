@@ -1,5 +1,5 @@
 <!-- ScriptSentinel: local-first client-side supply-chain defense -->
-<p align="center"><img src="assets/hero-v1.svg" alt="ScriptSentinel — Know what runs. Prove what changed." width="100%"></p>
+<p align="center"><img src="assets/hero-v1.svg" alt="ScriptSentinel — JavaScript supply-chain security. Inventory, integrity review and change monitoring." width="100%"></p>
 
 <p align="center">
 <a href="#start-in-two-minutes">Start here</a> ·
@@ -10,9 +10,9 @@
 <a href="CREDITS.md">The collaboration</a>
 </p>
 
-**ScriptSentinel makes the JavaScript your application trusts inspectable.** Inventory scripts, parse their syntax, check integrity and CSP posture, review changes against approved artifacts, and prepare fixes with an evidence trail. Use the private local console, the CLI, or read-only tools inside your existing AI agent.
+**ScriptSentinel reviews the JavaScript delivered by your application.** Inventory scripts, parse their syntax, check integrity and CSP posture, compare approved artifacts, and prepare reviewed fixes. Use the private local console, the CLI, or read-only tools inside your existing AI agent.
 
-**Core needs no AI key. Intelligence is optional. Every model faces the same verification gate.**
+Core runs without an AI provider. Optional AI integrations provide advisory analysis; changes still require deterministic validation and operator approval.
 
 <p align="center"><img src="assets/console-v1.png" alt="The working ScriptSentinel local console, showing its workspace and inspection controls" width="100%"></p>
 
@@ -36,7 +36,7 @@ Open the private link printed in the terminal. Try **the synthetic demo**, then 
 
 Prefer pipx? Run `pipx install .` from this checkout. The code here is a **v1 release candidate**, not a claim that a published package already includes these changes.
 
-## From a signal to a decision
+## Workflows
 
 | Your question | The working path |
 | --- | --- |
@@ -76,7 +76,7 @@ scriptsentinel observe-browser https://your-staging.example/checkout --authorize
 
 Only named origins are allowed. Private/local addresses require `--allow-private`. Anonymous GET/HEAD requests are observed; state-changing requests, redirects, WebSockets and service workers are blocked. No login session is copied. Use a disposable VM/container with network egress controls for untrusted pages: a browser context alone is not a security sandbox.
 
-## Intelligence without surrendering control
+## Optional AI integrations
 
 Anthropic, OpenAI, OpenRouter, Gemini and custom OpenAI-compatible endpoints are advisory adapters. Choose an explicit model available to your account. Optional OS keychain storage:
 
@@ -90,7 +90,7 @@ Audit advisory shares minimized rule IDs and counts. Credentials, source, paths,
 
 Read-only host-agent setup and advisory responsibilities are in [the integration guide](docs/INTEGRATIONS.md).
 
-## Research with receipts
+## Incident research
 
 The v1 focus is **OPTIMJACK and the broader defensive failure mode it illustrates: trusted script delivery can carry changed content**.
 
@@ -98,7 +98,7 @@ The [Optimizely incident notice](https://status.optimizely.com/incidents/ftw0fh9
 
 `scriptsentinel research` prints the versioned source pack. New packs are data with provenance, applicability, revision history and license information. Existing lab IOC records are hunting leads with lab provenance, not proof of compromise. No malicious infrastructure is contacted by the demo.
 
-## Know the limits
+## Scope and limitations
 
 AST signals identify syntax and capabilities; regex signals remain heuristics. Neither proves malicious intent or supplies whole-program dataflow analysis. CSP posture is not a full browser policy oracle. Static inventory misses some runtime behavior. Mutable vendor scripts may be incompatible with fixed SRI. Application compatibility needs functional review. PCI mappings aid evidence collection; they do not certify compliance.
 
@@ -133,9 +133,9 @@ examples/synthetic/     Harmless demonstration fixtures
 <details>
 <summary>Explore the ScriptSentinel identity system</summary>
 
-<img src="assets/brandkit/identity-board.png" alt="ScriptSentinel brand identity: geometric S boundary mark, graphite and signal-yellow palette, typography and conceptual applications" width="100%">
+<img src="assets/brandkit/identity-system.svg" alt="ScriptSentinel identity reference: logo geometry, color values, typography and application layouts" width="100%">
 
-Brand concept artwork, not a product screenshot. [Design rationale and generation prompt](assets/brandkit/README.md).
+Editable vector identity reference. [Asset specifications](assets/brandkit/README.md).
 
 </details>
 
@@ -143,8 +143,8 @@ Brand concept artwork, not a product screenshot. [Design rationale and generatio
 
 **Luke — owner, unquant.io.** Provided the uncensored AI infrastructure used for the original sandbox research and early development.
 
-Collaboration roles were supplied by the project owner. See [credits and upstream acknowledgments](CREDITS.md). The engineering standard is the same regardless of which model helps.
+Collaboration roles were supplied by the project owner. See [credits and upstream acknowledgments](CREDITS.md).
 
 ---
 
-Built by [MONAR Services](https://www.monarservices.org/) with AI infrastructure support from [unquant.io](https://unquant.io/). Evidence over assumptions.
+Built by [MONAR Services](https://www.monarservices.org/) with AI infrastructure support from [Unquant](https://unquant.io/).
