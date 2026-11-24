@@ -17,7 +17,7 @@ attack harnesses were not executed. No source changes were made to that lab.
 Official vendor/CVE sources and historical lab observations retain separate
 provenance. The CVE Program record lists a CNA CVSS 4.0 score of 7.1 High.
 
-Credits supplied by the project owner: Ali, co-owner/developer of MONAR Services;
+Credits supplied by the project owner: Ally, co-owner/developer of MONAR Services;
 Luke, owner of unquant.io and provider of the original AI infrastructure. The
 corrected unquant.io website was checked successfully. Collaboration roles
 remain attributed to the project owner; no financial arrangement or third-party

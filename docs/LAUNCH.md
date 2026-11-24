@@ -18,7 +18,7 @@ ScriptSentinel puts script inventory, AST capability signals, integrity checks,
 reviewed baselines and change evidence in one local workflow. Start with a
 harmless demo, inspect the bytes, review a diff and validate it before approval.
 
-Built by MONAR Services. Ali leads product development and engineering as
+Built by MONAR Services. Ally leads product development and engineering as
 co-owner/developer. Luke, owner of unquant.io, provided the AI infrastructure for
 the original sandbox research and early development.
 

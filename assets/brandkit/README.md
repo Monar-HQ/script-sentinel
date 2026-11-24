@@ -21,5 +21,5 @@ requested brandkit exploration. It was retired from the current asset set after
 design review. The current reference is an editable vector specification;
 product screenshots are reproduced with `packaging/preview_console.py`.
 
-Credits: Ali, MONAR Services co-owner/developer; Luke, Unquant owner and provider
+Credits: Ally, MONAR Services co-owner/developer; Luke, Unquant owner and provider
 of the original AI infrastructure, as supplied by the project owner. See CREDITS.md.

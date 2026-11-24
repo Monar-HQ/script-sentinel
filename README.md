@@ -1,8 +1,5 @@
 <!-- ScriptSentinel: JavaScript supply-chain security -->
-<picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="assets/workflow-poster.svg">
-  <img src="assets/workflow-loop.gif" alt="ScriptSentinel: JavaScript supply-chain security. Workflow illustration: scoped scripts enter analysis, are compared with reviewed baselines, and produce a proposed diff requiring operator approval." width="100%">
-</picture>
+<p align="center"><img src="assets/workflow-loop.gif" alt="Animated workflow diagram: local scripts, static analysis, reviewed baseline, proposed diff and required operator approval." width="100%"></p>
 
 <p align="center">
 <a href="#start-in-two-minutes">Try the demo</a> &nbsp; / &nbsp;
@@ -18,7 +15,7 @@
 | :--- | :--- | :--- | :--- |
 | **1.0.0rc1** | Python **3.11.5+** | **MIT** | Local Core · optional AI |
 
-<sub>Header: schematic workflow animation, not incident footage or a live audit. [Static version](assets/workflow-poster.svg).</sub>
+<sub>Header: schematic workflow animation, not incident footage or a live audit. [View the static version](assets/workflow-poster.svg).</sub>
 
 ## Inside a review
 
@@ -184,7 +181,7 @@ examples/synthetic/     Harmless demonstration fixtures
 
 | MONAR Services | Unquant |
 | :--- | :--- |
-| **Ali** · Co-owner and developer | **Luke** · Owner |
+| **Ally** · Co-owner and developer | **Luke** · Owner |
 | Product development and engineering | Provided the uncensored AI infrastructure for the original sandbox research and early development |
 | [monarservices.org](https://www.monarservices.org/) | [unquant.io](https://unquant.io/) |
 

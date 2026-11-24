@@ -36,8 +36,8 @@ disable while an operation is in progress. The UI never silently applies a fix.
 The README combines an eight-second schematic workflow loop, editable capability
 and architecture diagrams, and focused captures of the running synthetic demo.
 The animation explains the review path; it is not a recording of an incident or
-an audit. A static SVG is selected for reduced-motion preferences, with an
-explicit static link as well. Long command examples are progressively disclosed.
+an audit. A static SVG is available as a direct link. Long command examples are
+progressively disclosed.
 
 Screenshots are generated from the actual running console using
 packaging/preview_console.py and packaging/preview_readme.py. No dashboard results

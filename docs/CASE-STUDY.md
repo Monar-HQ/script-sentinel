@@ -296,7 +296,7 @@ Re-test headline:
 ## Acknowledgements
 
 - **MONAR** — project owner and maintainer; ScriptSentinel and the OPTIJACK lab ([github.com/Monar-HQ](https://github.com/Monar-HQ)).
-- **Ali** — co-owner and developer, MONAR Services.
+- **Ally** — co-owner and developer, MONAR Services.
 - **Luke, owner of unquant.io** — provided the uncensored AI infrastructure used for the original sandbox research and early development, as acknowledged by the project owner. See CREDITS.md.
 
 Incident research builds on public reporting from Optimizely, Report URI, StepSecurity, Unit42, Salesforce Security, Netskope Threat Labs, The Hacker News, Ars Technica, MITRE, NVD, and CISA. Every source is cited in [References](#references).

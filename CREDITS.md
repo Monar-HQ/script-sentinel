@@ -3,7 +3,7 @@
 ScriptSentinel is a MONAR Services project, developed around an independently
 reproducible approach to client-side supply-chain defense.
 
-**Ali — co-owner and developer, MONAR Services.** Product development and engineering.
+**Ally — co-owner and developer, MONAR Services.** Product development and engineering.
 [MONAR Services](https://www.monarservices.org/)
 
 **Luke — owner, unquant.io.** Provided access to the uncensored AI infrastructure used
