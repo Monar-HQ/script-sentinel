@@ -28,6 +28,11 @@ flowchart LR
 
 | Module | Responsibility | Inputs | Outputs |
 | --- | --- | --- | --- |
+| `auto.py` | Autonomous end-to-end pipeline orchestrating recon, audit, multi-provider AI reasoning, and automated patching. | Target URL or directory, patch flags, AI config. | `AutoResult`. |
+| `env_detector.py` | Auto-detect web servers (Nginx, Apache, Caddy, Cloudflare), frameworks (Next.js, Express, Django), HTML files, and script elements. | Target URL or path, optional HTTP client. | `EnvironmentProfile`. |
+| `ai/client.py` | Zero-dependency multi-provider AI client supporting Anthropic, OpenAI, OpenRouter, and custom endpoints via `httpx`. | System/user prompt, AI config. | AI completion text. |
+| `ai/agent.py` | Autonomous security agent formulating threat narratives, surgical CSP policies, and PCI-DSS v4.0 CISO briefings. | `AuditReport`, `EnvironmentProfile`. | `AIAuditAnalysis`. |
+| `patcher.py` | Surgical automated patching: injects SRI hashes into `<script>` tags, updates Nginx/server configs with hardened CSP, and supports safety rollback. | HTML / Nginx file paths, hardened CSP. | `PatchResult`. |
 | `auditor.py` | Fetch target, parse HTML, collect inline and external `<script>` elements, build the complete audit report. | URL, optional baseline map, timeout, optional `httpx` transport. | `AuditReport`. |
 | `integrity.py` | Compute SHA-256/SHA-384 hex and SRI base64 digests; compare declared integrity and pinned baseline. | Script bytes, declared integrity, baseline SHA-256. | `ScriptIntegrityResult`, `HashDigests`, `IntegrityIssue`. |
 | `csp_analyzer.py` | Parse CSP directives, merge duplicate directives, apply penalties, grade A–F. | Raw CSP header or `None`. | `CSPAnalysis`. |
@@ -36,7 +41,7 @@ flowchart LR
 | `report/*` | Render standalone evidence in terminal, JSON, Markdown, HTML. | `AuditReport`. | Report files and strings. |
 | `rules/*` | Export Sigma YAML and Suricata HTTP/DNS rules from the packaged IOC feed and optional audit. | Feed records, optional `AuditReport`. | Rule files. |
 | `iocs/loader.py` | Load, validate, merge, and digest versioned IOC feeds. | Feed JSON path or packaged resource. | `IOCFeed`, `IOCRecord`. |
-| `cli.py` | Parse subcommands, render Rich output, write reports, return CI exit codes. | CLI argv. | Terminal output, files, exit code. |
+| `cli.py` | Parse subcommands (`auto`, `fix`, `setup`, `audit`, `check-csp`, `monitor`, `remediate`, `export-rules`), render Rich output, write reports, return CI exit codes. | CLI argv. | Terminal output, files, exit code. |
 
 ## Typed Contract
 

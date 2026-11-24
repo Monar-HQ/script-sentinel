@@ -19,8 +19,11 @@ from rich.panel import Panel
 from rich.table import Table
 
 from . import __version__
+from .ai.client import AIClient
 from .auditor import audit_url
+from .auto import AutoResult, run_auto_pipeline
 from .csp_analyzer import analyze_csp
+from .env_detector import detect_environment
 from .models import AuditReport, CSPAnalysis, RemediationPack
 
 console = Console()
@@ -336,6 +339,114 @@ def _audit_exit_code(report: AuditReport, fail_on: str, baseline: dict[str, str]
     return 1 if _RISK_ORDER.get(report.overall_risk, 0) >= threshold else 0
 
 
+def _render_auto(result: AutoResult) -> None:
+    """Render high-impact terminal presentation for autonomous execution."""
+    console.print(BANNER)
+
+    risk_color = "red" if result.overall_risk in ("CRITICAL", "HIGH", "ERROR") else "white"
+    env = result.env_profile
+
+    # 1. Environment & Architecture Recon
+    env_info = (
+        f"[bold]Target:[/bold] {result.target} "
+        f"({'[dim]Remote[/dim]' if env.is_remote else '[dim]Local Workspace[/dim]'})\n"
+        f"[bold]Web Server / Reverse Proxy:[/bold] [bold red]{env.primary_server}[/bold red]\n"
+        f"[bold]Application Framework:[/bold] {env.framework or 'Static / Generic'}\n"
+        f"[bold]Discovered HTML Files:[/bold] {len(env.html_files)}\n"
+        f"[bold]Total Scripts Discovered:[/bold] {env.total_scripts} "
+        f"([bold red]{len(env.scripts_needing_sri)}[/bold red] needing Subresource Integrity)"
+    )
+    console.print(
+        Panel(
+            env_info,
+            title="[bold white]Environment & Architecture Recon[/bold white]",
+            border_style="white",
+        )
+    )
+
+    # 2. Audit & Vulnerability Assessment
+    audit = result.audit_report
+    audit_info = (
+        f"[bold]Overall Risk Rating:[/bold] [{risk_color} bold]{result.overall_risk}[/{risk_color} bold]\n"
+        f"[bold]CSP Health Grade:[/bold] {audit.csp.grade} ({audit.csp.score}/100)\n"
+        f"[bold]CSP Violations Flagged:[/bold] {len(audit.csp.findings)}"
+    )
+    console.print(
+        Panel(
+            audit_info,
+            title="[bold white]Client-Side Security Audit[/bold white]",
+            border_style=risk_color,
+        )
+    )
+
+    # 3. Frontier Multi-Provider AI Intelligence
+    if result.ai_analysis:
+        ai = result.ai_analysis
+        ai_summary = (
+            f"[bold white]Executive Summary:[/bold white]\n{ai.executive_summary}\n\n"
+            f"[bold white]Threat Vector Analysis:[/bold white]\n{ai.threat_narrative}\n\n"
+            f"[bold white]Synthesized Smart CSP:[/bold white]\n[dim]{ai.smart_csp}[/dim]"
+        )
+        console.print(
+            Panel(
+                ai_summary,
+                title="[bold red]Frontier Multi-Provider AI Remediation Briefing[/bold red]",
+                border_style="bold red",
+            )
+        )
+
+    # 4. Patch Execution
+    if result.patches:
+        table_patches = Table(title="[bold red]Surgical Automated Patch Log[/bold red]")
+        table_patches.add_column("File Target", style="bold white")
+        table_patches.add_column("SRI Patched", justify="right", style="bold red")
+        table_patches.add_column("CSP Injected", style="bold")
+        table_patches.add_column("Diff Summary", style="dim")
+
+        for patch in result.patches:
+            table_patches.add_row(
+                Path(patch.file_path).name,
+                str(patch.scripts_patched),
+                "[green]Yes[/green]" if patch.csp_injected else "[dim]No[/dim]",
+                patch.diff_summary,
+            )
+        console.print(table_patches)
+        console.print(
+            f"[bold red]Hardened:[/bold red] Applied [bold]{result.total_patches_applied}[/bold] surgical modifications with rollback safety.\n"
+        )
+    elif not env.is_remote and len(env.scripts_needing_sri) > 0:
+        console.print(
+            "[dim]Run [bold white]scriptsentinel fix[/bold white] or [bold white]scriptsentinel auto --fix[/bold white] to inject SRI and apply hardened CSP automatically.[/dim]\n"
+        )
+
+
+def _render_setup(target: str) -> None:
+    """Run diagnostic environment inspection."""
+    console.print(BANNER)
+    env = detect_environment(target)
+    with AIClient() as ai_client:
+        diag = (
+            f"[bold]Target:[/bold] {env.target}\n"
+            f"[bold]Mode:[/bold] {'Remote HTTP' if env.is_remote else 'Local Workspace'}\n"
+            f"[bold]Detected Web Server:[/bold] [bold red]{env.primary_server}[/bold red]\n"
+            f"[bold]Detected Framework:[/bold] {env.framework or 'Static / None'}\n"
+            f"[bold]Discovered Configuration Files:[/bold] {len(env.config_files)}\n"
+            f"[bold]Discovered HTML Files:[/bold] {len(env.html_files)}\n"
+            f"[bold]Total Script Elements:[/bold] {env.total_scripts}\n"
+            f"[bold]Scripts Missing SRI:[/bold] [bold red]{len(env.scripts_needing_sri)}[/bold red]\n"
+            f"[bold]Existing CSP:[/bold] {'Found' if env.existing_csp else 'None (Exposed)'}\n\n"
+            f"[bold white]AI Reasoning Engine:[/bold white] "
+            f"{'[bold red]Active[/bold red] (' + ai_client.config.provider + ': ' + ai_client.config.model + ')' if ai_client.is_available else '[dim]Unconfigured (Deterministic Only)[/dim]'}"
+        )
+        console.print(
+            Panel(
+                diag,
+                title="[bold white]ScriptSentinel Environment & Diagnostics Wizard[/bold white]",
+                border_style="red" if not ai_client.is_available else "white",
+            )
+        )
+
+
 def _build_parser() -> argparse.ArgumentParser:
     """Build the argparse CLI parser."""
     parser = argparse.ArgumentParser(
@@ -343,6 +454,36 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
+
+    # auto
+    auto_parser = subparsers.add_parser(
+        "auto", help="Autonomous environment recon, security audit, AI triage, and patching"
+    )
+    auto_parser.add_argument("target", nargs="?", default=".", help="Target URL or local directory (default: .)")
+    auto_parser.add_argument("--fix", action="store_true", help="Apply surgical automated patches to local files")
+    auto_parser.add_argument("--no-backup", action="store_true", help="Disable .bak backup generation")
+    auto_parser.add_argument("--api-key", default=None, help="Custom API key for Anthropic/OpenAI/OpenRouter")
+    auto_parser.add_argument("--api-base", default=None, help="Custom base URL for OpenAI-compatible endpoint")
+    auto_parser.add_argument("--provider", default=None, choices=("anthropic", "openai", "openrouter", "custom"), help="AI provider")
+    auto_parser.add_argument("--model", default=None, help="AI model name")
+    auto_parser.add_argument("--json", action="store_true", help="Output raw JSON format")
+
+    # fix
+    fix_parser = subparsers.add_parser(
+        "fix", help="Surgically patch local workspace: inject SRI tags and harden CSP headers"
+    )
+    fix_parser.add_argument("target", nargs="?", default=".", help="Target local directory or file (default: .)")
+    fix_parser.add_argument("--no-backup", action="store_true", help="Disable .bak backup generation")
+    fix_parser.add_argument("--api-key", default=None, help="Custom API key")
+    fix_parser.add_argument("--api-base", default=None, help="Custom base URL")
+    fix_parser.add_argument("--provider", default=None, choices=("anthropic", "openai", "openrouter", "custom"))
+    fix_parser.add_argument("--model", default=None, help="AI model name")
+
+    # setup
+    setup_parser = subparsers.add_parser(
+        "setup", help="Inspect local environment and verify AI provider credentials"
+    )
+    setup_parser.add_argument("target", nargs="?", default=".", help="Target workspace directory (default: .)")
 
     audit_parser = subparsers.add_parser(
         "audit", help="Audit a web page URL for third-party JavaScript risks"
@@ -402,6 +543,41 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     command = cast(str, args.command)
     baseline_map = _load_baseline(getattr(args, "baseline", None))
+
+    if command == "auto":
+        target = cast(str, getattr(args, "target", "."))
+        apply_fix = bool(getattr(args, "fix", False))
+        backup = not bool(getattr(args, "no_backup", False))
+        ai_cfg = AIClient.auto_detect(
+            api_key=getattr(args, "api_key", None),
+            api_base=getattr(args, "api_base", None),
+            provider=getattr(args, "provider", None),
+            model=getattr(args, "model", None),
+        )
+        res = run_auto_pipeline(target=target, apply_fix=apply_fix, backup=backup, ai_config=ai_cfg)
+        if getattr(args, "json", False):
+            console.print_json(data=res.to_dict())
+        else:
+            _render_auto(res)
+        return 1 if res.overall_risk in ("CRITICAL", "ERROR") else 0
+
+    if command == "fix":
+        target = cast(str, getattr(args, "target", "."))
+        backup = not bool(getattr(args, "no_backup", False))
+        ai_cfg = AIClient.auto_detect(
+            api_key=getattr(args, "api_key", None),
+            api_base=getattr(args, "api_base", None),
+            provider=getattr(args, "provider", None),
+            model=getattr(args, "model", None),
+        )
+        res = run_auto_pipeline(target=target, apply_fix=True, backup=backup, ai_config=ai_cfg)
+        _render_auto(res)
+        return 0 if any(p.success for p in res.patches) or len(res.env_profile.scripts_needing_sri) == 0 else 1
+
+    if command == "setup":
+        target = cast(str, getattr(args, "target", "."))
+        _render_setup(target)
+        return 0
 
     if command == "audit":
         url = cast(str, args.url)

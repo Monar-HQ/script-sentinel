@@ -61,9 +61,12 @@ Read the full case study: [docs/CASE-STUDY.md](docs/CASE-STUDY.md) — timeline,
 
 | Plane | Engine | What it produces |
 | --- | --- | --- |
+| Recon & Environment | `env_detector.py` | Discovers reverse proxies (Nginx, Apache, Caddy, Cloudflare), frameworks (Next.js, Express, Django), HTML files, and `<script>` elements requiring SRI. |
 | Inventory & integrity | `auditor.py`, `integrity.py` | External and inline script inventory; canonical SHA-256/SHA-384 digests; declared versus calculated SRI; drift against a pinned baseline. |
 | CSP posture | `csp_analyzer.py` | Directive parsing with duplicate merge; six fatal/loose findings; 0–100 score; A–F grade. |
 | Behavior | `scanner.py` | Payment/CVV harvesting, global input listeners, clipboard tampering, dynamic eval, base64 unpacking, `sendBeacon`, and IOC domain/hash matching. |
+| Multi-Provider AI | `ai/` (`client.py`, `agent.py`) | Zero-dependency frontier reasoning across Anthropic, OpenAI, OpenRouter, and local endpoints; synthesizes threat narratives, smart CSPs, and PCI-DSS v4.0 CISO briefs. |
+| Surgical Patching | `patcher.py`, `auto.py` | Hands-off automated remediation: injects SRI hashes into `<script>` tags, updates Nginx/server configs, and provides rollback safety. |
 | Remediation | `remediate.py` | Hardened CSP header, drop-in SRI tags, Nginx/Apache configuration blocks, PCI-DSS 6.4.3 / 11.6.1 mapping. |
 | Evidence | `report/`, `rules/` | Terminal summary, JSON, Markdown, standalone HTML, Sigma YAML, and Suricata HTTP/DNS rules. |
 
@@ -89,13 +92,16 @@ python -m pip install -e ".[dev]"
 
 | Command | Purpose | Example |
 | --- | --- | --- |
+| `auto` | Fully autonomous recon, security audit, multi-provider AI triage, and patching | `scriptsentinel auto . --fix` |
+| `fix` | Surgically patch local workspace: inject SRI hashes and harden CSP headers | `scriptsentinel fix .` |
+| `setup` | Inspect workspace environment and verify AI provider credentials | `scriptsentinel setup` |
 | `audit` | Full page audit: scripts, SRI, CSP, behavior, remediation, evidence | `scriptsentinel audit https://checkout.example.com --baseline baselines/checkout.json --format json --output report.json --fail-on high` |
 | `check-csp` | CSP-only analysis from a URL or a raw header | `scriptsentinel check-csp https://checkout.example.com` |
 | `monitor` | Compare script hashes against a pinned baseline; exits non-zero on drift | `scriptsentinel monitor https://checkout.example.com --baseline baselines/checkout.json --alert-webhook https://hooks.example.com/csp` |
 | `remediate` | Generate hardened CSP and copy-paste SRI tags | `scriptsentinel remediate https://checkout.example.com` |
 | `export-rules` | Emit Sigma YAML or Suricata HTTP/DNS rules | `scriptsentinel export-rules --format sigma --output rules/sigma.yml` |
 
-`audit --fail-on` accepts `none`, `low`, `medium`, `high`, `critical`, or `drift`. `monitor` returns exit code `1` when a pinned baseline hash changes. `scriptsentinel --version` prints the installed version.
+`audit --fail-on` accepts `none`, `low`, `medium`, `high`, `critical`, or `drift`. `monitor` returns exit code `1` when a pinned baseline hash changes. `auto --fix` applies surgical patches with `.bak` safety backups. `scriptsentinel --version` prints the installed version.
 
 ## CI Gate
 

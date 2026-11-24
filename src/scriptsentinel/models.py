@@ -641,6 +641,11 @@ class AuditReport:
         )
 
     @property
+    def url(self) -> str:
+        """Alias for target_url."""
+        return self.target_url
+
+    @property
     def csp_report(self) -> dict[str, object]:
         """Backward-compatible dict representation of the CSP analysis."""
         return self.csp.to_dict()
