@@ -58,5 +58,5 @@ Build artifacts and SHA-256 hashes are recorded in [docs/RELEASE.md](docs/RELEAS
 
 ### Notes
 
-- Repository is privately hosted at `https://github.com/Monar-HQ/script-sentinel`. Version 1.0.0rc1 is on `main`; no GitHub release or version tag has been published. PyPI publication has not been performed.
+- Repository is hosted at `https://github.com/Monar-HQ/script-sentinel`. Version 1.0.0rc1 is on `main`; no GitHub release or version tag has been published. PyPI publication has not been performed.
 - OPTIJACK lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not real-world blast radius.
