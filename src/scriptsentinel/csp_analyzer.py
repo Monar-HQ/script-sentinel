@@ -2,9 +2,29 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
+import re
+
 from .models import CSPAnalysis, Finding, Grade, Severity
 
 __all__ = ["analyze_csp", "parse_csp"]
+
+
+def _valid_hash_source(value: str) -> bool:
+    match = re.fullmatch(r"'sha(256|384|512)-([A-Za-z0-9+/_-]+={0,2})'", value)
+    if not match:
+        return False
+    algorithm, encoded = match.groups()
+    encoded = encoded.replace("-", "+").replace("_", "/")
+    try:
+        return (
+            len(base64.b64decode(encoded + "=" * (-len(encoded) % 4), validate=True))
+            == int(algorithm) // 8
+        )
+    except binascii.Error:
+        return False
+
 
 _SEVERITY_PENALTY: dict[Severity, int] = {
     "CRITICAL": 35,
@@ -30,7 +50,8 @@ def parse_csp(csp_header: str | None) -> dict[str, list[str]]:
             continue
         name = parts[0].lower()
         values = parts[1:]
-        directives.setdefault(name, []).extend(values)
+        # CSP processing keeps the first occurrence of a directive.
+        directives.setdefault(name, values)
     return directives
 
 
@@ -68,10 +89,35 @@ def _finding(
 
 def analyze_csp(csp_header: str | None) -> CSPAnalysis:
     """Analyze a CSP header and return a typed ``CSPAnalysis``."""
+    if csp_header and "," in csp_header:
+        policies = [
+            analyze_csp(policy.strip()) for policy in csp_header.split(",") if policy.strip()
+        ]
+        if not policies:
+            return analyze_csp(None)
+        common = set.intersection(*({f.rule_id for f in policy.findings} for policy in policies))
+        shared = tuple(f for f in policies[0].findings if f.rule_id in common)
+        score = max(0, 100 - sum(_SEVERITY_PENALTY[f.severity] for f in shared))
+        return CSPAnalysis(
+            score=score,
+            grade=_grade_for_score(score),
+            directives={},
+            raw=csp_header,
+            findings=(
+                _finding(
+                    "CSP-MULTIPLE-POLICIES",
+                    "INFO",
+                    "Multiple CSP policies evaluated independently",
+                    "Browsers enforce each policy independently. Only posture signals shared by all policies are included in the aggregate grade.",
+                    "Host/path intersections, browser versions and runtime compatibility still require browser validation. Directives are never merged.",
+                ),
+                *shared,
+            ),
+        )
     directives = parse_csp(csp_header)
     findings: list[Finding] = []
 
-    if not csp_header:
+    if not csp_header or not csp_header.strip():
         findings.append(
             _finding(
                 "CSP-MISSING",
@@ -115,11 +161,25 @@ def analyze_csp(csp_header: str | None) -> CSPAnalysis:
             )
         )
 
-    has_nonce = any(value.startswith("'nonce-") for value in script_lower)
-    has_hash = any(
-        value.startswith("'sha256-") or value.startswith("'sha384-") for value in script_lower
-    )
-    if "'unsafe-inline'" in script_lower and not (has_nonce or has_hash):
+    element_src = directives.get("script-src-elem", script_src)
+    element_lower = [value.lower() for value in element_src]
+    has_nonce = any(re.fullmatch(r"'nonce-[a-zA-Z0-9+/_-]+={0,2}'", value) for value in element_src)
+    has_hash = any(_valid_hash_source(value) for value in element_src)
+    if (
+        "script-src-elem" not in directives
+        and "script-src" not in directives
+        and "default-src" not in directives
+    ) or any(v in ("*", "http:", "https:", "data:") for v in element_lower):
+        findings.append(
+            _finding(
+                "CSP-SCRIPT-UNRESTRICTED",
+                "HIGH",
+                "Script elements have broad or absent source restrictions",
+                "The effective script element source list does not narrowly limit script origins.",
+                "Use reviewed nonce/hash policies and validate legitimate script loading in isolation.",
+            )
+        )
+    if "'unsafe-inline'" in element_lower and not (has_nonce or has_hash):
         findings.append(
             _finding(
                 "CSP-UNSAFE-INLINE",
@@ -135,8 +195,24 @@ def analyze_csp(csp_header: str | None) -> CSPAnalysis:
         )
 
     connect_values = directives.get("connect-src", directives.get("default-src", []))
+    attr_sources = directives.get("script-src-attr", script_src)
+    attr_has_crypto = any(
+        re.fullmatch(r"'nonce-[a-zA-Z0-9+/_-]+={0,2}'", value) or _valid_hash_source(value)
+        for value in attr_sources
+    )
+    if "'unsafe-inline'" in [value.lower() for value in attr_sources] and not attr_has_crypto:
+        findings.append(
+            _finding(
+                "CSP-UNSAFE-ATTR",
+                "HIGH",
+                "Inline event handlers are broadly allowed",
+                "The effective script attribute source list permits inline event handlers.",
+                "Move handlers to reviewed scripts or use a tested event-handler hash policy.",
+            )
+        )
     if "'strict-dynamic'" in script_lower and (
-        not connect_values or "*" in connect_values
+        ("connect-src" not in directives and "default-src" not in directives)
+        or "*" in connect_values
     ):
         findings.append(
             _finding(
@@ -153,8 +229,10 @@ def analyze_csp(csp_header: str | None) -> CSPAnalysis:
             )
         )
 
-    if not connect_values or "*" in connect_values or any(
-        value in {"http:", "https:"} for value in connect_values
+    if (
+        ("connect-src" not in directives and "default-src" not in directives)
+        or "*" in connect_values
+        or any(value in {"http:", "https:"} for value in connect_values)
     ):
         findings.append(
             _finding(

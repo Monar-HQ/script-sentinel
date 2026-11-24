@@ -57,7 +57,7 @@ _STYLE: Final[str] = """
   --text: #fbfaf7;
   --muted: #8892b0;
   --steel: #64748b;
-  --accent: #d9000b;
+  --accent: #dffc70;
   --badge: #151515;
 }
 * { box-sizing: border-box; }

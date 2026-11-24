@@ -1,0 +1,18 @@
+name: Reproducible bug
+description: Report a functional issue without sharing credentials or sensitive source.
+body:
+  - type: markdown
+    attributes:
+      value: "For security vulnerabilities, use SECURITY.md. Do not include secrets, private HAR bodies or real payment information."
+  - type: textarea
+    id: behavior
+    attributes: {label: Expected and observed behavior}
+    validations: {required: true}
+  - type: textarea
+    id: reproduction
+    attributes: {label: Minimal harmless reproduction}
+    validations: {required: true}
+  - type: input
+    id: environment
+    attributes: {label: Version, OS and Python}
+    validations: {required: true}

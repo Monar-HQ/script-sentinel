@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "optimjack",
+  "revision": "2026-11-24.1",
+  "verified_on": "2026-11-24",
+  "applicability": "Optimizely Web Experimentation incident and defensive client-side script integrity controls",
+  "license": "Metadata authored for this repository under MIT; linked source content retains its original copyright",
+  "sources": [
+    {"url": "https://status.optimizely.com/incidents/ftw0fh9wx43z", "published": "2026-11-18", "status": "primary-vendor-verified", "supports": "Signup flow flaw, project JavaScript modifications, vendor cleanup"},
+    {"url": "https://cveawg.mitre.org/api/cve/CVE-2026-132224", "published": "2026-11-18", "updated": "2026-11-21", "status": "primary-cve-record-verified", "supports": "CVE attribution and CNA CVSS 4.0 base score 7.1 HIGH"},
+    {"url": "https://blog.report-uri.com/worlds-largest-brands-infected-with-malware-via-optimizely/", "published": "2026-11-16", "status": "primary-research-report-verified", "supports": "Researcher's observed 188 snippets / 178 organizations; not an independently reproduced census"},
+    {"url": "https://www.w3.org/TR/CSP3/", "published": "2026-10-27", "status": "primary-standard-working-draft", "supports": "First directive wins, source fallback, multiple policies enforced independently"},
+    {"url": "https://www.w3.org/TR/sri/", "published": "2026-03-20", "status": "primary-standard-working-draft", "supports": "Strongest algorithm and multiple SRI tokens"}
+  ],
+  "cve": {"id": "CVE-2026-132224", "state": "PUBLISHED", "cvss_version": "4.0", "cna_base_score": 7.1, "vector": "CVSS:4.0/AV:N/AC:H/AT:N/PR:L/UI:N/VC:N/VI:H/VA:N/SC:H/SI:H/SA:N"},
+  "lab": {"status": "historical-user-supplied-records-read-only", "scale": "one Windows host; 12 simulated victim page sessions per variant", "rerun": false, "limitations": "Does not establish production exploitability, incident scale, or a 9.5 CVSS score"},
+  "indicator_policy": "Existing packaged IOC feed records retain lab provenance. They are hunting leads, not independently verified incident evidence or proof of compromise.",
+  "revision_history": [{"revision": "2026-11-24.1", "change": "Separated vendor, CVE, original research and historical lab evidence"}]
+}

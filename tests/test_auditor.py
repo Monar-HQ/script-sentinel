@@ -27,6 +27,10 @@ async def test_audit_url_mocked(monkeypatch):
             self.content = content or text.encode("utf-8")
             self.headers = headers
 
+        def raise_for_status(self):
+            if not 200 <= self.status_code < 300:
+                raise ValueError("HTTP status failure")
+
     class MockAsyncClient:
         def __init__(self, *args, **kwargs):
             pass

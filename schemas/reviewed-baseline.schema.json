@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ScriptSentinel reviewed local baseline",
+  "type": "object",
+  "required": ["schema", "reviewer", "provenance", "files"],
+  "properties": {
+    "schema": {"const": 1},
+    "reviewer": {"type": "string", "minLength": 1},
+    "provenance": {"type": "string", "minLength": 1},
+    "files": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+  },
+  "description": "Review assertion and artifact hashes, not a signature or automatic trust decision. Runtime validators enforce path confinement separately."
+}

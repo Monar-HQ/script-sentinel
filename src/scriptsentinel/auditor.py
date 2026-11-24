@@ -8,9 +8,9 @@ integrity, scans their behaviour, and synthesizes an actionable remediation pack
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, cast
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 import httpx
 from bs4 import BeautifulSoup, Tag
@@ -34,15 +34,17 @@ from .models import (
     ScriptTagReplacement,
     Severity,
 )
+from .network import NetworkPolicy, ScopedClient
 from .remediate import generate_remediation_pack
 from .scanner import scan_script_content
+from .script_types import executable_script_type
 
 __all__ = ["AuditReport", "audit_url"]
 
 
 def _utc_timestamp() -> str:
     """Return the current UTC time as an ISO-8601 string."""
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+    return datetime.now(UTC).isoformat(timespec="seconds")
 
 
 def _text(payload: Mapping[str, Any], key: str, default: str = "") -> str:
@@ -445,6 +447,7 @@ async def audit_url(
     baseline_hashes: dict[str, str] | None = None,
     timeout: float = 10.0,
     transport: httpx.AsyncBaseTransport | None = None,
+    network_policy: NetworkPolicy | None = None,
 ) -> AuditReport:
     """Run the complete ScriptSentinel audit pipeline for ``target_url``.
 
@@ -459,9 +462,12 @@ async def audit_url(
         follow_redirects=True,
         verify=True,
         transport=transport,
+        trust_env=False,
     ) as client:
+        active_client = ScopedClient(client, network_policy) if network_policy else client
         try:
-            response = await client.get(target_url)
+            response = await active_client.get(target_url)
+            response.raise_for_status()
         except Exception as exc:
             error = f"Failed to fetch {target_url}: {type(exc).__name__}: {exc}"
             csp = _coerce_csp(analyze_csp(None))
@@ -489,20 +495,38 @@ async def audit_url(
         parse_error: str | None = None
         try:
             soup = BeautifulSoup(response.text, "html.parser")
+            base_element = soup.find("base", href=True)
+            if base_element is not None:
+                base_url = urljoin(base_url, str(base_element.get("href", "")))
+                if urlsplit(base_url).scheme not in ("http", "https"):
+                    raise ValueError("Unsupported document base URL")
             script_elements = list(soup.find_all("script"))
+            if len(script_elements) > 100:
+                raise ValueError("Page exceeds 100-script analysis limit")
         except Exception as exc:
             parse_error = f"Failed to parse HTML from {target_url}: {type(exc).__name__}: {exc}"
             script_elements = []
 
         for index, element in enumerate(script_elements):
             src = _attribute_text(element, "src")
+            script_type = (_attribute_text(element, "type") or "").lower().split(";")[0].strip()
+            if not executable_script_type(script_type):
+                scripts.append(
+                    ScriptAudit(
+                        index=index,
+                        kind="external" if src else "inline",
+                        url=src,
+                        analysis_note=f"Non-executable data script ({script_type}); source not fetched or scanned",
+                    )
+                )
+                continue
             nonce = _attribute_text(element, "nonce")
             declared_integrity = _attribute_text(element, "integrity")
 
             if src is not None:
                 script_url = urljoin(base_url, src)
                 script = await _audit_external_script(
-                    client,
+                    active_client,  # type: ignore[arg-type]
                     index,
                     script_url,
                     nonce,
@@ -525,8 +549,7 @@ async def audit_url(
             )
         except Exception as exc:
             remediation_error = (
-                f"Failed to generate remediation for {target_url}: "
-                f"{type(exc).__name__}: {exc}"
+                f"Failed to generate remediation for {target_url}: {type(exc).__name__}: {exc}"
             )
 
         error_parts: list[str] = [
@@ -547,4 +570,3 @@ async def audit_url(
             remediation=remediation,
             error=audit_error,
         )
-

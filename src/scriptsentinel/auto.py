@@ -1,48 +1,32 @@
-"""Autonomous Security Pipeline & Orchestration Engine for ScriptSentinel.
+"""Read-only discovery and deterministic audit with optional AI advice.
 
-Executes the complete, hands-off client-side supply-chain remediation workflow:
-1. Environment & Architecture Recon: Auto-detects reverse proxies, frameworks, HTML files, and script elements.
-2. Deterministic Security Audit: Deep AST skimmer scan, Subresource Integrity verification, and CSP evaluation.
-3. Multi-Provider AI Intelligence: Synthesizes threat narratives, surgical CSPs, and PCI-DSS v4.0 executive briefs.
-4. Surgical Automated Patching: Injects SRI hashes into HTML <script> tags and hardens Nginx/server headers with rollback safety.
+Local analysis uses heuristic source patterns, not an AST. Applying a patch is
+a separate reviewed-baseline proposal workflow in :mod:`proposals`.
 """
 
 from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 
 import httpx
-from bs4 import BeautifulSoup
 
 from .ai.agent import AIAgent, AIAuditAnalysis
 from .ai.client import AIClient, AIConfig
 from .auditor import audit_url
-from .csp_analyzer import analyze_csp
 from .env_detector import EnvironmentProfile, detect_environment
-from .integrity import audit_script_integrity
 from .models import (
     AuditReport,
-    CSPAnalysis,
-    HashDigests,
-    IntegrityIssue,
-    RemediationPack,
-    RiskRating,
-    ScanResult,
-    ScriptAudit,
-    ScriptIntegrityResult,
 )
-from .patcher import Patcher, PatchResult
-from .remediate import generate_remediation_pack
-from .scanner import scan_script_content
+from .network import NetworkPolicy
+from .patcher import PatchResult
 
 
 @dataclass(frozen=True, slots=True)
 class AutoResult:
     """Consolidated outcome of the autonomous recon, audit, AI triage, and patching pipeline."""
+
     target: str
     env_profile: EnvironmentProfile
     audit_report: AuditReport
@@ -53,7 +37,9 @@ class AutoResult:
 
     @property
     def total_patches_applied(self) -> int:
-        return sum(p.scripts_patched for p in self.patches) + sum(1 for p in self.patches if p.csp_injected)
+        return sum(p.scripts_patched for p in self.patches) + sum(
+            1 for p in self.patches if p.csp_injected
+        )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -68,165 +54,6 @@ class AutoResult:
         }
 
 
-def _audit_local_environment(env: EnvironmentProfile) -> AuditReport:
-    """Builds a comprehensive AuditReport for local projects and directories."""
-    # 1. Evaluate CSP if present
-    csp_analysis = analyze_csp(env.existing_csp)
-    if not isinstance(csp_analysis, CSPAnalysis):
-        # Convert dict to CSPAnalysis
-        csp_analysis = CSPAnalysis(
-            score=int(csp_analysis.get("score", 0)),
-            grade=csp_analysis.get("grade", "F"),  # type: ignore[arg-type]
-            directives=csp_analysis.get("directives", {}),
-            findings=(),
-            raw=env.existing_csp,
-        )
-
-    # 2. Audit scripts across discovered HTML files
-    scripts: list[ScriptAudit] = []
-    script_idx = 0
-
-    for html_file_str in env.html_files:
-        html_path = Path(html_file_str)
-        if not html_path.is_file():
-            continue
-
-        try:
-            content = html_path.read_text(encoding="utf-8", errors="ignore")
-            soup = BeautifulSoup(content, "html.parser")
-            for tag in soup.find_all("script"):
-                src = tag.get("src")
-                nonce = tag.get("nonce")
-                declared_integrity = tag.get("integrity")
-
-                if src:
-                    # External script reference
-                    src_str = str(src)
-                    local_candidate = (html_path.parent / src_str.lstrip("/")).resolve()
-                    if local_candidate.is_file():
-                        raw_bytes = local_candidate.read_bytes()
-                        integ_raw = audit_script_integrity(
-                            url=src_str,
-                            content=raw_bytes,
-                            declared_integrity=str(declared_integrity) if declared_integrity else None,
-                        )
-                    else:
-                        integ_raw = audit_script_integrity(
-                            url=src_str,
-                            content=b"",
-                            declared_integrity=str(declared_integrity) if declared_integrity else None,
-                        )
-
-                    # Coerce integrity result to model
-                    integ_model = ScriptIntegrityResult(
-                        url=str(integ_raw.get("url", src_str)),
-                        status=str(integ_raw.get("status", "UNKNOWN")),
-                        drift_detected=bool(integ_raw.get("drift_detected", False)),
-                        declared_integrity=integ_raw.get("declared_integrity"),
-                        calculated=HashDigests(
-                            sha256=str(integ_raw.get("calculated", {}).get("sha256", "")),
-                            sha384=str(integ_raw.get("calculated", {}).get("sha384", "")),
-                            sri_sha256=str(integ_raw.get("calculated", {}).get("sri_sha256", "")),
-                            sri_sha384=str(integ_raw.get("calculated", {}).get("sri_sha384", "")),
-                            byte_count=int(integ_raw.get("calculated", {}).get("byte_count", 0)),
-                        ),
-                        issues=tuple(
-                            IntegrityIssue(
-                                type=str(i.get("type", "")),
-                                severity=str(i.get("severity", "INFO")),  # type: ignore[arg-type]
-                                message=str(i.get("message", "")),
-                            )
-                            for i in integ_raw.get("issues", ())
-                        ),
-                        suggested_tag=str(integ_raw.get("suggested_tag", "")),
-                    )
-
-                    scripts.append(
-                        ScriptAudit(
-                            index=script_idx,
-                            kind="external",
-                            url=src_str,
-                            nonce=str(nonce) if nonce else None,
-                            declared_integrity=str(declared_integrity) if declared_integrity else None,
-                            integrity=integ_model,
-                            scan=None,
-                            error=None,
-                            suggested_tag=integ_model.suggested_tag,
-                            length=integ_model.calculated.byte_count or None,
-                        )
-                    )
-                else:
-                    # Inline script block
-                    inline_code = tag.get_text()
-                    scan_raw = scan_script_content(inline_code, target=f"{html_path.name}:inline_{script_idx}")
-                    scan_model = ScanResult(
-                        target=str(scan_raw.get("target", "")),
-                        is_suspicious=bool(scan_raw.get("is_suspicious", False)),
-                        findings_count=int(scan_raw.get("findings_count", 0)),
-                        findings=(),
-                    )
-                    scripts.append(
-                        ScriptAudit(
-                            index=script_idx,
-                            kind="inline",
-                            url=None,
-                            nonce=str(nonce) if nonce else None,
-                            declared_integrity=None,
-                            integrity=None,
-                            scan=scan_model,
-                            error=None,
-                            suggested_tag=None,
-                            length=len(inline_code),
-                        )
-                    )
-                script_idx += 1
-        except Exception:
-            pass
-
-    # 3. Derive overall risk
-    risk: RiskRating = "LOW"
-    if csp_analysis.grade in ("D", "F"):
-        risk = "HIGH"
-    for s in scripts:
-        if s.integrity and s.integrity.drift_detected:
-            risk = "CRITICAL"
-            break
-        if s.scan and s.scan.is_suspicious:
-            risk = "CRITICAL"
-            break
-
-    # 4. Generate deterministic remediation pack
-    remediation: RemediationPack | None = None
-    try:
-        remediation = generate_remediation_pack(env.target, csp_analysis, scripts)
-    except Exception:
-        remediation = None
-
-    summary = {
-        "target": env.target,
-        "primary_server": env.primary_server,
-        "framework": env.framework,
-        "total_scripts": len(scripts),
-        "scripts_needing_sri": len(env.scripts_needing_sri),
-        "csp_grade": csp_analysis.grade,
-        "csp_score": csp_analysis.score,
-        "overall_risk": risk,
-    }
-
-    return AuditReport(
-        target_url=env.target,
-        timestamp=datetime.now(timezone.utc).isoformat(),
-        status_code=200,
-        headers={"server": env.primary_server},
-        csp=csp_analysis,
-        scripts=tuple(scripts),
-        overall_risk=risk,
-        summary=summary,
-        remediation=remediation,
-        error=None,
-    )
-
-
 async def _run_pipeline_async(
     target: str,
     apply_fix: bool = False,
@@ -237,59 +64,68 @@ async def _run_pipeline_async(
 ) -> AutoResult:
     """Core async execution of the autonomous pipeline."""
     # Step 1: Environment & Architecture Recon
-    env = detect_environment(target)
+    if target.startswith(("https://", "http://")):
+        # Do not run unscoped discovery before the authorized HTTP audit.
+        env = EnvironmentProfile(
+            target=target,
+            is_remote=True,
+            primary_server="unknown",
+            framework=None,
+            config_files=(),
+            html_files=(),
+            discovered_scripts=(),
+            existing_csp=None,
+            remediation_targets=(),
+        )
+    else:
+        env = detect_environment(target)
 
     # Step 2: Deterministic Security Audit
     if env.is_remote:
-        report = await audit_url(target, transport=http_transport)
+        report = await audit_url(
+            target,
+            transport=http_transport,
+            network_policy=None if http_transport else NetworkPolicy.create([target]),
+        )
     else:
-        report = _audit_local_environment(env)
+        from .local_audit import audit_local
+
+        report = audit_local(env)
 
     # Step 3: Frontier Multi-Provider AI Reasoning
-    active_client = ai_client or AIClient(config=ai_config)
+    # Ambient credentials do not authorize sending project evidence externally.
+    active_client = ai_client or AIClient(
+        config=ai_config
+        or AIConfig(provider="custom", api_key=None, api_base=None, model="unconfigured")
+    )
     ai_agent = AIAgent(client=active_client)
     ai_analysis: AIAuditAnalysis | None = None
+    ai_error: str | None = None
 
     try:
         if ai_agent.is_available:
             try:
                 ai_analysis = ai_agent.analyze_audit(report, env)
-            except Exception:
+            except Exception as exc:
+                ai_error = (
+                    f"AI advisory unavailable ({type(exc).__name__}); deterministic report retained"
+                )
                 ai_analysis = None
+        elif ai_config is not None or ai_client is not None:
+            ai_error = "AI advisory is unconfigured; deterministic report retained"
+    except Exception as exc:
+        ai_error = f"AI advisory unavailable ({type(exc).__name__}); deterministic report retained"
     finally:
         if ai_client is None:
             active_client.close()
 
-    # Step 4: Determine Remediation Policy
-    if ai_analysis and ai_analysis.smart_csp:
-        hardened_csp = ai_analysis.smart_csp
-    elif report.remediation and report.remediation.hardened_csp:
-        hardened_csp = report.remediation.hardened_csp
-    else:
-        hardened_csp = "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self';"
-
     # Step 5: Surgical Automated Patching (if requested)
     patch_results: list[PatchResult] = []
     if apply_fix and not env.is_remote:
-        with Patcher(base_url=target if env.is_remote else None) as patcher:
-            # 1. Patch Nginx configuration if present
-            server_config_patched = False
-            for cfg in env.config_files:
-                if cfg.endswith(".conf") or "nginx" in cfg:
-                    res = patcher.patch_nginx_config(cfg, hardened_csp=hardened_csp, create_backup=backup)
-                    patch_results.append(res)
-                    if res.success:
-                        server_config_patched = True
-
-            # 2. Patch HTML files: inject SRI and inject CSP meta-tag if no reverse proxy was patched
-            for html_file in env.html_files:
-                inject_meta = hardened_csp if not server_config_patched else None
-                res = patcher.patch_html_file(
-                    html_file,
-                    hardened_csp=inject_meta,
-                    create_backup=backup,
-                )
-                patch_results.append(res)
+        raise ValueError(
+            "Direct remediation is disabled. Use propose, validate-proposal and apply-proposal "
+            "with a reviewed trusted baseline and explicit approval."
+        )
 
     summary = {
         "target": target,
@@ -301,6 +137,7 @@ async def _run_pipeline_async(
         "csp_grade": report.csp.grade,
         "overall_risk": report.overall_risk,
         "ai_active": ai_analysis is not None,
+        "ai_error": ai_error,
         "patches_applied": len(patch_results),
     }
 
@@ -332,6 +169,7 @@ def run_auto_pipeline(
     if loop and loop.is_running():
         # Running inside an active event loop (e.g. pytest or jupyter)
         import concurrent.futures
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
             future = pool.submit(
                 asyncio.run,

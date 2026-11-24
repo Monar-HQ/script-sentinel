@@ -23,6 +23,7 @@ from bs4 import BeautifulSoup
 @dataclass(frozen=True, slots=True)
 class DiscoveredScript:
     """Represents a discovered script in local files or remote DOM."""
+
     source_file: str
     src: str | None
     is_inline: bool
@@ -45,6 +46,7 @@ class DiscoveredScript:
 @dataclass(frozen=True, slots=True)
 class EnvironmentProfile:
     """Represents the discovered runtime, architecture, and remediation targets."""
+
     target: str
     is_remote: bool
     primary_server: str
@@ -114,6 +116,7 @@ def _inspect_remote_target(
     metadata: dict[str, Any] = {}
 
     try:
+
         def _execute_get(cli: httpx.Client) -> httpx.Response:
             return cli.get(url)
 
@@ -161,7 +164,14 @@ def _inspect_remote_target(
 
             # Check for meta tag CSP if header missing
             if not existing_csp:
-                meta_csp = soup.find("meta", attrs={"http-equiv": lambda v: v and v.lower() == "content-security-policy"})
+                meta_csp = soup.find(
+                    "meta",
+                    attrs={
+                        "http-equiv": lambda v: (
+                            v is not None and v.lower() == "content-security-policy"
+                        )
+                    },
+                )
                 if meta_csp and meta_csp.get("content"):
                     existing_csp = str(meta_csp["content"])
                     metadata["csp_source"] = "meta_tag"
@@ -170,15 +180,17 @@ def _inspect_remote_target(
                 src = tag.get("src")
                 integrity = tag.get("integrity")
                 is_inline = not bool(src)
-                scripts.append(DiscoveredScript(
-                    source_file=url,
-                    src=str(src) if src else None,
-                    is_inline=is_inline,
-                    has_sri=bool(integrity),
-                    declared_sri=str(integrity) if integrity else None,
-                    line_number=idx + 1,
-                    raw_tag=str(tag),
-                ))
+                scripts.append(
+                    DiscoveredScript(
+                        source_file=url,
+                        src=str(src) if src else None,
+                        is_inline=is_inline,
+                        has_sri=bool(integrity),
+                        declared_sri=str(integrity) if integrity else None,
+                        line_number=idx + 1,
+                        raw_tag=str(tag),
+                    )
+                )
 
     except Exception as exc:
         metadata["error"] = str(exc)
@@ -209,7 +221,18 @@ def _inspect_local_target(root: Path) -> EnvironmentProfile:
     metadata: dict[str, Any] = {}
 
     # Define ignore directories
-    ignore_dirs = {".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache", ".ruff_cache", "dist", "build"}
+    ignore_dirs = {
+        ".git",
+        ".venv",
+        "venv",
+        "node_modules",
+        "__pycache__",
+        ".pytest_cache",
+        ".ruff_cache",
+        "dist",
+        "build",
+        ".scriptsentinel",
+    }
 
     # 1. Walk directory and collect candidate files
     if root.is_file():
@@ -221,12 +244,22 @@ def _inspect_local_target(root: Path) -> EnvironmentProfile:
         for cur_root, dirs, files in os.walk(root):
             dirs[:] = [d for d in dirs if d not in ignore_dirs]
             for f in files:
+                if len(candidates) >= 5000:
+                    raise ValueError("Discovery exceeds 5000 files; choose a narrower web root")
                 candidates.append(Path(cur_root) / f)
 
     for p in candidates:
+        if not p.resolve().is_relative_to(search_root.resolve()):
+            metadata[f"scope_error_{p.name}"] = "Symlink target outside workspace skipped"
+            continue
         name_lower = p.name.lower()
         abs_str = str(p.resolve())
         rel_str = str(p.relative_to(search_root)) if p.is_relative_to(search_root) else abs_str
+        if p.stat().st_size > 5_000_000:
+            metadata[f"size_limit_{rel_str}"] = "File exceeds 5 MB; content was not parsed"
+            if p.suffix.lower() in (".html", ".htm", ".xhtml"):
+                html_files.append(abs_str)
+            continue
 
         # Detect Web Server Configs
         if name_lower in ("nginx.conf", "default.conf") or p.suffix == ".conf":
@@ -279,26 +312,40 @@ def _inspect_local_target(root: Path) -> EnvironmentProfile:
             try:
                 html_text = p.read_text(encoding="utf-8", errors="ignore")
                 soup = BeautifulSoup(html_text, "html.parser")
+                if soup.find("base", href=True):
+                    metadata["unsupported_local_base_href"] = True
 
                 # Check for meta CSP
                 if not existing_csp:
-                    meta = soup.find("meta", attrs={"http-equiv": lambda v: v and v.lower() == "content-security-policy"})
+                    meta = soup.find(
+                        "meta",
+                        attrs={
+                            "http-equiv": lambda v: (
+                                v is not None and v.lower() == "content-security-policy"
+                            )
+                        },
+                    )
                     if meta and meta.get("content"):
                         existing_csp = str(meta["content"])
 
-                for idx, tag in enumerate(soup.find_all("script")):
+                for idx, tag in enumerate(soup.find_all("script", limit=1001)):
+                    if len(scripts) >= 1000:
+                        metadata["script_limit"] = "Discovery stopped at 1000 script elements"
+                        break
                     src = tag.get("src")
                     integrity = tag.get("integrity")
                     is_inline = not bool(src)
-                    scripts.append(DiscoveredScript(
-                        source_file=abs_str,
-                        src=str(src) if src else None,
-                        is_inline=is_inline,
-                        has_sri=bool(integrity),
-                        declared_sri=str(integrity) if integrity else None,
-                        line_number=idx + 1,
-                        raw_tag=str(tag),
-                    ))
+                    scripts.append(
+                        DiscoveredScript(
+                            source_file=abs_str,
+                            src=str(src) if src else None,
+                            is_inline=is_inline,
+                            has_sri=bool(integrity),
+                            declared_sri=str(integrity) if integrity else None,
+                            line_number=idx + 1,
+                            raw_tag=str(tag),
+                        )
+                    )
             except Exception as e:
                 metadata[f"parse_error_{rel_str}"] = str(e)
 

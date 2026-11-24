@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, Literal
 
 Severity = Literal["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"]
@@ -273,6 +273,7 @@ class ScriptAudit:
     error: str | None = None
     suggested_tag: str | None = None
     length: int | None = None
+    analysis_note: str | None = None
 
     def __getitem__(self, item: str) -> object:
         if item == "type":
@@ -304,6 +305,7 @@ class ScriptAudit:
             "error",
             "suggested_tag",
             "length",
+            "analysis_note",
         )
 
     def items(self) -> list[tuple[str, object]]:
@@ -323,6 +325,7 @@ class ScriptAudit:
             ("error", self.error),
             ("suggested_tag", self.suggested_tag),
             ("length", self.length),
+            ("analysis_note", self.analysis_note),
         ):
             if value is not None:
                 payload[key] = value
@@ -610,7 +613,7 @@ class AuditReport:
         error: str | None = None,
     ) -> AuditReport:
         """Create a typed AuditReport from dataclasses or dictionary inputs."""
-        ts = timestamp or datetime.now(timezone.utc).isoformat()
+        ts = timestamp or datetime.now(UTC).isoformat()
         coerced_csp = _coerce_csp_analysis(csp)
         coerced_scripts = tuple(_coerce_script_audit(s, idx) for idx, s in enumerate(scripts))
         coerced_remediation = _coerce_remediation_pack(remediation, site_url=target_url)

@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "reviewer": "ScriptSentinel synthetic fixture author",
+  "provenance": "Harmless repository fixture, reviewed as source; not a production baseline",
+  "files": {"app.js": "e226a7ac9197e0d6ee30d73dc202462d4ae2f2882e9a5e1ed55290ae98e81d6a"}
+}

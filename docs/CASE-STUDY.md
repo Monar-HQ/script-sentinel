@@ -296,7 +296,8 @@ Re-test headline:
 ## Acknowledgements
 
 - **MONAR** — project owner and maintainer; ScriptSentinel and the OPTIJACK lab ([github.com/Monar-HQ](https://github.com/Monar-HQ)).
-- **Unquant** — server infrastructure and AI compute for the OPTIJACK simulation and model validation. Special thanks to Luke.
+- **Ali** — co-owner and developer, MONAR Services.
+- **Luke, owner of unquant.io** — provided the uncensored AI infrastructure used for the original sandbox research and early development, as acknowledged by the project owner. See CREDITS.md.
 
 Incident research builds on public reporting from Optimizely, Report URI, StepSecurity, Unit42, Salesforce Security, Netskope Threat Labs, The Hacker News, Ars Technica, MITRE, NVD, and CISA. Every source is cited in [References](#references).
 
@@ -327,3 +328,12 @@ Incident research builds on public reporting from Optimizely, Report URI, StepSe
 ## Scope note
 
 This case study combines public incident reporting with a local reproduction. The OPTIJACK lab demonstrates mechanism, control behavior, and detection validation on 144 visits across four CSP profiles and three replicas. It does not claim to reproduce the production blast radius of 178 organizations.
+
+## Verification update — 2026-11-24
+
+The vendor incident and CVE attribution were checked against primary sources.
+CVE-2026-132224 is published; its CNA CVSS 4.0 base score is **7.1 High**.
+Historical lab results above were not rerun. Lab findings do not establish
+production exploitability or the incident's scale. See
+[the development record](V1-DEVELOPMENT.md) and `research/optimjack-v1.json`
+for provenance, limitations and outstanding validation.

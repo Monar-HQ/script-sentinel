@@ -1,0 +1,15 @@
+name: Research pack proposal
+description: Propose attributable defensive coverage.
+body:
+  - type: input
+    id: source
+    attributes: {label: Authoritative source URL}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: Applicability, provenance, license and uncertainty}
+    validations: {required: true}
+  - type: textarea
+    id: validation
+    attributes: {label: Harmless fixtures and expected defensive outcomes}
+    validations: {required: true}

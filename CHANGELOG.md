@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0rc1 — 2026-11-24
+
+- Added the private local console with real audit evidence, inventory, baseline
+  approval, monitoring, proposal validation, research and an activity ledger.
+- Added Tree-sitter capability analysis, authorized browser observation, persistent
+  snapshots, staged SRI validation, guarded recovery and read-only host-agent tools.
+- Added provider request budgets, Gemini adapter, OS keychain support, data-only
+  research packs, locked dependencies and distribution configuration.
+- Redesigned the README and current visual assets; clarified Ali's and Luke's credits.
+- Raised Python minimum to 3.11.5 to use fixed Soup Sieve 4.x. Updated locks after
+  dependency audit. No public release, deployment or signed artifact is implied.
+- See docs/VALIDATION.md for actual tests and unrun external gates.
+
 ## 0.1.0 — 2026-11-24
 
 ### Added

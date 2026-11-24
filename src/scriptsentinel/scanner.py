@@ -50,32 +50,32 @@ KNOWN_IOC_HASHES: tuple[str, ...] = _load_ioc_hashes()
 _PATTERNS: tuple[tuple[str, str, Severity, str, str], ...] = (
     (
         "SKIM-INPUT-HARVEST",
-        "Payment & Credential Field Scraping",
-        "CRITICAL",
+        "Sensitive Field Access Pattern",
+        "HIGH",
         (
             r"(?:card(?:number|_no)?|cvv|cvc|expir(?:y|ation)|password|passwd|ssn)"
             r"\b['\"]?\s*(?:,|:|=|\.value|\.getAttribute)"
         ),
-        "Script inspects or extracts payment card, CVV, or credential field values.",
+        "Pattern resembles access to sensitive fields. Legitimate forms use these fields; review data handling and destinations.",
     ),
     (
         "SKIM-DOM-LISTENER",
-        "Global Input / Keystroke Interceptor",
-        "HIGH",
+        "Input / Submit Listener Pattern",
+        "MEDIUM",
         r"addEventListener\s*\(\s*['\"](?:input|change|keydown|keyup|keypress|submit)['\"]",
-        "Attaches global listeners to harvest keystrokes or form submissions.",
+        "Pattern matches an input or form event listener. This does not establish global interception or malicious intent.",
     ),
     (
         "SKIM-CLIPBOARD-TAMPER",
         "Clipboard Read / Write Access",
-        "HIGH",
+        "MEDIUM",
         r"navigator\.(?:clipboard\.(?:readText|writeText)|clipboard)\b",
-        "Interacts directly with the clipboard for credential theft or payload swapping.",
+        "Pattern references clipboard capabilities; review purpose and permissions before inferring tampering.",
     ),
     (
         "SKIM-EVAL-EXEC",
         "Dynamic Code Evaluation",
-        "CRITICAL",
+        "HIGH",
         r"\b(?:eval\s*\(|new\s+Function\s*\(|setTimeout\s*\(\s*['\"][^,])",
         "Executes dynamic strings, often used to unpack obfuscated payloads.",
     ),
@@ -88,10 +88,10 @@ _PATTERNS: tuple[tuple[str, str, Severity, str, str], ...] = (
     ),
     (
         "SKIM-EXFIL-BEACON",
-        "Network Exfiltration Beacon",
-        "HIGH",
+        "Beacon API Pattern",
+        "LOW",
         r"navigator\.sendBeacon\s*\(",
-        "Uses asynchronous sendBeacon to exfiltrate data during page unload.",
+        "Pattern references sendBeacon, also used by ordinary analytics. Destination and data flow require review.",
     ),
 )
 
@@ -111,6 +111,9 @@ def _hash_present(content: str, digest: str) -> bool:
 def scan_script_content(content_str: str, script_name: str = "inline") -> ScanResult:
     """Scan JavaScript source for skimmer behaviors and IOC matches."""
     findings: list[ScanFinding] = []
+    from .ast_analysis import ast_findings
+
+    findings.extend(ast_findings(content_str))
 
     for rule_id, name, severity, pattern, description in _PATTERNS:
         matches = re.findall(pattern, content_str, re.IGNORECASE)
@@ -130,10 +133,10 @@ def scan_script_content(content_str: str, script_name: str = "inline") -> ScanRe
         findings.append(
             ScanFinding(
                 rule_id="IOC-MATCH-C2-DOMAIN",
-                name="Known Malicious C2 Domain IOC Matched",
-                severity="CRITICAL",
+                name="Packaged Hunting Domain Indicator Matched",
+                severity="HIGH",
                 matches_count=len(matched_domains),
-                description=f"Script references known adversary C2 host(s): {', '.join(matched_domains)}",
+                description=f"Source references packaged hunting indicator(s): {', '.join(matched_domains)}. Verify feed provenance and runtime context; this alone is not proof of compromise.",
                 domains=tuple(matched_domains),
             )
         )
@@ -146,10 +149,10 @@ def scan_script_content(content_str: str, script_name: str = "inline") -> ScanRe
         findings.append(
             ScanFinding(
                 rule_id="IOC-MATCH-C2-HASH",
-                name="Known Malicious Script Hash IOC Matched",
-                severity="CRITICAL",
+                name="Packaged Hunting Hash Indicator Matched",
+                severity="HIGH",
                 matches_count=len(matched_hashes),
-                description=f"Script matches known malicious SHA-256 indicator(s): {', '.join(matched_hashes)}",
+                description=f"Source matches packaged SHA-256 indicator(s): {', '.join(matched_hashes)}. Verify the feed's lab/incident provenance before making an attribution.",
             )
         )
 

@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scriptsentinel-local-audit
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+          containers:
+            - name: audit
+              image: scriptsentinel:1.0.0rc1
+              args: ["auto", "/workspace", "--json"]
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              resources:
+                requests: {cpu: "100m", memory: "128Mi"}
+                limits: {cpu: "1", memory: "512Mi"}
+              volumeMounts:
+                - {name: webroot, mountPath: /workspace, readOnly: true}
+          volumes:
+            - name: webroot
+              persistentVolumeClaim:
+                claimName: your-reviewed-webroot

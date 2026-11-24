@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import hmac
+import re
 from collections.abc import Mapping
+from html import escape
 
 from .models import HashDigests, IntegrityIssue, ScriptIntegrityResult
 
@@ -13,6 +16,28 @@ __all__ = [
     "compute_hashes",
     "validate_html_script_tags",
 ]
+
+
+def matches_sri(content: bytes, metadata: str) -> bool:
+    """Match any digest at the strongest recognized SRI algorithm level.
+
+    Unknown metadata is ignored. With no usable metadata this audit reports
+    an invalid declaration rather than claiming cryptographic verification.
+    """
+    candidates: dict[int, list[tuple[str, str]]] = {}
+    for token in metadata.split():
+        match = re.fullmatch(r"(sha256|sha384|sha512)-([A-Za-z0-9+/_-]+={0,2})(?:\?\S*)?", token)
+        if match:
+            algorithm, digest = match.groups()
+            candidates.setdefault(int(algorithm[3:]), []).append((algorithm, digest))
+    if not candidates:
+        return False
+    for algorithm, digest in candidates[max(candidates)]:
+        expected = base64.b64encode(hashlib.new(algorithm, content).digest()).decode("ascii")
+        normalized = digest.replace("-", "+").replace("_", "/").rstrip("=")
+        if hmac.compare_digest(expected.rstrip("="), normalized):
+            return True
+    return False
 
 
 def compute_hashes(content: bytes) -> HashDigests:
@@ -53,7 +78,7 @@ def audit_script_integrity(
                 ),
             )
         )
-    elif declared_integrity not in (calculated.sri_sha256, calculated.sri_sha384):
+    elif not matches_sri(content, declared_integrity):
         status = "INTEGRITY_MISMATCH"
         issues.append(
             IntegrityIssue(
@@ -61,8 +86,8 @@ def audit_script_integrity(
                 severity="CRITICAL",
                 message=(
                     f"Declared integrity '{declared_integrity}' does not match the "
-                    f"calculated digest '{calculated.sri_sha256}'. The browser will "
-                    "block the resource."
+                    f"calculated digest '{calculated.sri_sha256}'. No matching supported "
+                    "digest at the strongest declared algorithm was found."
                 ),
             )
         )
@@ -83,7 +108,7 @@ def audit_script_integrity(
         )
 
     suggested_tag = (
-        f'<script src="{script_url}" integrity="{calculated.sri_sha256}" '
+        f'<script src="{escape(script_url, quote=True)}" integrity="{calculated.sri_sha256}" '
         'crossorigin="anonymous"></script>'
     )
     return ScriptIntegrityResult(
@@ -136,19 +161,23 @@ def validate_html_script_tags(
         if pinned is None:
             continue
 
+        # A SHA-256 hex baseline can only be compared with a SHA-256
+        # declaration; SHA-384/512 cannot be derived without resource bytes.
         pinned_lower = pinned.strip().lower()
-        if declared_text not in {f"sha256-{pinned_lower}", f"sha384-{pinned_lower}"} and (
-            declared_text.lower() not in {pinned_lower, f"sha256-{pinned_lower}"}
-        ):
-                issues.append(
-                    IntegrityIssue(
-                        type="SCRIPT_DRIFT",
-                        severity="CRITICAL",
-                        message=(
-                            f"Declared integrity '{declared_text}' does not match pinned "
-                            f"baseline '{pinned}' for '{script_url}'."
-                        ),
-                    )
+        if not re.fullmatch(r"[a-f0-9]{64}", pinned_lower):
+            raise ValueError("HTML baseline must contain SHA-256 hex digests")
+        expected = "sha256-" + base64.b64encode(bytes.fromhex(pinned_lower)).decode("ascii")
+        sha256_tokens = [token for token in declared_text.split() if token.startswith("sha256-")]
+        if sha256_tokens and expected not in sha256_tokens:
+            issues.append(
+                IntegrityIssue(
+                    type="SCRIPT_DRIFT",
+                    severity="CRITICAL",
+                    message=(
+                        f"Declared integrity '{declared_text}' does not match pinned "
+                        f"baseline '{pinned}' for '{script_url}'."
+                    ),
                 )
+            )
 
     return tuple(issues)

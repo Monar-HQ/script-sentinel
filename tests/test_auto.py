@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from scriptsentinel.auto import AutoResult, run_auto_pipeline
 from scriptsentinel.cli import main
 
@@ -53,17 +55,10 @@ def test_run_auto_pipeline_local_with_fix(tmp_path: Path) -> None:
     js_file = tmp_path / "main.js"
     js_file.write_bytes(b"alert('safe');")
 
-    res = run_auto_pipeline(target=str(tmp_path), apply_fix=True, backup=True)
-    assert isinstance(res, AutoResult)
-    assert len(res.patches) == 1
-    assert res.patches[0].success is True
-    assert res.patches[0].scripts_patched == 1
-    assert res.patches[0].csp_injected is True
-
-    # Check updated HTML
-    updated = html_file.read_text(encoding="utf-8")
-    assert 'integrity="sha256-' in updated
-    assert 'http-equiv="Content-Security-Policy"' in updated
+    original = html_file.read_bytes()
+    with pytest.raises(ValueError, match="Direct remediation is disabled"):
+        run_auto_pipeline(target=str(tmp_path), apply_fix=True, backup=True)
+    assert html_file.read_bytes() == original
 
 
 def test_cli_auto_and_setup_commands(tmp_path: Path) -> None:
@@ -81,4 +76,4 @@ def test_cli_auto_and_setup_commands(tmp_path: Path) -> None:
 
     # 3. Fix patching
     code_fix = main(["fix", str(tmp_path)])
-    assert code_fix in (0, 1)
+    assert code_fix == 2

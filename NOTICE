@@ -5,9 +5,10 @@ https://github.com/Monar-HQ
 
 ScriptSentinel is a MONAR defensive-security project.
 
-Infrastructure and AI compute access for the OPTIJACK simulation and model
-validation were provided by Unquant (https://unquant.io/). Special thanks to
-Luke at Unquant.
+Ali is the co-owner and developer of MONAR Services.
+Luke, owner of unquant.io (https://unquant.io/), provided access to the uncensored
+AI infrastructure used in the original sandbox research and early development.
+These collaboration roles were supplied by the project owner; see CREDITS.md.
 
 The OPTIMJACK case study draws on public incident reporting. Every source is
 cited in docs/CASE-STUDY.md under "References".

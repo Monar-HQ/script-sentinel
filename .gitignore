@@ -18,6 +18,9 @@ htmlcov/
 .mypy_cache/
 
 # ScriptSentinel runtime state
+.scriptsentinel/
+*.scriptsentinel-*.bak
+*.receipt.json
 *.db
 *.db-wal
 *.db-shm
@@ -26,6 +29,7 @@ baselines.db
 reports/
 *.png
 !assets/*.png
+!assets/brandkit/*.png
 *.gif
 
 # Lab replay scratch

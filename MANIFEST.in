@@ -8,11 +8,27 @@ include CODE_OF_CONDUCT.md
 include CITATION.cff
 include action.yml
 include pyproject.toml
+include CREDITS.md
+include THREAT_MODEL.md
+include PRODUCT.md
+include AGENTS.md
+include CLAUDE.md
+include uv.lock
+include requirements.lock
+include .gitattributes
+include .dockerignore
 recursive-include docs *.md
-exclude docs/RELEASE.md
+recursive-include research *.json
+recursive-include packaging *.py *.md *.yaml Dockerfile
+recursive-include schemas *.json
 recursive-include assets *.svg *.png
+recursive-include assets/brandkit *.md
 recursive-include examples *.json
+recursive-include examples/synthetic *.html *.js *.md
 recursive-include .github *.yml *.md
 recursive-include tests *.py
 recursive-include report *.json *.md *.html *.yml *.rules
-recursive-include src *.py *.json *.typed
+recursive-include src *.py *.json *.typed *.html *.js *.css
+prune report
+prune examples/synthetic/.scriptsentinel
+global-exclude *.sqlite3 *.db *.bak *.receipt.json .env

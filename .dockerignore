@@ -1,0 +1,10 @@
+.git
+.venv
+dist
+build
+**/.scriptsentinel
+**/*.bak
+**/*.receipt.json
+**/__pycache__
+.cloud-attachments
+.freebuff

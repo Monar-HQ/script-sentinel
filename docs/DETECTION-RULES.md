@@ -1,100 +1,44 @@
-# Detection Rules
+# Detection rules in v1
 
-ScriptSentinel exposes deterministic rule IDs for CSP posture, Subresource Integrity, behavioral skimming, and IOC exposure. The engine emits typed findings; reporters render them without rewriting rule logic.
+Signals are evidence for review, not assertions of malicious intent. Rule IDs
+from earlier versions are retained for compatibility; names and severity were
+corrected where a common API had been mislabeled as proven theft.
 
-Source incident: the OPTIMJACK compromise of Optimizely Web Experimentation (`CVE-2026-132224`). The full narrative, CVE links, IOC table, lab outcome matrix, and detection validation are in [docs/CASE-STUDY.md](CASE-STUDY.md).
-
-## CSP Rules
-
-| Rule ID | Severity | Penalty | Trigger | Evidence |
-| --- | --- | --- | --- | --- |
-| `CSP-MISSING` | CRITICAL | 35 | No `Content-Security-Policy` header. | Header absent. |
-| `CSP-UNSAFE-EVAL` | CRITICAL | 35 | `'unsafe-eval'` appears in `script-src` or fallback `default-src`. | `'unsafe-eval'`. |
-| `CSP-UNSAFE-INLINE` | CRITICAL | 35 | `'unsafe-inline'` appears without a nonce or hash source. | `'unsafe-inline'`. |
-| `CSP-STRICT-DYNAMIC-RISK` | HIGH | 20 | `'strict-dynamic'` appears with a missing or wildcard `connect-src`. | `'strict-dynamic'`. |
-| `CSP-CONNECT-WILDCARD` | CRITICAL | 35 | `connect-src` is missing, contains `*`, or contains bare `http:` / `https:`. | `*` or `connect-src absent`. |
-| `CSP-REPORTING-ABSENT` | MEDIUM | 10 | Neither `report-uri` nor `report-to` is present. | `no report-uri/report-to`. |
-
-Score is `max(0, 100 - sum(penalties))`. Grades: A ≥ 90, B ≥ 75, C ≥ 50, D ≥ 30, F < 30.
-
-## SRI Statuses
-
-| Status | Severity | Meaning |
+| Family | Rules | Interpretation |
 | --- | --- | --- |
-| `VERIFIED` | None | Declared integrity matches the calculated `sha256-...` or `sha384-...` SRI digest. |
-| `MISSING_SRI` | HIGH | External script has no `integrity` attribute. |
-| `INTEGRITY_MISMATCH` | CRITICAL | Declared integrity does not match the calculated digest; the browser blocks the resource. |
-| `SCRIPT_DRIFT` | CRITICAL | Current SHA-256 differs from the pinned baseline; upstream content changed. |
+| AST | JS-DYNAMIC-CODE, JS-DYNAMIC-SCRIPT, JS-CLIPBOARD, JS-BEACON | Parsed call expressions with source positions; capability evidence |
+| AST coverage | JS-PARSE-ERROR, JS-SIZE-LIMIT | Incomplete syntax or analysis coverage; never silently clean |
+| Heuristic | SKIM-INPUT-HARVEST | Sensitive-field access pattern, High; legitimate forms also match |
+| Heuristic | SKIM-DOM-LISTENER, SKIM-CLIPBOARD-TAMPER | Listener/clipboard patterns, Medium; no inference of global interception |
+| Heuristic | SKIM-EVAL-EXEC | Dynamic evaluation pattern, High |
+| Heuristic | SKIM-BASE64-UNPACK | Encoding/decoding pattern, Medium |
+| Heuristic | SKIM-EXFIL-BEACON | Beacon API pattern, Low; ordinary analytics also use it |
+| Hunting | IOC-MATCH-C2-DOMAIN, IOC-MATCH-C2-HASH | Packaged indicators, High; verify lab/incident provenance |
+| Integrity | MISSING_SRI, INTEGRITY_MISMATCH, SCRIPT_DRIFT | Missing declaration, unsupported/mismatched declaration or changed approved bytes |
+| CSP | CSP-MISSING, CSP-UNSAFE-EVAL, CSP-UNSAFE-INLINE, CSP-UNSAFE-ATTR | Missing policy or supported unsafe execution surfaces |
+| CSP | CSP-SCRIPT-UNRESTRICTED, CSP-CONNECT-WILDCARD, CSP-STRICT-DYNAMIC-RISK | Supported posture weaknesses requiring context |
+| CSP | CSP-REPORTING-ABSENT, CSP-MULTIPLE-POLICIES | Reporting posture and independent-policy handling |
 
-`SCRIPT_DRIFT` overrides `VERIFIED` or `MISSING_SRI` when a baseline hash is supplied and differs.
+AST parsing never evaluates the source. Comments and strings are not executable
+AST calls, but the separate regex layer can still match them; this limitation
+is explicit. No interprocedural taint or whole-program maliciousness proof is
+claimed. Dynamic JavaScript, aliasing and runtime-generated content may be missed.
 
-## Behavioral Rules
+The HTML inventory recognizes the WHATWG JavaScript MIME essences, including
+legacy types. Non-executable data scripts are retained with an analysis note,
+without generating false JavaScript syntax findings.
 
-| Rule ID | Severity | Logic | Description |
-| --- | --- | --- | --- |
-| `SKIM-INPUT-HARVEST` | CRITICAL | Matches payment/credential field names (`card`, `card_number`, `cvv`, `cvc`, `expiry`, `password`, `passwd`, `ssn`) followed by value access (`:`, `=`, `.value`, `.getAttribute`). | Script inspects or extracts payment card, CVV, or credential values. |
-| `SKIM-DOM-LISTENER` | HIGH | Matches `addEventListener('input'|'change'|'keydown'|'keyup'|'keypress'|'submit')`. | Attaches global listeners to harvest keystrokes or submissions. |
-| `SKIM-CLIPBOARD-TAMPER` | HIGH | Matches `navigator.clipboard.readText`, `writeText`, or `navigator.clipboard`. | Reads or writes clipboard data. |
-| `SKIM-EVAL-EXEC` | CRITICAL | Matches `eval(`, `new Function(`, or `setTimeout("...")`. | Executes dynamic strings, often unpacking obfuscated payloads. |
-| `SKIM-BASE64-UNPACK` | MEDIUM | Matches `atob(` or `btoa(`. | Decodes or encodes base64 at runtime. |
-| `SKIM-EXFIL-BEACON` | HIGH | Matches `navigator.sendBeacon(`. | Uses asynchronous beacon exfiltration. |
+SRI uses the strongest supported declared algorithm and any matching digest at
+that level. A digest validates content consistency, not the trustworthiness of
+the original artifact. Local proposals require an independently reviewed
+baseline. Missing resources, unsupported base URLs and discovery limits are
+reported explicitly.
 
-## IOC Rules
+CSP rules model selected policy semantics, not every browser's policy engine.
+Multiple policies are processed independently; shared posture signals contribute
+to the aggregate grade. Hash-source syntax/length must be valid before it can
+suppress an unsafe-inline warning. Header grades do not prove that deployment
+works, that all exfiltration channels are blocked, or that a breach occurred.
 
-| Rule ID | Severity | Logic |
-| --- | --- | --- |
-| `IOC-MATCH-C2-DOMAIN` | CRITICAL | Exact hostname boundary match against the packaged OPTIJACK domains and legacy C2 domains. |
-| `IOC-MATCH-C2-HASH` | CRITICAL | Exact 64-hex SHA-256 boundary match against packaged IOC hashes or the script's computed SHA-256. |
-
-IOC matching is case-insensitive and rejects substring matches.
-
-## Packaged IOC Set
-
-The default feed `optimjack_2026-11-23.json` contains eight domains and two SHA-256 indicators. Legacy `malicious_c2.json` adds two domains:
-
-| Indicator | Value |
-| --- | --- |
-| Domain | `1688360.cc` |
-| Domain | `webshell.lol` |
-| Domain | `linkforge.cc` |
-| Domain | `pay-cloud.online` |
-| Domain | `pay.pay-cloud.online` |
-| Domain | `pay-relay.wordpressadmin001.workers.dev` |
-| Domain | `5vobauua3ojpklx.icu` |
-| Domain | `eil786npto9u5bq.icu` |
-| SHA-256 | `f7b84b9a94f749f8ced3f0112d0a66894e8bbc3b4aa5592021d1b8976a9bad40` |
-| SHA-256 | `814a963c0da480e2449d9b6664480156e1cd6d731014117401bf635badec3a0f` |
-
-Public telemetry also reports the iOS kit domain `l7bcsnwc7nzr3uo.icu`. It is documented in [docs/CASE-STUDY.md](CASE-STUDY.md#indicators-observed) but is not in the packaged feed; operators can add it through the feed schema in [CONTRIBUTING.md](../CONTRIBUTING.md#adding-an-ioc).
-
-## OPTIJACK Validation
-
-The rules were validated against the local OPTIJACK telemetry slices. Counts are true positives in the attack-only slice; false positives were zero in the clean slice.
-
-| Rule | TP | FP |
-| --- | --- | --- |
-| IOC-1 | 108 | 0 |
-| IOC-2 | 0 | 0 |
-| IOC-3 | 111 | 0 |
-| BEH-1 | 24 | 0 |
-| BEH-2 | 9 | 0 |
-| BEH-3 | 18 | 0 |
-| BEH-4 | 54 | 0 |
-| BEH-5 | 12 | 0 |
-| BEH-6 | 54 | 0 |
-
-IOC-2 is the `track.js` hash indicator. `track.js` was not served in the lab, so TP is zero and the rule remains retained as a real-world indicator.
-
-Scale note: the lab covers 144 visits across four CSP profiles and three replicas. It demonstrates the detection mechanism; it does not generalize to the 178 organizations in the source incident.
-
-## Rule Export
-
-- Sigma: 8 domain indicators, one rule per host, tags include `attack.c2`, `attack.exfiltration`, and `attack.javascript`.
-- Suricata: 16 alerts, 8 HTTP host rules and 8 DNS query rules.
-
-Exports are generated from the packaged feed and an optional live audit:
-
-```bash
-scriptsentinel export-rules --format sigma --output rules/sigma.yml
-scriptsentinel export-rules --format suricata --output rules/suricata.rules
-```
+The benchmark discloses ten harmless AST capability fixtures. It is not a
+malware-detection false-positive/false-negative estimate for real applications.
