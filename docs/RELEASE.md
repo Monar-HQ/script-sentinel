@@ -74,7 +74,7 @@ Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NO
 - Repository: private at `https://github.com/Ally-Released/scriptsentinel`.
 - Case study: `docs/CASE-STUDY.md` with CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and source provenance.
 - GitHub metadata: description, homepage (`https://www.monarservices.org`), topics (`optimjack`, `payment-skimmer`, `content-security-policy`, `cli`, `python`, `security-tools`), and discussions enabled.
-- Social preview: `assets/social-preview.png` (1280×640) is ready for GitHub UI upload; GitHub exposes no public API for social-preview upload.
+- Social preview: `assets/social-preview.png` (1280×640) is ready for GitHub UI upload; `usesCustomOpenGraphImage` remains false until uploaded. GitHub exposes no public API for social-preview upload.
 - PyPI: not published.
 - Git tag: `v0.1.0` created on the remote.
 - GitHub release: `v0.1.0 - Initial Release` published (2026-11-23); notes rewritten 2026-11-24, wheel/sdist upload pending (sandbox cannot reach `uploads.github.com`).
