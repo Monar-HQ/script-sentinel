@@ -194,7 +194,7 @@ The full acknowledgement list and source provenance are in [docs/CASE-STUDY.md](
 
 ## Community
 
-If ScriptSentinel helps your checkout integrity work, star the repository and share the OPTIMJACK case study. Detection rules, IOC feeds, and docs are designed to be forked and extended.
+If ScriptSentinel helps your checkout integrity work, star the repository and share the OPTIMJACK case study. Questions and design notes belong in [GitHub Discussions](https://github.com/Ally-Released/scriptsentinel/discussions). Detection rules, IOC feeds, and docs are designed to be forked and extended.
 
 ## Citation
 

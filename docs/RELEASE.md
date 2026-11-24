@@ -43,8 +43,8 @@ Result on 2026-11-24:
 
 | Artifact | Size | SHA-256 |
 | --- | --- | --- |
-| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,710 bytes | `e70463aaa8d4e2d95fcfa4efe716d36d3a363c21a4531d2fa00430fef4a26c7c` |
-| `dist/scriptsentinel-0.1.0.tar.gz` | 183,889 bytes | `d6fa1eed9f4a03b78a2c9e83ffc349ec7b2bf46852630aca39dbdf8238e93bf8` |
+| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,752 bytes | `727b51bc2309fc09be090fab65b919b7e965727da67e5309a69ca411b27a846f` |
+| `dist/scriptsentinel-0.1.0.tar.gz` | 183,971 bytes | `812c6659dac801d48961aaa62f32a20606580dfdfdd480c3d8e457db0870ee87` |
 
 Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NOTICE`, and the `scriptsentinel` console entry point. The sdist includes `CITATION.cff`, `docs/CASE-STUDY.md`, and the OPTIMJACK case-study SVG/PNG assets.
 
