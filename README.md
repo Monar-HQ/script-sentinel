@@ -17,11 +17,13 @@
   <img src="https://img.shields.io/badge/python-3.10%2B-151515?style=flat-square&labelColor=151515" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/runtime%20deps-3-151515?style=flat-square&labelColor=151515" alt="Three runtime dependencies">
   <img src="https://img.shields.io/badge/PCI--DSS-v4.0-d9000b?style=flat-square&labelColor=151515" alt="PCI-DSS v4.0 evidence">
+  <img src="https://img.shields.io/badge/CVE--2026--132224-OPTIMJACK-d9000b?style=flat-square&labelColor=151515" alt="OPTIMJACK case study">
   <img src="https://img.shields.io/badge/license-MIT-151515?style=flat-square&labelColor=151515" alt="MIT license">
 </p>
 
 <p align="center">
   <a href="#live-audit">Live audit</a> ·
+  <a href="#optimjack-case-study">OPTIMJACK case study</a> ·
   <a href="#what-it-checks">What it checks</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#ci-gate">CI gate</a> ·
@@ -43,6 +45,18 @@
 
 Example run against the OPTIJACK simulation lab: `http://localhost:8100/no-csp/checkout`. The page returns HTTP 200, exposes one external script with no SRI, and ships no CSP header. The values shown match `report/no-csp.json`.
 
+## OPTIMJACK Case Study
+
+<p align="center">
+  <img src="assets/optimjack-case-study.svg" alt="OPTIMJACK case file: Optimizely's trusted CDN served poisoned Project JavaScript to 178 organizations" width="846">
+</p>
+
+On 16 November 2026, an attacker exploited Optimizely Web Experimentation's account signup flow and wrote malicious JavaScript into customer Project JavaScript fields. Optimizely's own CDN served 188 compromised snippets across 178 organizations, including CNN, BBC, Zoom, Salesforce, GitLab, HSBC, IKEA, and Ledger. The payload loaded `track.js` from `1688360[.]cc`, skimmed payment cards, swapped crypto wallet addresses, stole cookies and screenshots, and delivered iOS exploit kits. Optimizely closed the vulnerability at 16:10 UTC and removed the injected code by 22:24 UTC.
+
+**CVE records:** [CVE.org](https://www.cve.org/CVERecord?id=CVE-2026-132224) · [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-132224) · [GHSA-XR6G-WR3X-R365](https://github.com/advisories/GHSA-XR6G-WR3X-R365) · [Rapid7](https://www.rapid7.com/db/vulnerabilities/cve-2026-132224/) · [Tenable](https://www.tenable.com/cve/CVE-2026-132224) · [ENISA EUVD](https://euvd.enisa.europa.eu/enisa/EUVD-2026-129010).
+
+Read the full case study: [docs/CASE-STUDY.md](docs/CASE-STUDY.md) — timeline, attack chain, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and credits.
+
 ## What It Checks
 
 | Plane | Engine | What it produces |
@@ -62,7 +76,7 @@ Example run against the OPTIJACK simulation lab: `http://localhost:8100/no-csp/c
 | Behavior | `SKIM-INPUT-HARVEST`, `SKIM-DOM-LISTENER`, `SKIM-CLIPBOARD-TAMPER`, `SKIM-EVAL-EXEC`, `SKIM-BASE64-UNPACK`, `SKIM-EXFIL-BEACON` |
 | IOC | `IOC-MATCH-C2-DOMAIN`, `IOC-MATCH-C2-HASH` |
 
-The full rule catalog, pattern logic, severities, and evidence fields are in [docs/DETECTION-RULES.md](docs/DETECTION-RULES.md).
+The full rule catalog, pattern logic, severities, and evidence fields are in [docs/DETECTION-RULES.md](docs/DETECTION-RULES.md). The OPTIJACK validation counts and source incident links are in [docs/CASE-STUDY.md](docs/CASE-STUDY.md#detection-validation).
 
 ## Quick Start
 
@@ -131,7 +145,7 @@ The action installs the package, runs `audit`, writes the JSON report, and fails
 | 6.4.3 — Manage scripts and other code loaded into payment pages | Script inventory, declared versus calculated SRI, CSP directives, and a pinned SHA-256 baseline for change detection. |
 | 11.6.1 — Change- and tamper-detection for payment page HTTP headers and contents | SHA-256/SHA-384 digests, `SCRIPT_DRIFT` events, CSP violation reporting path, and deterministic JSON evidence. |
 
-The full mapping, evidence fields, and remediation status is in [docs/PCI-DSS-MAPPING.md](docs/PCI-DSS-MAPPING.md).
+The full mapping, evidence fields, and remediation status is in [docs/PCI-DSS-MAPPING.md](docs/PCI-DSS-MAPPING.md). Incident context is in [docs/CASE-STUDY.md](docs/CASE-STUDY.md#what-scriptsentinel-contributes).
 
 ## Architecture
 
@@ -145,6 +159,7 @@ The pipeline is deterministic and browser-free: `httpx` fetches the target, Beau
 
 | Document | Contents |
 | --- | --- |
+| [docs/CASE-STUDY.md](docs/CASE-STUDY.md) | OPTIMJACK incident narrative, CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, credits. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Data flow, module boundaries, typed contracts, failure handling. |
 | [docs/DETECTION-RULES.md](docs/DETECTION-RULES.md) | CSP, SRI, behavioral, and IOC rule catalog. |
 | [docs/PCI-DSS-MAPPING.md](docs/PCI-DSS-MAPPING.md) | PCI-DSS v4.0 6.4.3 / 11.6.1 evidence. |
@@ -152,6 +167,7 @@ The pipeline is deterministic and browser-free: `httpx` fetches the target, Beau
 | [docs/CI-GATE.md](docs/CI-GATE.md) | Composite action, reusable workflow, exit codes. |
 | [docs/RELEASE.md](docs/RELEASE.md) | Release-stage checklist, build artifacts, verification. |
 | [CHANGELOG.md](CHANGELOG.md) | Version history and verification summary. |
+| [CITATION.cff](CITATION.cff) | Citation metadata for research and incident reports. |
 
 ## Compute Partner
 
@@ -160,6 +176,29 @@ The pipeline is deterministic and browser-free: `httpx` fetches the target, Beau
 </p>
 
 [Unquant](https://unquant.io/) provided server infrastructure and AI compute access for the OPTIJACK simulation and model runs used to validate ScriptSentinel. Special thanks to Luke for championing open-source client-side defense research.
+
+## Credits & Thanks
+
+- **Goyya** — community feedback and release review.
+- **Luke / Unquant** — infrastructure and AI compute for the OPTIJACK simulation and model validation.
+- **Scott Helme / Report URI** — incident discovery, the 178-organization count, snippet analysis, and public IOC reporting.
+- **Owais Shaikh / StepSecurity** — payload tracing, wallet analysis, attacker infrastructure, and the OPTIMJACK write-up.
+- **Sherrod DeGrippo / Unit42** — third-party privilege and segmentation analysis.
+- **Salesforce Security** — affected-organization response and exposure-window reporting.
+- **Gianpietro Cutolo / Netskope Threat Labs** — attack-chain telemetry, iOS routing, and domain observations.
+- **Optimizely** — vendor advisory, incident timeline, and remediation record.
+- **Amirul Cyber** — campaign naming.
+- **MITRE, NVD, CISA** — CVE record, CVSS metrics, and SSVC enrichment.
+
+The full acknowledgement list and source provenance are in [docs/CASE-STUDY.md](docs/CASE-STUDY.md#credits-and-acknowledgements).
+
+## Community
+
+If ScriptSentinel helps your checkout integrity work, star the repository and share the OPTIMJACK case study. Detection rules, IOC feeds, and docs are designed to be forked and extended.
+
+## Citation
+
+Use [CITATION.cff](CITATION.cff) for repository citation metadata. The incident analysis can be cited directly via [docs/CASE-STUDY.md](docs/CASE-STUDY.md).
 
 ## Contributing
 

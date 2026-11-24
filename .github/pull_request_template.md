@@ -15,3 +15,4 @@
 - [ ] New and existing unit tests pass locally (`pytest -v`).
 - [ ] I have updated the documentation accordingly.
 - [ ] IOC changes include `source` and `first_seen`; rule changes include TP/FP evidence.
+- [ ] Case-study or CVE changes preserve source links and provenance in `docs/CASE-STUDY.md`.

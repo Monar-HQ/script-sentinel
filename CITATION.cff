@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use ScriptSentinel or the OPTIMJACK case study in research, incident reports, or security tooling, cite this repository."
+title: "ScriptSentinel"
+abstract: "CLI-first audit of third-party JavaScript: script inventory, SHA-256/SHA-384 integrity, Subresource Integrity drift, CSP grading, behavioral skimmer detection, IOC matching, remediation packs, Sigma/Suricata exports, and PCI-DSS v4.0 evidence."
+type: software
+authors:
+  - family-names: "MONAR"
+    website: "https://www.monarservices.org"
+  - given-names: "Goyya"
+    affiliation: "Community review"
+  - given-names: "Luke"
+    affiliation: "Unquant"
+version: "0.1.0"
+date-released: "2026-11-24"
+url: "https://github.com/Ally-Released/scriptsentinel"
+repository-code: "https://github.com/Ally-Released/scriptsentinel"
+license: "MIT"
+keywords:
+  - "client-side security"
+  - "JavaScript supply chain"
+  - "Content-Security-Policy"
+  - "Subresource Integrity"
+  - "payment skimmer"
+  - "OPTIMJACK"
+  - "PCI-DSS"
+  - "Python CLI"

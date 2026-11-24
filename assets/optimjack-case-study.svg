@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 846 440" width="846" height="440" role="img" aria-label="OPTIMJACK case file: Optimizely's trusted CDN served poisoned Project JavaScript to 178 organizations; CVE-2026-132224, CVSS v4.0 7.1 HIGH, CWE-642.">
+  <title>OPTIMJACK case file: Optimizely's trusted CDN served poisoned Project JavaScript to 178 organizations; CVE-2026-132224, CVSS v4.0 7.1 HIGH, CWE-642.</title>
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+    .sans { font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  </style>
+
+  <rect width="846" height="440" fill="#04050a"/>
+  <rect width="846" height="2" fill="#d9000b"/>
+
+  <!-- Case-file header -->
+  <rect x="24" y="22" width="5" height="5" fill="#d9000b"/>
+  <text x="36" y="27" class="mono" font-size="9" font-weight="700" fill="#8892b0" letter-spacing="1.2">OPTIMJACK / CASE FILE</text>
+
+  <text x="24" y="60" class="sans" font-size="22" font-weight="800" fill="#fbfaf7" letter-spacing="-0.3">Trusted CDN. Poisoned projectJS. 178 organizations.</text>
+  <text x="24" y="81" class="sans" font-size="10.5" fill="#94a3b8">On 16 Nov 2026, Optimizely's signup flow let an attacker write into customer Project JavaScript fields.</text>
+
+  <!-- CVE strip -->
+  <rect x="24" y="94" width="798" height="30" fill="#080a11" stroke="#232730" stroke-width="1"/>
+  <rect x="24" y="94" width="2" height="30" fill="#d9000b"/>
+  <text x="38" y="113" class="mono" font-size="8.5" fill="#8892b0">CVE-2026-132224 · GHSA-XR6G-WR3X-R365 · CWE-642 · CVSS v4.0 7.1 HIGH · published 18 Nov 2026</text>
+
+  <!-- Three-column chain -->
+  <g transform="translate(24 140)">
+    <rect width="250" height="150" fill="#080a11" stroke="#232730" stroke-width="1"/>
+    <rect width="250" height="26" fill="#0d1017"/>
+    <text x="12" y="17" class="mono" font-size="9" font-weight="700" fill="#d9000b" letter-spacing="1.1">01 / WRITE</text>
+    <text x="12" y="48" class="sans" font-size="10.5" fill="#fbfaf7">Attacker exploits signup flow</text>
+    <text x="12" y="65" class="sans" font-size="10.5" fill="#94a3b8">Impersonates project admins</text>
+    <text x="12" y="82" class="sans" font-size="10.5" fill="#94a3b8">Writes into Project JavaScript</text>
+    <text x="12" y="99" class="sans" font-size="10.5" fill="#94a3b8">cdn.optimizely.com serves it</text>
+    <text x="12" y="116" class="sans" font-size="10.5" fill="#94a3b8">Vendor certificate intact</text>
+  </g>
+
+  <g transform="translate(284 140)">
+    <rect width="250" height="150" fill="#080a11" stroke="#232730" stroke-width="1"/>
+    <rect width="250" height="26" fill="#0d1017"/>
+    <text x="12" y="17" class="mono" font-size="9" font-weight="700" fill="#d9000b" letter-spacing="1.1">02 / EXECUTE</text>
+    <text x="12" y="48" class="mono" font-size="9.5" fill="#fbfaf7">loader: 1688360.cc/track.js</text>
+    <text x="12" y="65" class="sans" font-size="10.5" fill="#94a3b8">card skim · wallet swap</text>
+    <text x="12" y="82" class="sans" font-size="10.5" fill="#94a3b8">cookie + screenshot theft</text>
+    <text x="12" y="99" class="sans" font-size="10.5" fill="#94a3b8">iOS: Coruna / DarkSword</text>
+    <text x="12" y="116" class="sans" font-size="10.5" fill="#94a3b8">three loader variants</text>
+  </g>
+
+  <g transform="translate(544 140)">
+    <rect width="278" height="150" fill="#080a11" stroke="#232730" stroke-width="1"/>
+    <rect width="278" height="26" fill="#0d1017"/>
+    <text x="12" y="17" class="mono" font-size="9" font-weight="700" fill="#d9000b" letter-spacing="1.1">03 / BLAST RADIUS</text>
+    <text x="12" y="48" class="sans" font-size="10.5" fill="#fbfaf7">178 organizations</text>
+    <text x="12" y="65" class="sans" font-size="10.5" fill="#94a3b8">188 of 1,611 snippets</text>
+    <text x="12" y="82" class="sans" font-size="10.5" fill="#94a3b8">CNN · BBC · Zoom · Salesforce</text>
+    <text x="12" y="99" class="sans" font-size="10.5" fill="#94a3b8">GitLab · HSBC · IKEA · Ledger</text>
+    <text x="12" y="116" class="sans" font-size="10.5" fill="#94a3b8">CSP blocked key paths</text>
+  </g>
+
+  <!-- Timeline strip -->
+  <rect x="24" y="302" width="798" height="72" fill="#080a11" stroke="#232730" stroke-width="1"/>
+  <rect x="24" y="302" width="2" height="72" fill="#d9000b"/>
+  <text x="38" y="320" class="mono" font-size="8" font-weight="700" fill="#8892b0" letter-spacing="1.1">TIMELINE / 16 NOV 2026 UTC</text>
+  <line x1="40" y1="338" x2="786" y2="338" stroke="#2a3242" stroke-width="1"/>
+  <rect x="40" y="336" width="5" height="5" fill="#d9000b"/>
+  <rect x="190" y="336" width="5" height="5" fill="#d9000b"/>
+  <rect x="340" y="336" width="5" height="5" fill="#d9000b"/>
+  <rect x="490" y="336" width="5" height="5" fill="#d9000b"/>
+  <rect x="640" y="336" width="5" height="5" fill="#d9000b"/>
+  <text x="40" y="358" class="mono" font-size="7.5" fill="#94a3b8">07:51 FIRST WRITE</text>
+  <text x="190" y="358" class="mono" font-size="7.5" fill="#94a3b8">13:34 DETECTED</text>
+  <text x="340" y="358" class="mono" font-size="7.5" fill="#94a3b8">16:10 CLOSED</text>
+  <text x="490" y="358" class="mono" font-size="7.5" fill="#94a3b8">22:24 REMOVED</text>
+  <text x="640" y="358" class="mono" font-size="7.5" fill="#94a3b8">23:11 CLEAN SWEEP</text>
+
+  <!-- Footer -->
+  <rect x="24" y="388" width="798" height="30" fill="#090c14" stroke="#1e2433" stroke-width="1"/>
+  <text x="38" y="407" class="mono" font-size="8" fill="#8892b0">OPTIJACK LAB · 144 visits · 36 outcome rows · 9 rules · clean FP 0</text>
+  <text x="786" y="407" text-anchor="end" class="mono" font-size="8" fill="#64748b">MONAR / v0.1.0</text>
+
+  <text x="24" y="432" class="mono" font-size="7" fill="#64748b">Sources: Optimizely advisory · Report URI · StepSecurity · Unit42 · Salesforce · Netskope</text>
+  <rect x="0" y="438" width="846" height="2" fill="#d9000b"/>
+</svg>

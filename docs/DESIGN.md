@@ -75,6 +75,14 @@ components:
     padding: 16px
     width: 846px
     height: 440px
+  case-study-card:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.bone}"
+    typography: "{typography.body-md}"
+    rounded: "{rounded.flat}"
+    padding: 16px
+    width: 846px
+    height: 440px
   audit-panel:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.bone}"
@@ -180,12 +188,13 @@ Pills and 999px radii are not part of the system.
 
 - `hero-banner`: 846×220 obsidian canvas, bone headline, mono ledger strip, red seal.
 - `terminal-card`: 846×440 surface panel with audit summary, rule table, inventory table, and remediation pack.
+- `case-study-card`: 846×440 obsidian case file with a three-column attack chain, CVE strip, UTC timeline, and lab-validation footer.
 - `audit-panel`: Surface panel with one-pixel border for evidence sections.
 - `severity-critical`: Red flat badge with bone mono text.
 - `data-label`: Obsidian label strip with muted mono text.
 - `badge`: Flat-square 151515 badge with bone mono text.
 - `partner-card`: 846×110 obsidian card for Unquant recognition.
-- `social-card`: 1280×640 obsidian card with seal, headline, chips, and terminal excerpt.
+- `social-card`: 1280×640 obsidian card with seal, headline, chips including `CVE-2026-132224`, and terminal excerpt.
 
 ## Do's and Don'ts
 

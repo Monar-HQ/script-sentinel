@@ -2,6 +2,8 @@
 
 ScriptSentinel exposes deterministic rule IDs for CSP posture, Subresource Integrity, behavioral skimming, and IOC exposure. The engine emits typed findings; reporters render them without rewriting rule logic.
 
+Source incident: the OPTIMJACK compromise of Optimizely Web Experimentation (`CVE-2026-132224`). The full narrative, CVE links, IOC table, lab outcome matrix, and detection validation are in [docs/CASE-STUDY.md](CASE-STUDY.md).
+
 ## CSP Rules
 
 | Rule ID | Severity | Penalty | Trigger | Evidence |
@@ -62,6 +64,8 @@ The default feed `optimjack_2026-11-23.json` contains eight domains and two SHA-
 | Domain | `eil786npto9u5bq.icu` |
 | SHA-256 | `f7b84b9a94f749f8ced3f0112d0a66894e8bbc3b4aa5592021d1b8976a9bad40` |
 | SHA-256 | `814a963c0da480e2449d9b6664480156e1cd6d731014117401bf635badec3a0f` |
+
+Public telemetry also reports the iOS kit domain `l7bcsnwc7nzr3uo.icu`. It is documented in [docs/CASE-STUDY.md](CASE-STUDY.md#indicators-observed) but is not in the packaged feed; operators can add it through the feed schema in [CONTRIBUTING.md](../CONTRIBUTING.md#adding-an-ioc).
 
 ## OPTIJACK Validation
 

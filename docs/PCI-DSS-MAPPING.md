@@ -1,6 +1,6 @@
 # PCI-DSS v4.0 Mapping
 
-ScriptSentinel produces audit evidence for payment-page script control and change detection. The mapping covers Requirement 6.4.3 and Requirement 11.6.1.
+ScriptSentinel produces audit evidence for payment-page script control and change detection. The mapping covers Requirement 6.4.3 and Requirement 11.6.1. Incident context and control analysis are in [docs/CASE-STUDY.md](CASE-STUDY.md).
 
 ## Requirement 6.4.3 — Payment Page Scripts
 

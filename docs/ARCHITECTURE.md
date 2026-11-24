@@ -99,4 +99,4 @@ Development dependencies: `pytest`, `pytest-cov`, `ruff`, `mypy`, `types-pyyaml`
 - Behavioral scanning is static regex matching, not AST execution or browser instrumentation.
 - IOC coverage is limited to the packaged OPTIJACK feed and legacy C2 domains.
 - SRI baseline maintenance is operator-owned; legitimate vendor releases must update the pinned baseline.
-- Lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not the blast radius of the real-world incident.
+- Lab validation covers 144 visits across four CSP profiles and three replicas; it demonstrates mechanism, not the blast radius of the real-world incident. The incident narrative, CVE links, and lab evidence are in [docs/CASE-STUDY.md](CASE-STUDY.md).

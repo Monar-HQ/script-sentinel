@@ -11,8 +11,9 @@ ScriptSentinel 0.1.0 is prepared for release under MONAR. The repository remains
 | Reports | Terminal, JSON, Markdown, standalone HTML |
 | Rules | Sigma YAML, Suricata HTTP/DNS |
 | IOC feeds | `optimjack_2026-11-23.json`, `malicious_c2.json` |
-| Documentation | README, architecture, detection rules, PCI-DSS mapping, design system, CI gate, release notes |
-| Visuals | Dark/light hero banners, terminal showcase, architecture diagram, Unquant partner card, social preview SVG + PNG |
+| Documentation | README, OPTIMJACK case study, architecture, detection rules, PCI-DSS mapping, design system, CI gate, release notes |
+| Visuals | Dark/light hero banners, terminal showcase, OPTIMJACK case-study card, architecture diagram, Unquant partner card, social preview SVG + PNG |
+| Citation | `CITATION.cff` for community and research citation |
 | CI | `ci.yml`, composite action `action.yml`, reusable workflow `scriptsentinel-gate.yml` |
 | Evidence | `report/*`, `examples/baseline.json`, `CHANGELOG.md` |
 
@@ -34,15 +35,18 @@ Result on 2026-11-24:
 - `uv build`: wheel and sdist produced successfully.
 - Clean-venv wheel install: `scriptsentinel --version` returns `0.1.0`.
 - `scriptsentinel --help` lists `audit`, `check-csp`, `monitor`, `remediate`, and `export-rules`.
+- `designmd lint docs/DESIGN.md`: passed.
+- Case-study SVG and social preview rendered at 846×440 and 1280×640; Chrome text-box geometry reports no clipping or overlap.
+- Case-study links checked against CVE Record, NVD, GHSA, Optimizely advisory, Report URI, StepSecurity, Unit42, Salesforce Security, and Netskope Threat Labs.
 
 ## Built Artifacts
 
 | Artifact | Size | SHA-256 |
 | --- | --- | --- |
-| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 48,185 bytes | `df520ddff50bf91f19e82b565a994725b01fe3f6eeba58628366e727f526a01d` |
-| `dist/scriptsentinel-0.1.0.tar.gz` | 138,199 bytes | `a289330ef6d7e2df285a292d85f76773b9bb6367a1aad89f03850b88511ccca0` |
+| `dist/scriptsentinel-0.1.0-py3-none-any.whl` | 49,710 bytes | `8ff0418b145fee52057178839de4fb80f3be35f7fc3bae436f8e02b466f87694` |
+| `dist/scriptsentinel-0.1.0.tar.gz` | 183,910 bytes | `d31eea0f9f001103f8ee5a731fdd8bca916da43db0d5149e8b7300e8f1b0e847` |
 
-Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NOTICE`, and the `scriptsentinel` console entry point.
+Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NOTICE`, and the `scriptsentinel` console entry point. The sdist includes `CITATION.cff`, `docs/CASE-STUDY.md`, and the OPTIMJACK case-study SVG/PNG assets.
 
 ## Live Audit Checks
 
@@ -55,7 +59,7 @@ Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NO
 
 1. Run the verification gates and confirm zero failures.
 2. Build the wheel and sdist; install the wheel in a clean environment; run `scriptsentinel --version`.
-3. Review README, docs, assets, and social preview for relative paths and 846px asset width.
+3. Review README, OPTIMJACK case study, docs, assets, and social preview for relative paths, CVE links, and 846px asset width.
 4. Commit release-stage changes with a clear message.
 5. Create tag `v0.1.0`.
 6. Make the repository public.
@@ -67,7 +71,9 @@ Wheel contents include `scriptsentinel/py.typed`, both IOC feeds, `LICENSE`, `NO
 ## Current State
 
 - Repository: private at `https://github.com/Ally-Released/scriptsentinel`.
-- Git push: completed to the private origin on `main`.
+- Case study: `docs/CASE-STUDY.md` with CVE links, timeline, IOC analysis, OPTIJACK lab evidence, remediation, critical notes, and credits.
+- GitHub metadata: description, homepage (`https://www.monarservices.org`), topics (`optimjack`, `payment-skimmer`, `content-security-policy`, `cli`, `python`, `security-tools`), and discussions enabled.
+- Social preview: `assets/social-preview.png` (1280×640) is ready for GitHub UI upload; GitHub exposes no public API for social-preview upload.
 - PyPI: not published.
 - Git tag: not created.
 - GitHub release: not created.
