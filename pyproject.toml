@@ -34,10 +34,10 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://www.monarservices.org"
-Repository = "https://github.com/Monar-HQ/scriptsentinel"
-Issues = "https://github.com/Monar-HQ/scriptsentinel/issues"
-Documentation = "https://github.com/Monar-HQ/scriptsentinel/tree/main/docs"
-Changelog = "https://github.com/Monar-HQ/scriptsentinel/blob/main/CHANGELOG.md"
+Repository = "https://github.com/Monar-HQ/script-sentinel"
+Issues = "https://github.com/Monar-HQ/script-sentinel/issues"
+Documentation = "https://github.com/Monar-HQ/script-sentinel/tree/main/docs"
+Changelog = "https://github.com/Monar-HQ/script-sentinel/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 release = ["build>=1.2", "pyinstaller>=6", "pip-audit>=2.9"]

@@ -13,7 +13,7 @@ Chromium workflows ran under 3.12. Unclosed SQLite connections found during
 
 ### Remote CI
 
-[GitHub Actions run 45435739490](https://github.com/Monar-HQ/scriptsentinel/actions/runs/45435739490)
+[GitHub Actions run 45435739490](https://github.com/Monar-HQ/script-sentinel/actions/runs/45435739490)
 passed for commit `6e782bd`: Python 3.12 and 3.14 on Windows, Linux and macOS,
 lint and strict typing, real Chromium workflows, the locked dependency audit,
 and a wheel/source build with installed-package smoke checks. All ten jobs

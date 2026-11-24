@@ -273,7 +273,7 @@ class AIClient:
             "content-type": "application/json",
         }
         if self.config.provider == "openrouter":
-            headers["HTTP-Referer"] = "https://github.com/Monar-HQ/scriptsentinel"
+            headers["HTTP-Referer"] = "https://github.com/Monar-HQ/script-sentinel"
             headers["X-Title"] = "ScriptSentinel"
 
         payload = {

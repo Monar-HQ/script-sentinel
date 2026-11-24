@@ -6,7 +6,7 @@
 <a href="#inside-a-review">How it works</a> &nbsp; / &nbsp;
 <a href="docs/USER-GUIDE.md">User guide</a> &nbsp; / &nbsp;
 <a href="docs/CASE-STUDY.md">OPTIMJACK</a> &nbsp; / &nbsp;
-<a href="https://github.com/Monar-HQ/scriptsentinel/actions/workflows/ci.yml">CI status</a>
+<a href="https://github.com/Monar-HQ/script-sentinel/actions/workflows/ci.yml">CI status</a>
 </p>
 
 **ScriptSentinel reviews the JavaScript delivered by your application.** Inventory scripts, inspect integrity and CSP, compare reviewed artifacts, and prepare changes for approval. Work in the local console, the CLI, or your existing AI agent.
