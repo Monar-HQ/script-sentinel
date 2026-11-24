@@ -10,6 +10,10 @@ ScriptSentinel — local-first client-side supply-chain defense. Inspect scripts
 compare reviewed baselines and validate proposed SRI fixes. Core works without
 AI; Intelligence and host-agent advice are optional.
 
+Social preview source and upload image: `assets/social-preview.svg` and
+`assets/social-preview.png` (1200 × 630). Set the PNG under repository Settings
+→ General → Social preview before making the repository public.
+
 ## Short announcement
 
 Your checkout trusts the scripts it loads. Can you show why?

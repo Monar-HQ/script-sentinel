@@ -1,113 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="ScriptSentinel by MONAR. Client-side JavaScript integrity, CSP grading, OPTIMJACK case study, behavioral skimmer detection, and PCI-DSS v4.0 evidence.">
-  <title>ScriptSentinel by MONAR. Client-side JavaScript integrity, CSP grading, OPTIMJACK case study, behavioral skimmer detection, and PCI-DSS v4.0 evidence.</title>
-  <defs>
-    <pattern id="social-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M40 0H0V40" fill="none" stroke="#141822" stroke-width="0.6"/>
-    </pattern>
-    <style>
-      .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
-      .sans { font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; }
-    </style>
-  </defs>
-
-  <rect width="1280" height="640" fill="#04050a"/>
-  <rect width="1280" height="640" fill="url(#social-grid)"/>
-  <rect width="1280" height="4" fill="#d9000b"/>
-
-  <!-- Integrity seal -->
-  <g transform="translate(64 64)">
-    <path d="M0 12 L12 0 H52 L64 12 V52 L52 64 H12 L0 52 Z" fill="#080a11" stroke="#252b38" stroke-width="1"/>
-    <path d="M6 18 L18 6 H46 L58 18 V46 L46 58 H18 L6 46 Z" fill="#0d1017" stroke="#3b4252" stroke-width="1"/>
-    <path d="M32 20 L44 32 L32 44 L20 32 Z" fill="#d9000b"/>
-    <path d="M0 12 L12 0 H18" fill="none" stroke="#d9000b" stroke-width="1.5"/>
-    <path d="M64 52 L52 64 H46" fill="none" stroke="#d9000b" stroke-width="1.5"/>
-  </g>
-
-  <rect x="152" y="65" width="5" height="5" fill="#d9000b"/>
-  <text x="164" y="70" class="mono" font-size="11" font-weight="700" fill="#8892b0" letter-spacing="1.5">MONAR / CLIENT-SIDE DEFENSE</text>
-
-  <text x="152" y="136" class="sans" font-size="56" font-weight="800" fill="#fbfaf7" letter-spacing="-1.2">ScriptSentinel</text>
-
-  <text x="152" y="178" class="sans" font-size="20" font-weight="400" fill="#94a3b8">Audit the JavaScript your checkout runs.</text>
-
-  <text x="152" y="206" class="sans" font-size="14" font-weight="400" fill="#64748b">SRI drift · CSP grading · behavioral skimmers · PCI-DSS v4.0 evidence.</text>
-
-  <g transform="translate(152 232)">
-    <path d="M0 0 H120 L126 6 V22 H6 L0 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
-    <text x="12" y="15" class="mono" font-size="9" font-weight="600" fill="#cbd5e1">SRI DRIFT</text>
-    <path d="M132 0 H252 L258 6 V22 H138 L132 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
-    <text x="144" y="15" class="mono" font-size="9" font-weight="600" fill="#cbd5e1">CSP · A–F</text>
-    <path d="M264 0 H384 L390 6 V22 H270 L264 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
-    <text x="276" y="15" class="mono" font-size="8.5" font-weight="600" fill="#cbd5e1">PCI-DSS 6.4.3/11.6.1</text>
-    <path d="M396 0 H516 L522 6 V22 H402 L396 16 Z" fill="#090c14" stroke="#252b38" stroke-width="1"/>
-    <text x="408" y="15" class="mono" font-size="8.5" font-weight="600" fill="#cbd5e1">CVE-2026-132224</text>
-  </g>
-
-  <!-- Live terminal card -->
-  <g transform="translate(680 64)">
-    <rect width="536" height="512" fill="#080a11" stroke="#232730" stroke-width="1"/>
-    <rect width="536" height="32" fill="#090b12"/>
-    <rect x="16" y="13" width="6" height="6" fill="#3b4252"/>
-    <rect x="32" y="13" width="6" height="6" fill="#3b4252"/>
-    <rect x="48" y="13" width="6" height="6" fill="#3b4252"/>
-    <text x="268" y="21" text-anchor="middle" class="mono" font-size="9" fill="#64748b">scriptsentinel audit</text>
-
-    <text x="16" y="54" class="mono" font-size="9.5" fill="#94a3b8"><tspan fill="#d9000b">ally@monar:~$</tspan> scriptsentinel audit http://localhost:8100/no-csp/checkout</text>
-
-    <g transform="translate(16 66)">
-      <rect width="504" height="54" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="17" class="mono" font-size="8" font-weight="700" fill="#d9000b" letter-spacing="1">AUDIT SUMMARY</text>
-      <text x="10" y="33" class="mono" font-size="8" fill="#64748b">TARGET</text>
-      <text x="56" y="33" class="mono" font-size="9" fill="#fbfaf7">http://localhost:8100/no-csp/checkout</text>
-      <text x="494" y="33" text-anchor="end" class="mono" font-size="8.5" fill="#fbfaf7">HTTP 200</text>
-      <text x="10" y="49" class="mono" font-size="8" fill="#64748b">RISK</text>
-      <text x="48" y="49" class="mono" font-size="9" font-weight="700" fill="#d9000b">CRITICAL</text>
-      <text x="130" y="49" class="mono" font-size="8" fill="#64748b">CSP</text>
-      <text x="162" y="49" class="mono" font-size="9" font-weight="700" fill="#d9000b">F (0/100)</text>
-      <text x="250" y="49" class="mono" font-size="8" fill="#64748b">SCRIPTS</text>
-      <text x="306" y="49" class="mono" font-size="9" fill="#fbfaf7">1 external</text>
-    </g>
-
-    <g transform="translate(16 128)">
-      <rect width="504" height="42" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="17" class="mono" font-size="9" font-weight="700" fill="#fbfaf7">CSP-MISSING</text>
-      <text x="120" y="17" class="mono" font-size="8.5" font-weight="700" fill="#d9000b">CRITICAL</text>
-      <text x="200" y="17" class="mono" font-size="8.5" fill="#94a3b8">No Content-Security-Policy header</text>
-      <text x="10" y="34" class="mono" font-size="8" fill="#64748b">ACTION</text>
-      <text x="62" y="34" class="mono" font-size="8.5" fill="#fbfaf7">Deploy nonced default-src 'self'</text>
-    </g>
-
-    <g transform="translate(16 178)">
-      <rect width="504" height="42" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="17" class="mono" font-size="9" fill="#fbfaf7">http://localhost:8001/js/acme.js</text>
-      <text x="330" y="17" class="mono" font-size="8.5" font-weight="700" fill="#d9000b">MISSING_SRI</text>
-      <text x="10" y="34" class="mono" font-size="8" fill="#64748b">SHA-256</text>
-      <text x="70" y="34" class="mono" font-size="8.5" fill="#8892b0">1ddc1b32fb1e4bc6...</text>
-      <text x="330" y="34" class="mono" font-size="8.5" fill="#fbfaf7">SCAN CLEAN</text>
-    </g>
-
-    <g transform="translate(16 228)">
-      <rect width="504" height="170" fill="#05070d" stroke="#1c212e" stroke-width="1"/>
-      <text x="10" y="17" class="mono" font-size="8" font-weight="700" fill="#d9000b" letter-spacing="1">REMEDIATION QUICK-PACK</text>
-      <text x="10" y="36" class="mono" font-size="7.2" fill="#8892b0">default-src 'self'; script-src 'self' 'nonce-{NONCE}' http://localhost:8001;</text>
-      <text x="10" y="50" class="mono" font-size="7.2" fill="#8892b0">script-src-elem 'self' 'nonce-{NONCE}' http://localhost:8001; connect-src 'self'; report-uri /api/csp-report</text>
-      <text x="10" y="70" class="mono" font-size="7" fill="#fbfaf7">&lt;script src="http://localhost:8001/js/acme.js"</text>
-      <text x="10" y="84" class="mono" font-size="7" fill="#fbfaf7">integrity="sha256-HdwbMvseS8acAXHY00VRiX4AG9aivqn38TbzRUKFiwE=" crossorigin="anonymous"&gt;</text>
-      <text x="10" y="98" class="mono" font-size="7" fill="#fbfaf7">&lt;/script&gt;</text>
-      <text x="10" y="118" class="mono" font-size="7.5" fill="#94a3b8">Report written: report/no-csp.json</text>
-      <text x="10" y="136" class="mono" font-size="7.5" fill="#94a3b8">PCI-DSS v4.0 6.4.3 / 11.6.1 evidence included</text>
-    </g>
-
-    <rect x="16" y="410" width="504" height="30" fill="#090c14" stroke="#1e2433" stroke-width="1"/>
-    <text x="26" y="429" class="mono" font-size="8" fill="#8892b0">AUDIT SEAL · SHA-256 1ddc1b32fb1e4bc6...</text>
-    <text x="510" y="429" text-anchor="end" class="mono" font-size="8" fill="#64748b">MONAR / v0.1.0</text>
-
-    <rect x="0" y="510" width="536" height="2" fill="#d9000b"/>
-  </g>
-
-  <line x1="64" y1="576" x2="1216" y2="576" stroke="#1c202c" stroke-width="1"/>
-  <rect x="64" y="592" width="5" height="5" fill="#d9000b"/>
-  <text x="76" y="597" class="mono" font-size="10" font-weight="700" fill="#fbfaf7" letter-spacing="1.5">BY MONAR</text>
-  <text x="190" y="597" class="mono" font-size="9" fill="#8892b0">monarservices.org</text>
-  <text x="1216" y="597" text-anchor="end" class="mono" font-size="9" fill="#64748b">Infrastructure &amp; AI compute: Unquant · Luke</text>
-</svg>
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="social-title social-desc"><title id="social-title">ScriptSentinel | JavaScript supply-chain security</title><desc id="social-desc">Script inventory, static analysis, reviewed baseline, proposed diff and operator approval.</desc><rect width="1200" height="630" fill="#101110" /><svg x="0" y="90" width="1200" height="450" viewBox="0 0 1440 540" preserveAspectRatio="xMidYMid meet"><defs><symbol id="file" viewBox="0 0 44 40"><path d="M7 8H31V36H7zM13 3H37V30M13 16H25M13 22H25M13 28H21" /></symbol><symbol id="analysis" viewBox="0 0 44 40"><path d="M10 7H4V33H10M34 7H40V33H34M15 12H29M15 20H29M15 28H24" /></symbol><symbol id="baseline" viewBox="0 0 44 40"><path d="M6 5H37V35H6zM12 13H30M12 20H30M12 27H24" /><path d="M25 28L29 32L37 23" stroke="#dffc70" /></symbol><symbol id="diff" viewBox="0 0 44 40"><path d="M6 4H37V36H6zM12 14H20M24 14H31M12 26H20M16 22V30M24 26H31" /></symbol></defs>
+<rect width="1440" height="540" fill="#101110" />
+<g transform="translate(90 56) scale(1.4375)"><rect width="32" height="32" rx="3" fill="#dffc70" /><path d="M7 7h18v4H11v3h14v11H7v-4h14v-3H7z" fill="#101110" /></g>
+<g font-family="Arial,Helvetica,sans-serif" fill="#f1f3e9"><text x="154" y="93" font-size="47" font-weight="700" letter-spacing="-1.8">ScriptSentinel</text><text x="90" y="161" font-size="28" letter-spacing="-.55">JavaScript supply-chain security</text></g>
+<g font-family="monospace" font-size="13" fill="#b0b6a9"><text x="1350" y="70" text-anchor="end">MONAR SERVICES / UNQUANT</text><text x="1350" y="92" text-anchor="end">V1 RELEASE CANDIDATE</text><text x="111" y="187">LOCAL EVIDENCE / REVIEWED CHANGES</text></g><circle cx="93.5" cy="183" r="3.5" fill="#dffc70" />
+<path d="M90 214H1350" stroke="#343a33" />
+<g font-family="monospace" font-size="10" fill="#70889b"><text x="90" y="232" letter-spacing="1.1">REVIEW PIPELINE</text><text x="1350" y="232" text-anchor="end">INPUT → ANALYSIS → COMPARISON → PROPOSAL</text></g>
+<g fill="#171b18" stroke="#dffc70"><rect x="90" y="254" width="236" height="148" rx="6" /><rect x="422" y="254" width="236" height="148" rx="6" /><rect x="754" y="254" width="236" height="148" rx="6" /><rect x="1086" y="254" width="236" height="148" rx="6" /></g>
+<path d="M326 328H422M658 328H754M990 328H1086" stroke="#dffc70" stroke-width="3" />
+<g fill="none" stroke="#70889b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#file" x="108" y="272" width="42" height="38" /><use href="#analysis" x="440" y="272" width="42" height="38" /><use href="#baseline" x="772" y="272" width="42" height="38" /><use href="#diff" x="1104" y="272" width="42" height="38" /></g>
+<g font-family="monospace" font-size="11" fill="#b0b6a9"><text x="308" y="284" text-anchor="end">01</text><text x="640" y="284" text-anchor="end">02</text><text x="972" y="284" text-anchor="end">03</text><text x="1304" y="284" text-anchor="end">04</text></g>
+<g font-family="Arial,Helvetica,sans-serif" fill="#f1f3e9"><g font-size="21" font-weight="700" letter-spacing="-.55"><text x="108" y="342">Local scripts</text><text x="440" y="342">Static analysis</text><text x="772" y="342">Reviewed baseline</text><text x="1104" y="342">Proposed diff</text></g><g font-size="15" fill="#b0b6a9"><text x="108" y="370">HTML + JavaScript</text><text x="440" y="370">AST / SRI / CSP</text><text x="772" y="370">Approved artifact hashes</text><text x="1104" y="370">Isolated validation</text></g></g>
+<rect x="1086" y="419" width="236" height="57" rx="5" fill="none" stroke="#dffc70" /><path d="M1103 438V434a5 5 0 0 1 10 0v4M1101 438H1115V450H1101zM1108 442V446" stroke="#b0b6a9" fill="none" stroke-width="1.6" />
+<g font-family="Arial,Helvetica,sans-serif"><text x="1129" y="442" font-size="14" font-weight="700" fill="#f1f3e9">Operator approval</text><text x="1129" y="461" font-size="11" fill="#b0b6a9">Required before applying changes</text></g>
+<text x="90" y="453" fill="#b0b6a9" font-family="monospace" font-size="12">SCHEMATIC WORKFLOW · NO AUTOMATIC APPLICATION</text>
+</svg></svg>

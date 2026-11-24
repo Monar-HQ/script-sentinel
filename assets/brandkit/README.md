@@ -9,6 +9,8 @@ Do not add slogans, simulated threat counters, testimonials or certification mar
 - `mark.svg`: the editable 32-unit monogram used by the local console.
 - `identity-system.svg`: logo geometry, exact color values, typography and applications.
 - `../hero-v1.svg`: the repository header and source for the social preview.
+- `../social-preview.png`: the ready-to-upload GitHub share card (1200 × 630).
+- `../social-preview.svg`: its editable vector source.
 - `../console-v1.png` and `../evidence-v1.png`: captures of the running application.
 
 Graphite #101110 and off-white #f1f3e9 carry the interface. Signal yellow #dffc70
