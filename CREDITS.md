@@ -28,3 +28,9 @@ keyring supports OS credential storage. Their licenses remain with their authors
 
 Incident research is attributed to Optimizely, the CVE Program and the original
 researchers in the research pack. Source material is linked, not relicensed.
+
+The README workflow animation adapts HyperFrames' flowchart and SVG stroke
+primitives (copyright 2026 HeyGen, Inc., Apache-2.0). Its modified source and
+upstream license are retained in packaging/visuals. These authoring tools add
+no dependency to the ScriptSentinel application. The screenshots show the real
+bundled demo; the animation and architecture figures are explanatory diagrams.

@@ -31,6 +31,9 @@ reports/
 !assets/*.png
 !assets/brandkit/*.png
 *.gif
+!assets/workflow-loop.gif
+packaging/visuals/.hyperframes/
+packaging/visuals/renders/
 
 # Lab replay scratch
 chrome-runs/

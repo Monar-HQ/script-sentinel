@@ -33,7 +33,13 @@ All dynamic evidence uses textContent and DOM construction, not HTML injection.
 Loading, empty, error, unavailable and successful states are explicit. Controls
 disable while an operation is in progress. The UI never silently applies a fix.
 
-The GitHub hero is a separate static brand composition. Screenshots are generated
-from the actual running console using packaging/preview_console.py, not invented
-dashboard figures. Historical red assets remain in the repository as earlier
-design work; the v1 README references the new assets.
+The README combines an eight-second schematic workflow loop, editable capability
+and architecture diagrams, and focused captures of the running synthetic demo.
+The animation explains the review path; it is not a recording of an incident or
+an audit. A static SVG is selected for reduced-motion preferences, with an
+explicit static link as well. Long command examples are progressively disclosed.
+
+Screenshots are generated from the actual running console using
+packaging/preview_console.py and packaging/preview_readme.py. No dashboard results
+are invented for presentation. Historical assets remain as earlier design work;
+the current README references the new visual sequence.

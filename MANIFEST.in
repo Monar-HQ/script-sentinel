@@ -20,8 +20,9 @@ include .dockerignore
 recursive-include docs *.md
 recursive-include research *.json
 recursive-include packaging *.py *.md *.yaml Dockerfile
+recursive-include packaging/visuals *.html *.json *.svg *.txt
 recursive-include schemas *.json
-recursive-include assets *.svg *.png
+recursive-include assets *.svg *.png *.gif
 recursive-include assets/brandkit *.md
 recursive-include examples *.json
 recursive-include examples/synthetic *.html *.js *.md

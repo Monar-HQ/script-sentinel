@@ -1,27 +1,42 @@
-<!-- ScriptSentinel: local-first client-side supply-chain defense -->
-<p align="center"><img src="assets/hero-v1.svg" alt="ScriptSentinel — JavaScript supply-chain security. Inventory, integrity review and change monitoring." width="100%"></p>
+<!-- ScriptSentinel: JavaScript supply-chain security -->
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="assets/workflow-poster.svg">
+  <img src="assets/workflow-loop.gif" alt="ScriptSentinel: JavaScript supply-chain security. Workflow illustration: scoped scripts enter analysis, are compared with reviewed baselines, and produce a proposed diff requiring operator approval." width="100%">
+</picture>
 
 <p align="center">
-<a href="#start-in-two-minutes">Start here</a> ·
-<a href="docs/USER-GUIDE.md">User guide</a> ·
-<a href="docs/ARCHITECTURE.md">Architecture</a> ·
-<a href="docs/CASE-STUDY.md">OPTIMJACK research</a> ·
-<a href="THREAT_MODEL.md">Trust boundaries</a> ·
-<a href="CREDITS.md">The collaboration</a>
+<a href="#start-in-two-minutes">Try the demo</a> &nbsp; / &nbsp;
+<a href="#inside-a-review">How it works</a> &nbsp; / &nbsp;
+<a href="docs/USER-GUIDE.md">User guide</a> &nbsp; / &nbsp;
+<a href="docs/CASE-STUDY.md">OPTIMJACK</a> &nbsp; / &nbsp;
+<a href="https://github.com/Ally-Released/scriptsentinel/actions/workflows/ci.yml">CI status</a>
 </p>
 
-**ScriptSentinel reviews the JavaScript delivered by your application.** Inventory scripts, parse their syntax, check integrity and CSP posture, compare approved artifacts, and prepare reviewed fixes. Use the private local console, the CLI, or read-only tools inside your existing AI agent.
+**ScriptSentinel reviews the JavaScript delivered by your application.** Inventory scripts, inspect integrity and CSP, compare reviewed artifacts, and prepare changes for approval. Work in the local console, the CLI, or your existing AI agent.
 
-Core runs without an AI provider. Optional AI integrations provide advisory analysis; changes still require deterministic validation and operator approval.
+| Version | Runtime | License | Operation |
+| :--- | :--- | :--- | :--- |
+| **1.0.0rc1** | Python **3.11.5+** | **MIT** | Local Core · optional AI |
 
-<p align="center"><img src="assets/console-v1.png" alt="The working ScriptSentinel local console, showing its workspace and inspection controls" width="100%"></p>
+<sub>Header: schematic workflow animation, not incident footage or a live audit. [Static version](assets/workflow-poster.svg).</sub>
+
+## Inside a review
+
+<img src="assets/capabilities.svg" alt="Collect: inventory local HTML, JavaScript or an authorized browser observation. Review: inspect AST signals, SRI, CSP and baseline changes. Control: stage, validate and explicitly approve a proposed fix." width="100%">
+
+One workflow connects the script inventory to the change decision. Unreadable resources and incomplete coverage remain visible in the report.
+
+| You need to… | Use… | What you get |
+| :--- | :--- | :--- |
+| Review a webroot | `auto ./webroot --json` | Script inventory, syntax signals, integrity and CSP findings |
+| Track approved content | `baseline` → `watch` | Persistent added, removed and changed events |
+| Observe runtime loading | `observe-browser` or a HAR import | Scoped, authorized browser evidence |
+| Prepare a change | `propose` → `validate-proposal` | A diff and temporary-copy validation results |
+| Work with an AI agent | `mcp ./webroot` | Scoped, read-only host tools |
 
 ## Start in two minutes
 
-From this repository checkout, install into an isolated environment:
-
-Use **Python 3.11.5 or newer** (3.12+ recommended). This minimum permits the
-upstream fixed HTML-selector dependency; older Python runtimes are unsupported.
+From this checkout, create an isolated environment and run the bundled example:
 
 ```sh
 python -m venv .venv
@@ -32,41 +47,63 @@ scriptsentinel demo
 scriptsentinel ui .
 ```
 
-Open the private link printed in the terminal. Try **the synthetic demo**, then inspect your own web root. No signup, no telemetry, no production changes. Keep the terminal open while using the console.
+Open the private link printed in the terminal and select **Try the synthetic demo**. Then inspect your own webroot. No account or AI key is required for Core. Keep the terminal open while using the console. Python 3.12+ is recommended; the minimum supports the fixed HTML-selector dependency.
 
-Prefer pipx? Run `pipx install .` from this checkout. The code here is a **v1 release candidate**, not a claim that a published package already includes these changes.
+This checkout is a **release candidate**. The instructions install the code here, not an assumed newer version from a public package registry. `pipx install .` is also supported from the checkout.
 
-## Workflows
+## The working console
 
-| Your question | The working path |
-| --- | --- |
-| What scripts does this checkout reference? | `scriptsentinel auto ./webroot --json` — local inventory, AST capability signals, heuristic rules and integrity |
-| Did approved content change? | Pin reviewed artifacts with `baseline`, then run `watch` — durable added/removed/changed events |
-| What does the browser actually request? | `observe-browser` — an authorized, bounded anonymous staging-page observation; or import a single-page HAR |
-| Can I inspect the fix first? | `propose` → `validate-proposal` → application review → `apply-proposal --approve` |
-| Can my existing AI help? | `mcp ./webroot` exposes scoped read-only tools; no separate provider key is needed for host reasoning |
-| Can I use my own provider? | Opt in with `auto --ai`; official provider API keys or a configured local endpoint |
+The bundled checkout intentionally lacks CSP and integrity metadata. This capture shows the actual findings, including their evidence and next actions.
 
-The local console joins inventory, evidence, research, baseline review, change checks and staged SRI proposals. **It cannot silently apply changes.** Application and production approval stay explicit.
+<img src="assets/review-console.png" alt="Actual synthetic-demo audit: one script inventoried, no unavailable resources, missing CSP and missing SRI findings. These are posture findings, not proof of compromise." width="100%">
 
-<p align="center"><img src="assets/evidence-v1.png" alt="A real audit of the harmless bundled checkout, showing its missing CSP and missing integrity metadata" width="100%"></p>
+<details>
+<summary><strong>View the script inventory</strong></summary>
 
-## A reviewed fix, end to end
+<img src="assets/inventory-console.png" alt="Actual script inventory from the harmless bundled checkout, listing app.js, its kind, integrity status and analysis signals." width="100%">
 
-First verify the original artifacts independently. Record the reviewer and release/commit reference:
+The console also includes baseline review, change checks, patch proposals, sourced research and a local activity ledger. It cannot silently apply changes to your application.
+
+</details>
+
+## From inventory to an approved change
+
+<img src="assets/architecture-map.svg" alt="Architecture: scoped inputs enter deterministic Core analysis and a local evidence ledger. Reviewed baseline hashes support proposed diffs. Optional AI is advisory. Application tests and explicit operator approval are required before applying a change." width="100%">
+
+<details>
+<summary><strong>Diagram in text</strong></summary>
+
+1. Read local HTML and referenced scripts, or import authorized browser evidence.
+2. Produce deterministic syntax, integrity and CSP findings. Record unavailable resources.
+3. Store observations and approved baseline hashes locally.
+4. Prepare a proposed diff and validate it in a temporary copy.
+5. Review application compatibility, then explicitly approve or reject the change.
+6. Keep a recovery copy and receipt. Rollback refuses to overwrite later edits.
+
+Optional provider or host-agent analysis interprets evidence; it has no approval authority. A snapshot records an operator review assertion, not a signed guarantee of trustworthy content.
+
+</details>
+
+<details>
+<summary><strong>Run a reviewed SRI change, end to end</strong></summary>
+
+Independently review the original artifacts first. Record who approved them and the release or commit reference:
 
 ```sh
 scriptsentinel baseline ./webroot --reviewer "Security team" --provenance "Reviewed release reference" --approve
 scriptsentinel propose ./webroot --file index.html --trusted-baseline ./webroot/.scriptsentinel/baseline.json --proposal proposed-fix.json
 scriptsentinel validate-proposal ./webroot --trusted-baseline ./webroot/.scriptsentinel/baseline.json --proposal proposed-fix.json
-# Review the complete diff and run your application's functional tests in isolation.
+# Review the diff and run your application's functional tests in isolation.
 scriptsentinel apply-proposal ./webroot --trusted-baseline ./webroot/.scriptsentinel/baseline.json --proposal proposed-fix.json --approve
 scriptsentinel watch ./webroot --interval 60
 ```
 
-A snapshot is an operator review assertion, not a signed guarantee. ScriptSentinel refuses stale resources, modified proposals and path escapes. It stages candidate bytes, checks SRI and script preservation, creates a recovery copy and replaces one file atomically. A receipt supports `rollback` and refuses to overwrite later edits.
+Stale resources, modified proposals and path escapes are refused. Validation checks staged SRI and script preservation; it does not replace application compatibility testing. See the [user guide](docs/USER-GUIDE.md) for recovery and rollback.
 
-## Authorized browser observation
+</details>
+
+<details>
+<summary><strong>Observe an authorized staging page</strong></summary>
 
 ```sh
 python -m pip install ".[browser]"
@@ -74,11 +111,14 @@ python -m playwright install chromium
 scriptsentinel observe-browser https://your-staging.example/checkout --authorized --allow-origin https://your-approved-cdn.example --output browser-evidence.json
 ```
 
-Only named origins are allowed. Private/local addresses require `--allow-private`. Anonymous GET/HEAD requests are observed; state-changing requests, redirects, WebSockets and service workers are blocked. No login session is copied. Use a disposable VM/container with network egress controls for untrusted pages: a browser context alone is not a security sandbox.
+Only named origins are allowed. Private/local addresses require `--allow-private`. The browser observes anonymous GET/HEAD requests and blocks state-changing requests, redirects, WebSockets and service workers. No login profile is copied. For untrusted pages, use a disposable VM/container with network egress controls; a browser context alone does not provide that isolation.
 
-## Optional AI integrations
+</details>
 
-Anthropic, OpenAI, OpenRouter, Gemini and custom OpenAI-compatible endpoints are advisory adapters. Choose an explicit model available to your account. Optional OS keychain storage:
+<details>
+<summary><strong>Connect optional AI advice</strong></summary>
+
+Anthropic, OpenAI, OpenRouter, Gemini and custom OpenAI-compatible endpoints are advisory adapters. Select a model available to your account and use official provider API credentials. Optional OS keychain storage:
 
 ```sh
 python -m pip install ".[credentials]"
@@ -86,65 +126,66 @@ scriptsentinel credential-set openai
 scriptsentinel auto ./webroot --ai --provider openai --model YOUR_MODEL
 ```
 
-Audit advisory shares minimized rule IDs and counts. Credentials, source, paths, cookies and raw headers stay out of that request. Provider outages and invalid responses leave Core evidence available. Request and token limits bound calls; use provider billing limits as well. Model availability, price and subscription API entitlements are provider-specific.
+Audit advisory shares minimized rule IDs and counts. Credentials, source, paths, cookies and raw headers stay out of the request. Provider failures leave Core evidence available. Request and token limits bound calls; configure provider billing limits too. Model availability and subscription API entitlements depend on your provider.
 
-Read-only host-agent setup and advisory responsibilities are in [the integration guide](docs/INTEGRATIONS.md).
+Use `scriptsentinel mcp ./webroot` for read-only tools inside an existing host agent. See the [integration guide](docs/INTEGRATIONS.md).
 
-## Incident research
+</details>
 
-The v1 focus is **OPTIMJACK and the broader defensive failure mode it illustrates: trusted script delivery can carry changed content**.
+## Research pack 001 · OPTIMJACK
 
-The [Optimizely incident notice](https://status.optimizely.com/incidents/ftw0fh9wx43z) confirms the signup-flow compromise and cleanup. The [CVE Program record](https://cveawg.mitre.org/api/cve/CVE-2026-132224) identifies CVE-2026-132224 and lists a CNA CVSS 4.0 score of **7.1 High**. Historical local simulation results are separate evidence; they do not establish production exploitability, incident scale or a 9.5 CVSS score.
+V1 focuses on the defensive failure mode illustrated by OPTIMJACK: a trusted script delivery path can carry changed content.
 
-`scriptsentinel research` prints the versioned source pack. New packs are data with provenance, applicability, revision history and license information. Existing lab IOC records are hunting leads with lab provenance, not proof of compromise. No malicious infrastructure is contacted by the demo.
+| Evidence | Source and scope |
+| :--- | :--- |
+| Vendor incident | [Optimizely incident notice](https://status.optimizely.com/incidents/ftw0fh9wx43z): signup-flow compromise and cleanup |
+| Vulnerability record | [CVE-2026-132224](https://cveawg.mitre.org/api/cve/CVE-2026-132224): CNA CVSS 4.0 **7.1 High** |
+| Local historical lab | Separately attributed simulation records; no production exploitability or 9.5 CVSS claim |
+| Extensible packs | Versioned provenance, applicability, revision history and license information |
 
-## Scope and limitations
+Run `scriptsentinel research` to inspect the pack. [Read the case study](docs/CASE-STUDY.md) or [contribute sourced research](CONTRIBUTING.md). Lab IOCs are hunting leads, not proof of compromise; the demo contacts no malicious infrastructure.
 
-AST signals identify syntax and capabilities; regex signals remain heuristics. Neither proves malicious intent or supplies whole-program dataflow analysis. CSP posture is not a full browser policy oracle. Static inventory misses some runtime behavior. Mutable vendor scripts may be incompatible with fixed SRI. Application compatibility needs functional review. PCI mappings aid evidence collection; they do not certify compliance.
+## Documentation
 
-The test suite, optional Chromium workflows, synthetic corpus, packaging checks and release gates are documented in [validation](docs/VALIDATION.md). `scriptsentinel benchmark` measures a disclosed ten-fixture AST corpus, not real-world malware detection accuracy.
+| Getting started | Engineering and assurance | Contributing |
+| :--- | :--- | :--- |
+| [User guide](docs/USER-GUIDE.md) | [Architecture](docs/ARCHITECTURE.md) | [Contributor guide](CONTRIBUTING.md) |
+| [AI and host integrations](docs/INTEGRATIONS.md) | [Threat model](THREAT_MODEL.md) | [Report a security issue](SECURITY.md) |
+| [Supported environments](docs/SUPPORT.md) | [Executed validation](docs/VALIDATION.md) | [Research pack](research/optimjack-v1.json) |
+| [Distribution](packaging/README.md) | [Release gates](docs/RELEASE.md) | [Identity assets](assets/brandkit/README.md) |
 
-## Built to be maintained
+<details>
+<summary><strong>Repository map</strong></summary>
 
 ```text
 src/scriptsentinel/
   ast_analysis.py       Syntax-aware capability evidence
-  auditor.py            Page inventory, integrity and CSP
+  auditor.py            Inventory, integrity and CSP
   browser.py            Authorized anonymous observation
-  local_audit.py        Offline workspace analysis
-  network.py            Destination scope and request limits
+  network.py            Origin scope and request limits
   monitoring.py         Reviewed snapshots and change events
   proposals.py          Deterministic SRI diffs
   validation.py         Staged validation and guarded recovery
   runtime.py            Local SQLite evidence ledger
   dashboard.py + web/   Private local console
-  host.py + ai/         Host tools and optional provider advice
+  host.py + ai/         Read-only tools and provider advice
   knowledge/ + iocs/    Attributed research and hunting leads
-tests/                  Unit, boundary and end-to-end workflows
-docs/                   Operation, architecture and evidence
+tests/                  Boundary and end-to-end workflows
+docs/                   Operations, architecture and evidence
 packaging/              Distribution and reproducible previews
 examples/synthetic/     Harmless demonstration fixtures
 ```
 
-[Contribute](CONTRIBUTING.md) · [Report a security issue](SECURITY.md) · [Release criteria](docs/RELEASE.md) · [MIT license](LICENSE)
-
-## The people behind it
-
-<details>
-<summary>Explore the ScriptSentinel identity system</summary>
-
-<img src="assets/brandkit/identity-system.svg" alt="ScriptSentinel identity reference: logo geometry, color values, typography and application layouts" width="100%">
-
-Editable vector identity reference. [Asset specifications](assets/brandkit/README.md).
-
 </details>
 
-**Ali — co-owner and developer, MONAR Services.** Product development and engineering.
+**Scope:** AST capabilities and heuristic signals do not prove malicious intent or provide whole-program dataflow analysis. CSP posture is not a full browser-policy oracle. Static inventory misses some runtime behavior. Fixed SRI may be incompatible with mutable vendor scripts. PCI mappings support evidence collection, not compliance certification. The ten-fixture `benchmark` measures disclosed syntax cases, not real-world malware detection accuracy.
 
-**Luke — owner, unquant.io.** Provided the uncensored AI infrastructure used for the original sandbox research and early development.
+## The collaboration
 
-Collaboration roles were supplied by the project owner. See [credits and upstream acknowledgments](CREDITS.md).
+| MONAR Services | Unquant |
+| :--- | :--- |
+| **Ali** · Co-owner and developer | **Luke** · Owner |
+| Product development and engineering | Provided the uncensored AI infrastructure for the original sandbox research and early development |
+| [monarservices.org](https://www.monarservices.org/) | [unquant.io](https://unquant.io/) |
 
----
-
-Built by [MONAR Services](https://www.monarservices.org/) with AI infrastructure support from [Unquant](https://unquant.io/).
+Roles were supplied by the project owner. [Credits and upstream acknowledgments](CREDITS.md) · [MIT license](LICENSE).

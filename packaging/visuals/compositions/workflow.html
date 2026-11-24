@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- Modified for ScriptSentinel: geometry, palette, labels, routing and approval boundary.
+     Adapted from HyperFrames flowchart / svg-stroke-trace.
+     Copyright 2026 HeyGen, Inc. Apache-2.0; see ../LICENSE-HYPERFRAMES.txt. -->
+<html lang="en">
+<head><meta charset="utf-8"><title>ScriptSentinel workflow diagram</title></head>
+<body><template>
+<div id="root" data-composition-id="workflow" data-duration="8" data-fps="20">
+<style>
+  :root{--ground:#101110;--ink:#f1f3e9;--muted:#b0b6a9;--accent:#dffc70;--steel:#70889b;--rule:#343a33;--panel:#171b18}
+  *{box-sizing:border-box}
+  #root{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:var(--ground);color:var(--ink);font-family:Inter,sans-serif}
+  #workflow-clip{position:absolute;inset:0}
+  .sheet{width:100%;height:100%;padding:52px 90px 30px;display:flex;flex-direction:column}
+  .masthead{display:flex;align-items:center;justify-content:space-between;gap:32px;height:52px;flex:none}
+  .identity{display:flex;align-items:center;gap:18px}
+  .identity img{display:block;width:46px;height:46px}
+  h1{font-size:47px;letter-spacing:-1.8px;line-height:1.08;margin:0;font-weight:700}
+  .publication{font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.65;color:var(--muted);text-align:right}
+  .descriptor{margin:22px 0 0;font-size:28px;font-weight:400;letter-spacing:-.55px;line-height:35px}
+  .microline{margin-top:15px;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:13px;line-height:16px;font-family:'IBM Plex Mono',monospace}
+  .microline i{display:block;width:7px;height:7px;background:var(--accent);border-radius:50%}
+  .diagram{position:relative;display:grid;width:1232px;grid-template-columns:repeat(4,236px);column-gap:96px;margin-top:62px}
+  .node{position:relative;height:148px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);padding:18px 18px 14px;display:flex;flex-direction:column;gap:9px}
+  .node-number{position:absolute;top:18px;right:18px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .node svg{width:42px;height:38px;display:block;fill:none;stroke:var(--steel);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .node h2{margin:1px 0 0;font-size:21px;line-height:1.2;font-weight:700;letter-spacing:-.55px;white-space:nowrap}
+  .node p{margin:0;font-size:15px;line-height:1.2;color:var(--muted);white-space:nowrap}
+  .node-active{position:absolute;inset:-1px;border:1px solid var(--accent);border-radius:6px;opacity:0;pointer-events:none}
+  .foot{display:flex;width:1232px;justify-content:space-between;align-items:start;margin-top:17px;gap:32px}
+  .explanation{padding-top:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);line-height:1.6}
+  .approval{position:relative;border:1px dashed var(--steel);border-radius:5px;width:236px;min-height:57px;display:flex;align-items:center;gap:11px;padding:9px 12px}
+  .approval svg{display:block;flex:none;width:20px;height:24px;stroke:var(--muted);fill:none;stroke-width:1.6}
+  .approval h3{margin:0;font-size:14px;font-weight:700;line-height:1.2}
+  .approval p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.25}
+  .approval-active{position:absolute;inset:-1px;border:1px solid var(--accent);border-radius:5px;opacity:0}
+  .routing{position:absolute;inset:0;width:1440px;height:540px;pointer-events:none;fill:none;stroke-linecap:round}
+  .route-under{stroke:var(--steel);stroke-width:1.4;opacity:.55}
+  .route-active{stroke:var(--accent);stroke-width:3;opacity:0}
+  .packet{fill:var(--accent);stroke:var(--ground);stroke-width:3;opacity:0}
+  .guide{position:absolute;left:90px;right:90px;top:214px;height:1px;background:var(--rule)}
+  .rule-label{position:absolute;left:90px;top:221px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.1px;color:var(--steel)}
+  .alignment{position:absolute;right:90px;top:221px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--steel)}
+</style>
+<section id="workflow-clip" class="clip" data-start="0" data-duration="8" data-track-index="0" data-track-kind="graphics">
+<svg class="routing" viewBox="0 0 1440 540" aria-hidden="true" data-layout-ignore>
+  <path class="route-under" d="M326 328H422M658 328H754M990 328H1086"/>
+  <path id="route-one" class="route-active" d="M326 328H422"/>
+  <path id="route-two" class="route-active" d="M658 328H754"/>
+  <path id="route-three" class="route-active" d="M990 328H1086"/>
+  <circle id="packet-one" class="packet" cx="326" cy="328" r="7"/>
+  <circle id="packet-two" class="packet" cx="658" cy="328" r="7"/>
+  <circle id="packet-three" class="packet" cx="990" cy="328" r="7"/>
+</svg>
+<div class="guide" data-layout-ignore></div><div class="rule-label">REVIEW PIPELINE</div><div class="alignment">INPUT → ANALYSIS → COMPARISON → PROPOSAL</div>
+<div class="sheet">
+  <header class="masthead"><div class="identity"><img src="assets/mark.svg" alt=""><h1>ScriptSentinel</h1></div><div class="publication"><div>MONAR SERVICES / UNQUANT</div><div>V1 RELEASE CANDIDATE</div></div></header>
+  <p class="descriptor">JavaScript supply-chain security</p>
+  <div class="microline"><i></i><span>LOCAL EVIDENCE</span><span>/</span><span>REVIEWED CHANGES</span></div>
+  <div class="diagram">
+    <article id="node-local" class="node"><div id="active-local" class="node-active"></div><span class="node-number">01</span><svg id="icon-local" viewBox="0 0 44 40" aria-hidden="true"><path d="M7 8H31V36H7zM13 3H37V30M13 16H25M13 22H25M13 28H21"/></svg><h2>Local scripts</h2><p>HTML + JavaScript</p></article>
+    <article id="node-analysis" class="node"><div id="active-analysis" class="node-active"></div><span class="node-number">02</span><svg id="icon-analysis" viewBox="0 0 44 40" aria-hidden="true"><path d="M10 7H4V33H10M34 7H40V33H34M15 12H29M15 20H29M15 28H24"/><path id="analysis-scan" d="M13 20H32" stroke-width="3"/></svg><h2>Static analysis</h2><p>AST / SRI / CSP</p></article>
+    <article id="node-baseline" class="node"><div id="active-baseline" class="node-active"></div><span class="node-number">03</span><svg id="icon-baseline" viewBox="0 0 44 40" aria-hidden="true"><path d="M6 5H37V35H6zM12 13H30M12 20H30M12 27H24"/><path id="baseline-check" d="M25 28L29 32L37 23"/></svg><h2>Reviewed baseline</h2><p>Approved artifact hashes</p></article>
+    <article id="node-proposal" class="node"><div id="active-proposal" class="node-active"></div><span class="node-number">04</span><svg id="icon-proposal" viewBox="0 0 44 40" aria-hidden="true"><path d="M6 4H37V36H6zM12 14H20M24 14H31M12 26H20M16 22V30M24 26H31"/></svg><h2>Proposed diff</h2><p>Isolated validation</p></article>
+  </div>
+  <div class="foot"><p class="explanation">SCHEMATIC WORKFLOW · NO AUTOMATIC APPLICATION</p><div class="approval"><div id="approval-active" class="approval-active"></div><svg viewBox="0 0 20 24" aria-hidden="true"><path d="M5 10V6a5 5 0 0 1 10 0v4M3 10H17V22H3zM10 14V18"/></svg><div><h3>Operator approval</h3><p>Required before applying changes</p></div></div></div>
+</div>
+</section>
+<script>
+  // Adapted from the catalog flowchart and svg-stroke-trace measured-dash primitive.
+  // Neutral underlays and labels remain visible at every timestamp.
+  const tl=gsap.timeline({paused:true});
+  const routes=[document.getElementById('route-one'),document.getElementById('route-two'),document.getElementById('route-three')];
+  routes.forEach((path)=>{const length=path.getTotalLength();path.style.strokeDasharray=length+' '+length;path.style.strokeDashoffset=String(length);});
+  tl.fromTo('#active-local',{opacity:0},{opacity:1,duration:.32,ease:'power3.out'},.4);
+  tl.fromTo('#icon-local',{y:6},{y:0,duration:.7,ease:'power2.out'},.4);
+  const starts=[1.2,2.4,3.6], xs=[326,658,990], packets=['#packet-one','#packet-two','#packet-three'], active=['#active-analysis','#active-baseline','#active-proposal'];
+  routes.forEach((path,i)=>{
+    tl.fromTo(path,{opacity:1,strokeDashoffset:path.getTotalLength()},{opacity:1,strokeDashoffset:0,duration:.9,ease:'sine.inOut'},starts[i]);
+    tl.fromTo(packets[i],{attr:{cx:xs[i]},opacity:0},{attr:{cx:xs[i]+96},opacity:1,duration:.9,ease:'sine.inOut'},starts[i]);
+    tl.to(packets[i],{opacity:0,duration:.18,ease:'power1.in'},starts[i]+.9);
+    tl.fromTo(active[i],{opacity:0},{opacity:1,duration:.3,ease:'power4.out'},starts[i]+.75);
+  });
+  tl.fromTo('#analysis-scan',{y:-7,stroke:'var(--steel)'},{y:7,stroke:'var(--accent)',duration:.85,ease:'power1.inOut',yoyo:true,repeat:1},2.05);
+  tl.fromTo('#baseline-check',{stroke:'var(--steel)'},{stroke:'var(--accent)',duration:.28,ease:'power2.out'},3.3);
+  tl.fromTo('#icon-proposal',{x:5},{x:0,duration:.65,ease:'power3.out'},4.25);
+  tl.fromTo('#approval-active',{opacity:0},{opacity:1,duration:.6,ease:'sine.out'},4.8);
+  tl.to('.route-active,.node-active,#approval-active',{opacity:0,duration:.75,ease:'sine.inOut'},7.2);
+  tl.to('#icon-local',{y:6,duration:.65,ease:'power2.inOut'},7.25);
+  tl.to('#icon-proposal',{x:5,duration:.65,ease:'power3.inOut'},7.25);
+  tl.to('#analysis-scan,#baseline-check',{stroke:'var(--steel)',duration:.5,ease:'power4.in'},7.3);
+  tl.to('#analysis-scan',{y:-7,duration:.5,ease:'power1.inOut'},7.3);
+  window.__timelines['workflow']=tl;
+  tl.seek(0);
+</script>
+</div></template></body></html>
