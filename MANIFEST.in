@@ -32,4 +32,6 @@ recursive-include report *.json *.md *.html *.yml *.rules
 recursive-include src *.py *.json *.typed *.html *.js *.css
 prune report
 prune examples/synthetic/.scriptsentinel
+prune packaging/visuals/.hyperframes
+prune packaging/visuals/renders
 global-exclude *.sqlite3 *.db *.bak *.receipt.json .env
